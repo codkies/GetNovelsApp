@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Web;
 using HtmlAgilityPack;
 
 public class MyScraper
 {
+    #region Props & Fields
+
     //Informacion
     public int EntradasIgnoradas { get; private set; } = 0;
 
@@ -21,7 +24,9 @@ public class MyScraper
 
     private HtmlWeb Conexion;
 
-    string xPath;
+    string xPath; 
+    #endregion
+
 
     #region Core
 
@@ -32,7 +37,7 @@ public class MyScraper
         this.xPath = xPath;
     }
 
-    public string ObtenCapitulo(string direccion, int indexCapitulo)
+    private string ObtenCapitulo(string direccion, int indexCapitulo)
     {      
         Console.WriteLine($"Scraper--> Capitulo {indexCapitulo} comenzando. Direccion: {direccion} ///");
 
@@ -88,9 +93,9 @@ public class MyScraper
     {
         Console.WriteLine($"Scraper--> Revisando si hay un siguiente capitulo. ///");
         HtmlDocument doc = Conexion.Load(direccion);
-        List<string> CapituloDesordenado = new List<string>();
-        var x = doc.DocumentNode.SelectNodes(xPath);
-        bool Hay = x.Count > 0;
+        
+        bool Hay = doc.DocumentNode.SelectNodes(xPath).Count > 0;
+
         if (Hay)
         {
             Console.WriteLine($"Scraper--> Si existe un siguiente capitulo. ///");
@@ -132,13 +137,14 @@ public class MyScraper
         string capituloOrdenado = string.Empty;
         foreach (string entrada in capituloDesordenado)
         {
-            capituloOrdenado += $"{entrada}\n\n";
+            var x = HttpUtility.HtmlDecode(entrada);
+            capituloOrdenado += $"{x}\n\n";
         }
         return capituloOrdenado;
     }   
 
 
-    public string EncuentraSiguienteCap(string direccionCapAnterior)
+    private string EncuentraSiguienteCap(string direccionCapAnterior)
     {
         //Regresa "" si no encuentras nada.
         /*LINK: https://www.readlightnovel.org/versatile-mage/chapter-01 */
@@ -216,6 +222,10 @@ public class MyScraper
     }
 
     #endregion
+
+
+
+
 
     #region Legacy
     /// <summary>

@@ -50,9 +50,7 @@ class Program
         //Preparaciones
         constructor.InicializaConstructor(Titulo, capitulosPorPdf, Path);
         scraper.InicializaScrapper(xPath);
-        //---------------------------
-
-        scraper.EncuentraSiguienteCap("https://www.readlightnovel.org/versatile-mage/blablablabla/chapter-00098");
+        //---------------------------       
 
         for (int i = empiezaEn; i < terminaEn + 1; i++)
         {
