@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
+using Org.BouncyCastle.Math.EC;
 
 /*
     Ideas:
@@ -21,11 +20,12 @@ class Program
         MyScraper scraper = new MyScraper();
         ContructorDePdf constructor = new ContructorDePdf();
 
+        
         //Informacion de novela        
         MuestraInput("Titulo:", out string Titulo);
         //string Titulo = "Versatile Mage";
 
-        MuestraInput("Link:", out string link);
+        MuestraInput("Link del primer capitulo:", out string link);
         MuestraInput("Primer capitulo:", out string primerCap);
         MuestraInput("Ultimo capitulo:", out string ultimoCap);
         MuestraInput("Capitulos por PDF:", out string capsPorPDF);
@@ -51,6 +51,8 @@ class Program
         constructor.InicializaConstructor(Titulo, capitulosPorPdf, Path);
         scraper.InicializaScrapper(xPath);
         //---------------------------
+
+        scraper.EncuentraSiguienteCap("https://www.readlightnovel.org/versatile-mage/blablablabla/chapter-00098");
 
         for (int i = empiezaEn; i < terminaEn + 1; i++)
         {

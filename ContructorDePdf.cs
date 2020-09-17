@@ -7,10 +7,10 @@ using iText.Layout;
 using iText.Layout.Element;
 using iText.Layout.Properties;
 
-
-
 public class ContructorDePdf
 {
+    #region Propiedades
+
     //Informacion
     public int DocumentosCreados { get; private set; } = 0;
 
@@ -24,6 +24,9 @@ public class ContructorDePdf
     private string TituloNovela;
 
     private bool CreaPdf => Capitulos.Count >= CapitulosPorPdf;
+
+    #endregion
+
 
     //Eventos
     public void FinalizoNovela()
@@ -92,25 +95,39 @@ public class ContructorDePdf
         LimpiaCapitulos();
     }
 
-    private void LimpiaCapitulos()
-    {
-        Capitulos.Clear();
-    }
-
+    
+    /// <summary>
+    /// Cierra el pdf y le coloca los numeros de pagina
+    /// </summary>
+    /// <param name="pdf"></param>
+    /// <param name="document"></param>
     private static void CierraDocumento(PdfDocument pdf, Document document)
     {
         //Coloca numeros de paginas.
-        int n1 = pdf.GetNumberOfPages();
-        for (int x = 1; x <= n1; x++)
+        int numOfPages = pdf.GetNumberOfPages();
+        for (int x = 1; x <= numOfPages; x++)
         {
-            document.ShowTextAligned(new Paragraph(String
-               .Format("page" + x + " of " + n1)),
-                559, 806, x, TextAlignment.RIGHT,
-                VerticalAlignment.TOP, 0);
+            document.ShowTextAligned(
+                new Paragraph(String.Format("page" + x + " of " + numOfPages)),
+                559,
+                806,
+                x,
+                TextAlignment.RIGHT,
+                VerticalAlignment.TOP,
+                0);
         }
 
         //Cierralo.
         document.Close();
+    }
+
+
+    /// <summary>
+    /// Limpia el record de capitulos en este constructor.
+    /// </summary>
+    private void LimpiaCapitulos()
+    {
+        Capitulos.Clear();
     }
 }
 

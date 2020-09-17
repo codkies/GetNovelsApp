@@ -132,13 +132,98 @@ public class MyScraper
         string capituloOrdenado = string.Empty;
         foreach (string entrada in capituloDesordenado)
         {
-            capituloOrdenado += $"{entrada}\n";
+            capituloOrdenado += $"{entrada}\n\n";
         }
         return capituloOrdenado;
+    }   
+
+
+    public string EncuentraSiguienteCap(string direccionCapAnterior)
+    {
+        //Regresa "" si no encuentras nada.
+        /*LINK: https://www.readlightnovel.org/versatile-mage/chapter-01 */
+
+        string direccionNueva = string.Empty;
+        string capitulo = string.Empty;
+
+        for (int i = 0; i < direccionCapAnterior.Length; i++)
+        {
+            char letra = direccionCapAnterior[i];
+            string letra_ = letra.ToString();
+            bool EsUnNumero = char.IsDigit(letra);
+            if (EsUnNumero)
+            {
+                /*Encontrando el primero numero y revisando si es 0*/
+                capitulo += letra.ToString(); //1  
+
+                //Haciendo un check de que hayan mas caracteres
+                if (i == direccionNueva.Length - 1) break; //Si es el ultimo i, rompe el loop.
+
+                //Revisando los siguientes caracteres.
+                int siguiente = i + 1;
+                for (int x = siguiente; x < direccionCapAnterior.Length; x++)
+                {
+                    char letraFutura = direccionCapAnterior[x];
+                    if (char.IsDigit(letraFutura)) //Solo procede si el caracter es un #
+                    {
+                        capitulo += letraFutura.ToString();//2                            
+                        siguiente = x;
+                    }
+                    else break;//Apenas halles una letra, rompe este loop.
+                }
+
+                //Toma la longitud de los caracteres originales
+                int longitudMinima = capitulo.Length;
+
+                //Toma el digito del capitulo actual, sumale uno, y devuelvelo a un string.
+                capitulo = (int.Parse(capitulo) + 1).ToString(); //Conviertelo a INT, sumale 1 y metelo de nuevo en el link.
+
+                int longitudNueva = capitulo.Length;
+
+                int cantidadDeCeros = longitudMinima - longitudNueva;
+                
+                if (cantidadDeCeros > 0)
+                {
+                    for (int j = 0; j < cantidadDeCeros; j++)
+                    {
+                        capitulo = $"0{capitulo}";
+                    }
+                }
+
+                //Revisa la cantidad de ceros a la izquierda.
+                /*ie: 
+                original = 007
+                longitudMinima = 3
+
+                capituloEncontrado = 8.
+                longitudNueva = 1
+
+                ceros= 2;
+                final = 008.
+                */
+
+                direccionNueva += capitulo;
+                i = siguiente + 1 < direccionCapAnterior.Length - 1 ? siguiente + 1 : direccionCapAnterior.Length;
+            }
+            else
+            {
+                direccionNueva += letra.ToString();
+            }
+
+        }
+
+        return direccionNueva;
     }
 
+    #endregion
 
-    private string EncuentraSiguienteCap(string direccionCapAnterior)
+    #region Legacy
+    /// <summary>
+    /// Esta version no soporta si los capitulos los escriben con un 0 a la izquierda
+    /// </summary>
+    /// <param name="direccionCapAnterior"></param>
+    /// <returns></returns>
+    private string legacy_EncuentraSiguienteCap(string direccionCapAnterior)
     {
         //Regresa "" si no encuentras nada.
         /*LINK: https://www.readlightnovel.org/versatile-mage/chapter-1   */
@@ -180,7 +265,7 @@ public class MyScraper
         }
 
         return direccionNueva;
-    }
+    } 
 
     #endregion
 }
