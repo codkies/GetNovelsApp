@@ -1,0 +1,17 @@
+C:\Users\Juan\Desktop\proyectos\Github Repos\Scrapper\ScrapperConsoleApp\bin\Debug\ScrapperConsoleApp.exe.config
+C:\Users\Juan\Desktop\proyectos\Github Repos\Scrapper\ScrapperConsoleApp\bin\Debug\ScrapperConsoleApp.exe
+C:\Users\Juan\Desktop\proyectos\Github Repos\Scrapper\ScrapperConsoleApp\bin\Debug\ScrapperConsoleApp.pdb
+C:\Users\Juan\Desktop\proyectos\Github Repos\Scrapper\ScrapperConsoleApp\bin\Debug\HtmlAgilityPack.dll
+C:\Users\Juan\Desktop\proyectos\Github Repos\Scrapper\ScrapperConsoleApp\bin\Debug\HtmlAgilityPack.pdb
+C:\Users\Juan\Desktop\proyectos\Github Repos\Scrapper\ScrapperConsoleApp\bin\Debug\HtmlAgilityPack.xml
+C:\Users\Juan\Desktop\proyectos\Github Repos\Scrapper\ScrapperConsoleApp\obj\Debug\ScrapperConsoleApp.csprojAssemblyReference.cache
+C:\Users\Juan\Desktop\proyectos\Github Repos\Scrapper\ScrapperConsoleApp\obj\Debug\ScrapperConsoleApp.csproj.CoreCompileInputs.cache
+C:\Users\Juan\Desktop\proyectos\Github Repos\Scrapper\ScrapperConsoleApp\obj\Debug\ScrapperConsoleApp.csproj.CopyComplete
+C:\Users\Juan\Desktop\proyectos\Github Repos\Scrapper\ScrapperConsoleApp\obj\Debug\ScrapperConsoleApp.exe
+C:\Users\Juan\Desktop\proyectos\Github Repos\Scrapper\ScrapperConsoleApp\obj\Debug\ScrapperConsoleApp.pdb
+C:\Users\Juan\Desktop\proyectos\Github Repos\Scrapper\ScrapperConsoleApp\bin\Debug\PdfSharp.Charting.dll
+C:\Users\Juan\Desktop\proyectos\Github Repos\Scrapper\ScrapperConsoleApp\bin\Debug\PdfSharp.dll
+C:\Users\Juan\Desktop\proyectos\Github Repos\Scrapper\ScrapperConsoleApp\bin\Debug\PdfSharp.xml
+C:\Users\Juan\Desktop\proyectos\Github Repos\Scrapper\ScrapperConsoleApp\bin\Debug\PdfSharp.Charting.xml
+C:\Users\Juan\Desktop\proyectos\Github Repos\Scrapper\ScrapperConsoleApp\bin\Debug\de\PdfSharp.resources.dll
+C:\Users\Juan\Desktop\proyectos\Github Repos\Scrapper\ScrapperConsoleApp\bin\Debug\de\PdfSharp.Charting.resources.dll
