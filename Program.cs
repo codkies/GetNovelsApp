@@ -21,34 +21,26 @@ class Program
         MyScraper scraper = new MyScraper();
         ContructorDePdf constructor = new ContructorDePdf();
 
-        //Informacion de novela
-        Console.WriteLine("Titulo:");
-        string Titulo = Console.ReadLine();
+        //Informacion de novela        
+        MuestraInput("Titulo:", out string Titulo);
         //string Titulo = "Versatile Mage";
 
-        Console.WriteLine("Link:");
-        string link = Console.ReadLine();
-        //string link = "https://www.readlightnovel.org/versatile-mage/chapter-1";
+        MuestraInput("Link:", out string link);
+        MuestraInput("Primer capitulo:", out string primerCap);
+        MuestraInput("Ultimo capitulo:", out string ultimoCap);
+        MuestraInput("Capitulos por PDF:", out string capsPorPDF);
+        MuestraInput("Carpeta:", out string Path);
+        MuestraInput("\nPresiona enter para confirmar.", out string _, ColorTitulo: ConsoleColor.Red);
 
-        Console.WriteLine("Primer capitulo:");
-        int empiezaEn = int.Parse((Console.ReadLine()));
+        int capitulosPorPdf = int.Parse(capsPorPDF);
+        int empiezaEn = int.Parse(primerCap);
+        int terminaEn = int.Parse(ultimoCap);
+
+        //string link = "https://www.readlightnovel.org/versatile-mage/chapter-1";      
         //int empiezaEn = 1;
-
-        Console.WriteLine("Ultimo capitulo:");
-        int terminaEn = int.Parse((Console.ReadLine()));
         //int terminaEn = 1500;
-
-        Console.WriteLine("Capitulos por PDF:");
-        int capitulosPorPdf = int.Parse((Console.ReadLine()));
         //int capitulosPorPdf = 5;
-
-        Console.WriteLine("Carpeta:");
-        string Path = Console.ReadLine();
-        //string Path = "C:\\Users\\Juan\\Desktop\\Novelas\\";
-
-
-        Console.WriteLine("\nPresiona enter para confirmar.");
-        Console.ReadLine();
+        //string Path = "C:\\Users\\Juan\\Desktop\\Novelas\\"
         //---------------------------
 
         //Configuracion de Scraper
@@ -79,6 +71,14 @@ class Program
         }
 
         MustraResultado(scraper, constructor);
+    }
+
+    private static void MuestraInput(string titulo, out string Obten, ConsoleColor ColorTitulo = ConsoleColor.Green, ConsoleColor ColorEscrito = ConsoleColor.White)
+    {
+        Console.ForegroundColor = ColorTitulo;
+        Console.WriteLine(titulo);
+        Console.ForegroundColor = ColorEscrito;
+        Obten = Console.ReadLine();
     }
 
     private static void MustraResultado(MyScraper scraper, ContructorDePdf constructor)
