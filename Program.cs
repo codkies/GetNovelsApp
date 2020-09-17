@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Org.BouncyCastle.Math.EC;
 
 /*
     Ideas:
@@ -31,20 +30,19 @@ class Program
         };
 
         //Informacion de novela        
-        MuestraInput("Titulo:", out string Titulo);
-        //string Titulo = "Versatile Mage";
-
+        MuestraInput("Titulo:", out string Titulo);        
         MuestraInput("Link del primer capitulo:", out string link);
         MuestraInput("Primer capitulo:", out string primerCap);
         MuestraInput("Ultimo capitulo:", out string ultimoCap);
         MuestraInput("Capitulos por PDF:", out string capsPorPDF);
         MuestraInput("Carpeta:", out string Path);
-        MuestraInput("\nPresiona enter para confirmar.", out string _, ColorTitulo: ConsoleColor.Red);
+        MuestraInput("\n... Presiona enter para confirmar.", out string _, ColorTitulo: ConsoleColor.Red);
 
         int capitulosPorPdf = int.Parse(capsPorPDF);
         int empiezaEn = int.Parse(primerCap);
         int terminaEn = int.Parse(ultimoCap);
 
+        //string Titulo = "Versatile Mage";
         //string link = "https://www.readlightnovel.org/versatile-mage/chapter-1";      
         //int empiezaEn = 1;
         //int terminaEn = 1500;

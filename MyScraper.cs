@@ -25,6 +25,7 @@ public class MyScraper
     private HtmlWeb Conexion;
 
     string xPath; 
+
     #endregion
 
 
@@ -223,6 +224,37 @@ public class MyScraper
 
     #endregion
 
+
+    #region New
+
+    public string xPathToNextLink { get; private set; } = "//a[@class = 'next next-link' ]";
+
+    private string test_EncuentraSiguienteCap(string direccionActual)
+    {
+        HtmlDocument doc = Conexion.Load(direccionActual);
+
+        string link = string.Empty;
+
+        foreach (var item in doc.DocumentNode.SelectNodes(xPathToNextLink))
+        {
+            link = item.GetAttributeValue("href", string.Empty);
+            if (link.Equals(string.Empty)) continue;
+            else break;            
+        }
+
+        bool exito = !link.Equals(string.Empty);
+
+        if (exito)
+        {
+            return link;
+        }
+        else
+        {
+            Console.WriteLine("Siguiente link no encontrado");
+            return string.Empty;
+        }
+    } 
+    #endregion
 
 
 
