@@ -28,7 +28,7 @@ public class MyScraper
     #endregion
 
 
-    #region Core
+    #region Public
 
     public void InicializaScrapper(string xPath)
     {
@@ -37,7 +37,7 @@ public class MyScraper
         this.xPath = xPath;
     }
 
-    private string ObtenCapitulo(string direccion, int indexCapitulo)
+    public string ObtenCapitulo(string direccion, int indexCapitulo)
     {      
         Console.WriteLine($"Scraper--> Capitulo {indexCapitulo} comenzando. Direccion: {direccion} ///");
 
@@ -59,6 +59,10 @@ public class MyScraper
         
         return capitulo;
     }
+
+    #endregion
+
+    #region Private
 
     private string ScrappDireccion(string direccion, ref bool exito)
     {
@@ -84,10 +88,6 @@ public class MyScraper
             return "";
         }
     }
-
-    #endregion
-
-    #region Helpers
 
     private bool PruebaLink(string direccion)
     {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Org.BouncyCastle.Math.EC;
 
 /*
@@ -19,8 +20,16 @@ class Program
     {
         MyScraper scraper = new MyScraper();
         ContructorDePdf constructor = new ContructorDePdf();
+        List<string> Test = new List<string>()
+        {
+            "Soy cap 1. Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola.Punto.\n\n Adios Hey Hola Adios Hey Hola Adios Hey Hola AdiosHey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios.Punto.\n\n\n Hey Hola Adios Hey Hola Adios Hey.Punto.\n\b Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios. Final de entrada.",
+            "Soy cap 2. Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola AdiosHey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios. Final de entrada.",
+            "Soy cap 3. Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola AdiosHey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios",
+            "Soy cap 4. Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola AdiosHey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios",
+            "Soy cap 5. Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola AdiosHey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios",
+            "Soy cap 6. Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola AdiosHey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios"
+        };
 
-        
         //Informacion de novela        
         MuestraInput("Titulo:", out string Titulo);
         //string Titulo = "Versatile Mage";
@@ -52,33 +61,40 @@ class Program
         scraper.InicializaScrapper(xPath);
         //---------------------------       
 
-        for (int i = empiezaEn; i < terminaEn + 1; i++)
+        for (int i = 0; i < Test.Count; i++)
         {
-            string Capitulo = scraper.ObtenCapitulo(link, i);
-            Console.WriteLine($"Program --> {i} capitulo obtenido. ///");
-            constructor.AgregaCapitulo(Capitulo);
-
-            if (scraper.HayOtroCapitulo)
-            {
-                link = scraper.SiguienteCapitulo;
-            }
-            else
-            {
-                constructor.FinalizoNovela();
-                Console.WriteLine($"Program--> Ultimo capitulo: {i}. !!!");
-                break;
-            }
+            constructor.AgregaCapitulo(Test[i]);
         }
+        constructor.FinalizoNovela();
 
-        MustraResultado(scraper, constructor);
+        //for (int i = empiezaEn; i < terminaEn + 1; i++)
+        //{
+        //    string Capitulo = scraper.ObtenCapitulo(link, i);
+        //    Console.WriteLine($"Program --> {i} capitulo obtenido. ///");
+        //    constructor.AgregaCapitulo(Capitulo);
+
+        //    if (scraper.HayOtroCapitulo)
+        //    {
+        //        link = scraper.SiguienteCapitulo;
+        //    }
+        //    else
+        //    {
+        //        constructor.FinalizoNovela();
+        //        Console.WriteLine($"Program--> Ultimo capitulo: {i}. !!!");
+        //        break;
+        //    }
+        //}
+
+        //MustraResultado(scraper, constructor);
     }
 
-    private static void MuestraInput(string titulo, out string Obten, ConsoleColor ColorTitulo = ConsoleColor.Green, ConsoleColor ColorEscrito = ConsoleColor.White)
+    private static void MuestraInput(string titulo, out string Obten, ConsoleColor ColorTitulo = ConsoleColor.Cyan, ConsoleColor ColorEscrito = ConsoleColor.White)
     {
         Console.ForegroundColor = ColorTitulo;
         Console.WriteLine(titulo);
         Console.ForegroundColor = ColorEscrito;
         Obten = Console.ReadLine();
+        Console.WriteLine("\b");
     }
 
     private static void MustraResultado(MyScraper scraper, ContructorDePdf constructor)
@@ -95,13 +111,5 @@ class Program
     }
 }
 
-//List<string> Test = new List<string>()
-//{
-//    "Soy cap 1. Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola AdiosHey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios",
-//    "Soy cap 2. Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola AdiosHey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios",
-//    "Soy cap 3. Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola AdiosHey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios",
-//    "Soy cap 4. Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola AdiosHey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios",
-//    "Soy cap 5. Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola AdiosHey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios",
-//    "Soy cap 6. Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola AdiosHey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios"
-//};
+
 //iText7_Test(Test, "Novela X", 2, Path);

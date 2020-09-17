@@ -108,9 +108,9 @@ public class ContructorDePdf
         for (int x = 1; x <= numOfPages; x++)
         {
             document.ShowTextAligned(
-                new Paragraph(String.Format("page" + x + " of " + numOfPages)),
-                559,
-                806,
+                new Paragraph(String.Format(x + " / " + numOfPages)),
+                579,
+                826,
                 x,
                 TextAlignment.RIGHT,
                 VerticalAlignment.TOP,
