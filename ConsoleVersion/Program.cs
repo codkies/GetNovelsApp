@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using GetNovelsApp.Modelos;
-using GetNovelsApp;
 
 namespace GetNovelsApp.ConsoleVersion
 {
