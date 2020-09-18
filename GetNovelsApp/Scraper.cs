@@ -2,7 +2,7 @@
 using System.Web;
 using HtmlAgilityPack;
 using GetNovelsApp.Modelos;
-using GetNovelsApp.ConsoleVersion;
+using GetNovelsApp.Utilidades;
 
 namespace GetNovelsApp
 {
@@ -43,6 +43,7 @@ namespace GetNovelsApp
 
         public void InicializaScrapper(Configuracion configuracion)
         {
+            Configuracion = configuracion;
             Mensajero.MuestraNotificacion($"Scraper--> Comenzando conexion.");
             Conexion = new HtmlWeb();
             IndexCapitulos = 1;

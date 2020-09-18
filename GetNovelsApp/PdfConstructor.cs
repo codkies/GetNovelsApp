@@ -7,7 +7,7 @@ using iText.Layout.Element;
 using iText.Layout.Properties;
 
 using GetNovelsApp.Modelos;
-using GetNovelsApp.ConsoleVersion;
+using GetNovelsApp.Utilidades;
 
 namespace GetNovelsApp
 {

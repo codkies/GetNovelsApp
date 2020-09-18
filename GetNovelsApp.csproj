@@ -93,9 +93,8 @@
     <Compile Include="GetNovelsApp\Modelos\Capitulo.cs" />
     <Compile Include="GetNovelsApp\Modelos\Configuracion.cs" />
     <Compile Include="GetNovelsApp\PdfConstructor.cs" />
-    <Compile Include="ConsoleVersion\Mensajero.cs" />
     <Compile Include="GetNovelsApp\Modelos\Novela.cs" />
-    <Compile Include="ConsoleVersion\Program.cs" />
+    <Compile Include="Utilidades\Mensajero.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GetNovelsApp\Scraper.cs" />
   </ItemGroup>

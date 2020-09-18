@@ -40,3 +40,4 @@ C:\Users\Juan\Desktop\proyectos\Github Repos\Scrapper\ScrapperConsoleApp\obj\Deb
 C:\Users\Juan\Desktop\proyectos\Github Repos\Scrapper\ScrapperConsoleApp\obj\Debug\GetNovelsApp.csproj.CopyComplete
 C:\Users\Juan\Desktop\proyectos\Github Repos\Scrapper\ScrapperConsoleApp\obj\Debug\GetNovelsApp.exe
 C:\Users\Juan\Desktop\proyectos\Github Repos\Scrapper\ScrapperConsoleApp\obj\Debug\GetNovelsApp.pdb
+C:\Users\Juan\Desktop\proyectos\Github Repos\Scrapper\ScrapperConsoleApp\obj\Debug\GetNovelsApp.csprojAssemblyReference.cache
