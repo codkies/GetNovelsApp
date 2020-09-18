@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 
 /*
     Ideas:
@@ -12,6 +13,38 @@ using System.Collections.Generic;
         - Expandir la manera que se iteran las direcciones de los capitulos
     - Colocar variable las palabras claves de los checks
 */
+
+public static class Mensajero
+{
+    private const ConsoleColor ColorError = ConsoleColor.Red;
+    private const ConsoleColor ColorNotificacion = ConsoleColor.DarkYellow;
+    private const ConsoleColor ColorExito = ConsoleColor.DarkCyan;
+    private const ConsoleColor ColorEspecial = ConsoleColor.White;
+
+    public static void MuestraError(string mensaje)
+    {
+        Console.ForegroundColor = ColorError;
+        Console.WriteLine(mensaje);
+    }
+
+    public static void MuestraNotificacion(string mensaje)
+    {
+        Console.ForegroundColor = ColorNotificacion;
+        Console.WriteLine(mensaje);
+    }
+
+    public static void MuestraExito(string mensaje)
+    {
+        Console.ForegroundColor = ColorExito;
+        Console.WriteLine(mensaje);
+    }
+
+    public static void MuestraEspecial(string mensaje)
+    {
+        Console.ForegroundColor = ColorEspecial;
+        Console.WriteLine(mensaje);
+    }
+}
 
 class Program
 {
@@ -29,61 +62,86 @@ class Program
             "Soy cap 6. Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola AdiosHey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios Hey Hola Adios"
         };
 
-        //Informacion de novela        
-        MuestraInput("Titulo:", out string Titulo);        
-        MuestraInput("Link del primer capitulo:", out string link);
-        MuestraInput("Primer capitulo:", out string primerCap);
-        MuestraInput("Ultimo capitulo:", out string ultimoCap);
-        MuestraInput("Capitulos por PDF:", out string capsPorPDF);
-        MuestraInput("Carpeta:", out string Path);
+        //Informacion de novela       
+        //MuestraInput("Titulo:", out string Titulo);        
+        //MuestraInput("Link del primer capitulo:", out string link);
+        //MuestraInput("Primer capitulo:", out string primerCap);
+        //MuestraInput("Ultimo capitulo:", out string ultimoCap);
+        //MuestraInput("Capitulos por PDF:", out string capsPorPDF);
+        //MuestraInput("Carpeta:", out string Path);
+
+        //int capitulosPorPdf = int.Parse(capsPorPDF);
+        //int empiezaEn = int.Parse(primerCap);
+        //int terminaEn = int.Parse(ultimoCap);
+
+
+        /*Strongest Abandoned son*/
+        //string Titulo = "Strongest Abandoned Son";
+        //string link = "https://wuxiaworld.site/novel/strongest-abandoned-son/chapter-301";
+        //int empiezaEn = 301;
+        //int terminaEn = 2257;
+
+        /*Only I level up*/
+        string Titulo = "Only I level up";
+        string link = "https://wuxiaworld.site/novel/only-i-level-up-novel-solo-leveling-completed/chapter-185";
+        int empiezaEn = 186;
+        int terminaEn = 270;
+
+        int capitulosPorPdf = 50;
+        string Path = "C:\\Users\\Juan\\Desktop\\Novelas\\";
+
+
+
+        Mensajero.MuestraNotificacion(  $"Titulo: {Titulo}\n" +
+                                        $"Link: {link}\n" +
+                                        $"PrimerCap: {empiezaEn}\n" +
+                                        $"UltimoCap: {terminaEn}\n" +
+                                        $"CapitulosPorPdf: {capitulosPorPdf}\n" +
+                                        $"Carpeta: {Path}");
+
         MuestraInput("\n... Presiona enter para confirmar.", out string _, ColorTitulo: ConsoleColor.Red);
-
-        int capitulosPorPdf = int.Parse(capsPorPDF);
-        int empiezaEn = int.Parse(primerCap);
-        int terminaEn = int.Parse(ultimoCap);
-
-        //string Titulo = "Versatile Mage";
-        //string link = "https://www.readlightnovel.org/versatile-mage/chapter-1";      
-        //int empiezaEn = 1;
-        //int terminaEn = 1500;
-        //int capitulosPorPdf = 5;
-        //string Path = "C:\\Users\\Juan\\Desktop\\Novelas\\"
         //---------------------------
 
         //Configuracion de Scraper
-        string xPath = "//*[@class = 'desc']/p";
+        List<string> xPaths = new List<string>()
+        {
+            "//div[@class = 'text-left']/p",
+            "//div[@class = 'cha-words']/p",
+            "//*[@class = 'desc']/p"
+        };
         //---------------------------
 
         //Preparaciones
         constructor.InicializaConstructor(Titulo, capitulosPorPdf, Path);
-        scraper.InicializaScrapper(xPath);
+        scraper.InicializaScrapper(xPaths);
         //---------------------------       
 
-        for (int i = 0; i < Test.Count; i++)
-        {
-            constructor.AgregaCapitulo(Test[i]);
-        }
-        constructor.FinalizoNovela();
-
-        //for (int i = empiezaEn; i < terminaEn + 1; i++)
+        //for (int i = 0; i < Test.Count; i++)
         //{
-        //    string Capitulo = scraper.ObtenCapitulo(link, i);
-        //    Console.WriteLine($"Program --> {i} capitulo obtenido. ///");
-        //    constructor.AgregaCapitulo(Capitulo);
-
-        //    if (scraper.HayOtroCapitulo)
-        //    {
-        //        link = scraper.SiguienteCapitulo;
-        //    }
-        //    else
-        //    {
-        //        constructor.FinalizoNovela();
-        //        Console.WriteLine($"Program--> Ultimo capitulo: {i}. !!!");
-        //        break;
-        //    }
+        //    constructor.AgregaCapitulo(Test[i]);
         //}
+        //constructor.FinalizoNovela();
 
-        //MustraResultado(scraper, constructor);
+        for (int indexCap = empiezaEn; indexCap < terminaEn + 1; indexCap++)
+        {      
+            Capitulo Capitulo = scraper.ObtenCapitulo(link, indexCap);
+            constructor.AgregaCapitulo(Capitulo);
+
+            //Meter este como "Especial" en el Mensajero.
+            Mensajero.MuestraEspecial($"Program --> {indexCap}/{terminaEn}");
+
+            if (scraper.HayOtroCapitulo)
+            {
+                link = scraper.SiguienteCapitulo;
+            }
+            else
+            {
+                constructor.FinalizoNovela();
+                Mensajero.MuestraNotificacion($"Program--> Ultimo capitulo: {indexCap}.");             
+                break;
+            }
+        }
+        MustraResultado(scraper, constructor);
     }
 
     private static void MuestraInput(string titulo, out string Obten, ConsoleColor ColorTitulo = ConsoleColor.Cyan, ConsoleColor ColorEscrito = ConsoleColor.White)
@@ -97,7 +155,7 @@ class Program
 
     private static void MustraResultado(MyScraper scraper, ContructorDePdf constructor)
     {
-        Console.WriteLine($"Constructor--> Finalizado:\n" +
+        Mensajero.MuestraExito($"Constructor--> Finalizado:\n" +
                     $"Se han creado {constructor.DocumentosCreados}.\n" +
                     $"Se han ignorado {scraper.EntradasIgnoradas} entradas.\n" +
                     $"Se han obtenido {scraper.CapitulosEncontrados}.\n" +

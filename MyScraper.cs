@@ -1,7 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Web;
 using HtmlAgilityPack;
+using iText.Kernel.XMP.Impl.XPath;
+
+public struct Capitulo
+{
+    public string Texto;
+    public int NumeroCapitulo;
+
+    public int Caracteres => Texto.Length;
+
+    public Capitulo(string texto, int numeroCapitulo)
+    {
+        Texto = texto;
+        NumeroCapitulo = numeroCapitulo;
+    }
+}
 
 public class MyScraper
 {
@@ -20,42 +37,45 @@ public class MyScraper
 
     public string SiguienteCapitulo => EncuentraSiguienteCap(DireccionActual);
 
-    public bool HayOtroCapitulo => PruebaLink(SiguienteCapitulo);
+    public bool HayOtroCapitulo => PruebaLink();
 
     private HtmlWeb Conexion;
 
-    string xPath; 
+    List<string> xPaths = new List<string>();
+
+    int IndexCapitulos;
 
     #endregion
 
 
     #region Public
 
-    public void InicializaScrapper(string xPath)
+    public void InicializaScrapper(List<string> xPaths)
     {
-        Console.WriteLine($"Scraper--> Comenzando conexion ///");
+        Mensajero.MuestraNotificacion($"Scraper--> Comenzando conexion.");
         Conexion = new HtmlWeb();
-        this.xPath = xPath;
+        this.xPaths = xPaths;
+        IndexCapitulos = 1;
     }
 
-    public string ObtenCapitulo(string direccion, int indexCapitulo)
-    {      
-        Console.WriteLine($"Scraper--> Capitulo {indexCapitulo} comenzando. Direccion: {direccion} ///");
+    public Capitulo ObtenCapitulo(string direccion, int indexCapitulo)
+    {
+        Mensajero.MuestraNotificacion($"Scraper--> Capitulo {indexCapitulo} comenzando. Direccion: {direccion}.");
 
         bool exito = true;
-        DireccionActual = direccion;        
+        DireccionActual = direccion;
+        IndexCapitulos = indexCapitulo;
 
-        string capitulo = ScrappDireccion(direccion, ref exito);
+        Capitulo capitulo = ScrappDireccion(DireccionActual, ref exito);
         if (!capitulo.Equals(""))
         {   
-            indexCapitulo++;
             CapitulosEncontrados++;            
-            CaracteresVistos += capitulo.Length;
-            Console.WriteLine($"Scraper--> Capitulo {indexCapitulo}, finalizado. Tiene {capitulo.Length} caracteres. ///");            
+            CaracteresVistos += capitulo.Caracteres;
+            Mensajero.MuestraExito($"Scraper--> Capitulo {IndexCapitulos}, finalizado. Tiene {capitulo.Caracteres} caracteres.");
         }
         else
         {
-            Console.WriteLine($"Scraper-->  Capitulo {indexCapitulo}, error. Deteniendo conexión. !!!");
+            Mensajero.MuestraError($"Scraper-->  Capitulo {indexCapitulo}, error. Deteniendo conexión.");
         }       
         
         return capitulo;
@@ -65,12 +85,20 @@ public class MyScraper
 
     #region Private
 
-    private string ScrappDireccion(string direccion, ref bool exito)
+    private Capitulo ScrappDireccion(string direccion, ref bool exito)
     {
         HtmlDocument doc = Conexion.Load(direccion);
 
         List<string> CapituloDesordenado = new List<string>();
-        foreach (var item in doc.DocumentNode.SelectNodes(xPath))
+
+        HtmlNodeCollection posibleColeccion = null;
+        foreach (string xPath in xPaths)
+        {
+            posibleColeccion = doc.DocumentNode.SelectNodes(xPath);
+            if (posibleColeccion != null) break;
+        }
+
+        foreach (var item in posibleColeccion)
         {
             string entrada = item.InnerText;
             bool paso = RevisaEntrada(entrada);
@@ -81,30 +109,43 @@ public class MyScraper
 
         if (exito)
         {
-            string capitulo = OrdenaCapitulo(CapituloDesordenado);
+            string texto = OrdenaCapitulo(CapituloDesordenado);
+            Capitulo capitulo = new Capitulo(texto, IndexCapitulos);            
             return capitulo;
         }
         else
         {
-            return "";
+            return new Capitulo(string.Empty, -1);
         }
     }
 
-    private bool PruebaLink(string direccion)
+    private bool PruebaLink()
     {
-        Console.WriteLine($"Scraper--> Revisando si hay un siguiente capitulo. ///");
-        HtmlDocument doc = Conexion.Load(direccion);
-        
-        bool Hay = doc.DocumentNode.SelectNodes(xPath).Count > 0;
+        HtmlDocument doc = Conexion.Load(DireccionActual);
 
-        if (Hay)
+        HtmlNodeCollection posibleColeccion = null;
+        foreach (string xPath in xPaths)
         {
-            Console.WriteLine($"Scraper--> Si existe un siguiente capitulo. ///");
+            posibleColeccion = doc.DocumentNode.SelectNodes(xPath);
+            if (posibleColeccion != null) break;
         }
-        else
+
+        bool Hay = posibleColeccion.Count > 0;
+
+        if (!Hay)
         {
-            Console.WriteLine($"Scraper--> No existe un siguiente capitulo. !!!");
-        }
+            Mensajero.MuestraError($"Scraper--> No existe un siguiente capitulo. Probando agregando sufijo -end");
+            DireccionActual += "-end";
+
+            posibleColeccion = null;
+            foreach (string xPath in xPaths)
+            {
+                posibleColeccion = doc.DocumentNode.SelectNodes(xPath);
+                if (posibleColeccion != null) break;
+            }
+
+            Hay = posibleColeccion.Count > 0;
+        } 
         return Hay;
     }    
 
@@ -118,7 +159,7 @@ public class MyScraper
     {
         List<string> Checks = new List<string>()
             {
-                "Edited", "Translated", "Editor", "Translator"
+                "Edited by", "Translated by", "Editor:", "Translator:"
             };
 
         foreach (string checks in Checks)
@@ -126,6 +167,7 @@ public class MyScraper
             if (entrada.Contains(checks))
             {
                 EntradasIgnoradas++;
+                Mensajero.MuestraError($"Scraper--> {EntradasIgnoradas} entradas ignoradas.");
                 return false;
             }
         }
@@ -148,7 +190,6 @@ public class MyScraper
     private string EncuentraSiguienteCap(string direccionCapAnterior)
     {
         //Regresa "" si no encuentras nada.
-        /*LINK: https://www.readlightnovel.org/versatile-mage/chapter-01 */
 
         string direccionNueva = string.Empty;
         string capitulo = string.Empty;
@@ -227,6 +268,7 @@ public class MyScraper
 
     #region New
 
+
     public string xPathToNextLink { get; private set; } = "//a[@class = 'next next-link' ]";
 
     private string test_EncuentraSiguienteCap(string direccionActual)
@@ -237,23 +279,19 @@ public class MyScraper
 
         foreach (var item in doc.DocumentNode.SelectNodes(xPathToNextLink))
         {
-            link = item.GetAttributeValue("href", string.Empty);
+            //Cargar esto cuando se hace scrapea.
+            //link = item.GetAttributeValue("href", string.Empty);
+            link = item.Attributes["href"].Value;
             if (link.Equals(string.Empty)) continue;
             else break;            
         }
 
-        bool exito = !link.Equals(string.Empty);
-
-        if (exito)
-        {
-            return link;
-        }
-        else
-        {
-            Console.WriteLine("Siguiente link no encontrado");
-            return string.Empty;
-        }
+        if (link.Equals(string.Empty)) Console.WriteLine("Siguiente link no encontrado");
+        
+        return link;
     } 
+
+
     #endregion
 
 

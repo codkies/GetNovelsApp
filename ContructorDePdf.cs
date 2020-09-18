@@ -17,7 +17,7 @@ public class ContructorDePdf
     //Configuracion
     public string Path { get; private set; }
 
-    private List<string> Capitulos = new List<string>();
+    private List<Capitulo> Capitulos = new List<Capitulo>();
 
     private int CapitulosPorPdf;
 
@@ -42,23 +42,24 @@ public class ContructorDePdf
         this.Path = Path;        
     }
 
-    public void AgregaCapitulo(string CapituloNuevo)
+    public void AgregaCapitulo(Capitulo CapituloNuevo)
     {
-        Capitulos.Add(CapituloNuevo);
-        if (CreaPdf) ConstruyePDF();
-        
+        Capitulos.Add(CapituloNuevo);        
+        if (CreaPdf) ConstruyePDF();        
     }
 
     private void ConstruyePDF()
     {
         int capitulosEnPdf = 0;
-        int numeroCap = capitulosEnPdf < 1 ? 1 : capitulosEnPdf;
-        string TituloPDF = $"{Path}{TituloNovela} - {numeroCap}-{CapitulosPorPdf}.pdf";
+        int inicial = Capitulos[0].NumeroCapitulo;
+        int final = Capitulos[Capitulos.Count - 1].NumeroCapitulo;
+
+        string TituloPDF = $"{Path}{TituloNovela} - {inicial}-{final}.pdf";
 
         PdfWriter writer = new PdfWriter(TituloPDF);
         PdfDocument pdf = new PdfDocument(writer);
         Document document = new Document(pdf);
-        Console.WriteLine($"Constructor--> Creando {TituloPDF}. ///");
+        Mensajero.MuestraNotificacion($"Constructor--> Creando {TituloPDF}.");
         DocumentosCreados++;
 
         for (int i = 0; i < Capitulos.Count; i++)
@@ -72,20 +73,22 @@ public class ContructorDePdf
                 writer = new PdfWriter(TituloPDF);
                 pdf = new PdfDocument(writer);
                 document = new Document(pdf);
-                Console.WriteLine($"Constructor--> Creando {TituloPDF}. ///");
+                Mensajero.MuestraNotificacion($"Constructor-- > Creando { TituloPDF}.");
                 DocumentosCreados++;
 
                 capitulosEnPdf = 0;
             }
 
-            string Capitulo = Capitulos[i];
-            Paragraph header = new Paragraph($"{TituloNovela} - Chapter {i + 1}").SetTextAlignment(TextAlignment.CENTER).SetFontSize(20);
+            Capitulo capitulo = Capitulos[i];
+            string TextoCapitulo = Capitulos[i].Texto;
+
+            Paragraph header = new Paragraph($"{TituloNovela} - Chapter {capitulo.NumeroCapitulo}").SetTextAlignment(TextAlignment.CENTER).SetFontSize(20);
             document.Add(header);
 
             LineSeparator ls = new LineSeparator(new SolidLine());
             document.Add(ls);
 
-            Paragraph texto = new Paragraph(Capitulo).SetTextAlignment(TextAlignment.JUSTIFIED).SetFontSize(15);
+            Paragraph texto = new Paragraph(TextoCapitulo).SetTextAlignment(TextAlignment.JUSTIFIED).SetFontSize(15);
             document.Add(texto);
 
             capitulosEnPdf++;
@@ -104,18 +107,18 @@ public class ContructorDePdf
     private static void CierraDocumento(PdfDocument pdf, Document document)
     {
         //Coloca numeros de paginas.
-        int numOfPages = pdf.GetNumberOfPages();
-        for (int x = 1; x <= numOfPages; x++)
-        {
-            document.ShowTextAligned(
-                new Paragraph(String.Format(x + " / " + numOfPages)),
-                579,
-                826,
-                x,
-                TextAlignment.RIGHT,
-                VerticalAlignment.TOP,
-                0);
-        }
+        //int numOfPages = pdf.GetNumberOfPages();
+        //for (int x = 1; x <= numOfPages; x++)
+        //{
+        //    document.ShowTextAligned(
+        //        new Paragraph(String.Format(x + " / " + numOfPages)),
+        //        579,
+        //        826,
+        //        x,
+        //        TextAlignment.RIGHT,
+        //        VerticalAlignment.TOP,
+        //        0);
+        //}
 
         //Cierralo.
         document.Close();
