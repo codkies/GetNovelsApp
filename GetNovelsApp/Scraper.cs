@@ -3,8 +3,6 @@ using System.Web;
 using HtmlAgilityPack;
 using GetNovelsApp.Modelos;
 using GetNovelsApp.Utilidades;
-using System.IO;
-using System;
 
 namespace GetNovelsApp
 {
@@ -19,7 +17,9 @@ namespace GetNovelsApp
 
         public int CapitulosEncontrados { get; private set; } = 0;
 
-        public string SiguienteDireccion => EncuentraSiguienteCapitulo();
+        public string SiguienteCapitulo => EncuentraSiguienteCap(DireccionActual);
+
+        public bool HayOtroCapitulo => PruebaLink();
 
         List<string> xPaths => Configuracion.xPaths;
 
@@ -89,13 +89,6 @@ namespace GetNovelsApp
                 if (posibleColeccion != null) break;
             }
 
-            if(posibleColeccion == null)
-            {
-                Mensajero.MuestraError("No se encontraron nodes con los xPaths ingresados. Presiona enter para cerrar el programa.");
-                Console.ReadLine();
-                Environment.Exit(0);
-            }
-
             foreach (var item in posibleColeccion)
             {
                 string entrada = item.InnerText;
@@ -117,10 +110,9 @@ namespace GetNovelsApp
             }
         }
 
-        private string EncuentraSiguienteCapitulo()
+        private bool PruebaLink()
         {
-            string posibleSiguienteDireccion = SumaUnoALink(DireccionActual);
-            HtmlDocument doc = Conexion.Load(posibleSiguienteDireccion);
+            HtmlDocument doc = Conexion.Load(DireccionActual);
 
             HtmlNodeCollection posibleColeccion = null;
             foreach (string xPath in xPaths)
@@ -128,15 +120,14 @@ namespace GetNovelsApp
                 posibleColeccion = doc.DocumentNode.SelectNodes(xPath);
                 if (posibleColeccion != null) break;
             }
-            
-            bool Hay = posibleColeccion?.Count > 0;
+
+            bool Hay = posibleColeccion.Count > 0;
 
             if (!Hay)
             {
                 Mensajero.MuestraError($"Scraper--> No existe un siguiente capitulo. Probando agregando sufijo -end");
-                posibleSiguienteDireccion += "-end";
+                DireccionActual += "-end";
 
-                doc = Conexion.Load(posibleSiguienteDireccion);
                 posibleColeccion = null;
                 foreach (string xPath in xPaths)
                 {
@@ -144,86 +135,9 @@ namespace GetNovelsApp
                     if (posibleColeccion != null) break;
                 }
 
-                Hay = posibleColeccion?.Count > 0;
+                Hay = posibleColeccion.Count > 0;
             }
-
-            if (!Hay) posibleSiguienteDireccion = string.Empty;
-
-            return posibleSiguienteDireccion;
-        }
-
-
-        private string SumaUnoALink(string DireccionAProbar)
-        {   
-            string direccionNueva = string.Empty;
-            string capitulo = string.Empty;
-
-            for (int i = 0; i < DireccionAProbar.Length; i++)
-            {
-                char letra = DireccionAProbar[i];
-                bool EsUnNumero = char.IsDigit(letra);
-                if (EsUnNumero)
-                {
-                    /*Encontrando el primero numero y revisando si es 0*/
-                    capitulo += letra.ToString(); //1  
-
-                    //Haciendo un check de que hayan mas caracteres
-                    if (i == direccionNueva.Length - 1) break; //Si es el ultimo i, rompe el loop.
-
-                    //Revisando los siguientes caracteres.
-                    int siguiente = i + 1;
-                    for (int x = siguiente; x < DireccionAProbar.Length; x++)
-                    {
-                        char letraFutura = DireccionAProbar[x];
-                        if (char.IsDigit(letraFutura)) //Solo procede si el caracter es un #
-                        {
-                            capitulo += letraFutura.ToString();//2                            
-                            siguiente = x;
-                        }
-                        else break;//Apenas halles una letra, rompe este loop.
-                    }
-
-                    //Toma la longitud de los caracteres originales
-                    int longitudMinima = capitulo.Length;
-
-                    //Toma el digito del capitulo actual, sumale uno, y devuelvelo a un string.
-                    capitulo = (int.Parse(capitulo) + 1).ToString(); //Conviertelo a INT, sumale 1 y metelo de nuevo en el link.
-
-                    int longitudNueva = capitulo.Length;
-
-                    int cantidadDeCeros = longitudMinima - longitudNueva;
-
-                    if (cantidadDeCeros > 0)
-                    {
-                        for (int j = 0; j < cantidadDeCeros; j++)
-                        {
-                            capitulo = $"0{capitulo}";
-                        }
-                    }
-
-                    //Revisa la cantidad de ceros a la izquierda.
-                    /*ie: 
-                    original = 007
-                    longitudMinima = 3
-
-                    capituloEncontrado = 8.
-                    longitudNueva = 1
-
-                    ceros= 2;
-                    final = 008.
-                    */
-
-                    direccionNueva += capitulo;
-                    i = siguiente + 1 < DireccionAProbar.Length - 1 ? siguiente + 1 : DireccionAProbar.Length;
-                }
-                else
-                {
-                    direccionNueva += letra.ToString();
-                }
-
-            }
-
-            return direccionNueva;
+            return Hay;
         }
 
 
@@ -264,6 +178,81 @@ namespace GetNovelsApp
         }
 
 
+        private string EncuentraSiguienteCap(string direccionCapAnterior)
+        {
+            //Regresa "" si no encuentras nada.
+
+            string direccionNueva = string.Empty;
+            string capitulo = string.Empty;
+
+            for (int i = 0; i < direccionCapAnterior.Length; i++)
+            {
+                char letra = direccionCapAnterior[i];
+                string letra_ = letra.ToString();
+                bool EsUnNumero = char.IsDigit(letra);
+                if (EsUnNumero)
+                {
+                    /*Encontrando el primero numero y revisando si es 0*/
+                    capitulo += letra.ToString(); //1  
+
+                    //Haciendo un check de que hayan mas caracteres
+                    if (i == direccionNueva.Length - 1) break; //Si es el ultimo i, rompe el loop.
+
+                    //Revisando los siguientes caracteres.
+                    int siguiente = i + 1;
+                    for (int x = siguiente; x < direccionCapAnterior.Length; x++)
+                    {
+                        char letraFutura = direccionCapAnterior[x];
+                        if (char.IsDigit(letraFutura)) //Solo procede si el caracter es un #
+                        {
+                            capitulo += letraFutura.ToString();//2                            
+                            siguiente = x;
+                        }
+                        else break;//Apenas halles una letra, rompe este loop.
+                    }
+
+                    //Toma la longitud de los caracteres originales
+                    int longitudMinima = capitulo.Length;
+
+                    //Toma el digito del capitulo actual, sumale uno, y devuelvelo a un string.
+                    capitulo = (int.Parse(capitulo) + 1).ToString(); //Conviertelo a INT, sumale 1 y metelo de nuevo en el link.
+
+                    int longitudNueva = capitulo.Length;
+
+                    int cantidadDeCeros = longitudMinima - longitudNueva;
+
+                    if (cantidadDeCeros > 0)
+                    {
+                        for (int j = 0; j < cantidadDeCeros; j++)
+                        {
+                            capitulo = $"0{capitulo}";
+                        }
+                    }
+
+                    //Revisa la cantidad de ceros a la izquierda.
+                    /*ie: 
+                    original = 007
+                    longitudMinima = 3
+
+                    capituloEncontrado = 8.
+                    longitudNueva = 1
+
+                    ceros= 2;
+                    final = 008.
+                    */
+
+                    direccionNueva += capitulo;
+                    i = siguiente + 1 < direccionCapAnterior.Length - 1 ? siguiente + 1 : direccionCapAnterior.Length;
+                }
+                else
+                {
+                    direccionNueva += letra.ToString();
+                }
+
+            }
+
+            return direccionNueva;
+        }
 
         #endregion
 
