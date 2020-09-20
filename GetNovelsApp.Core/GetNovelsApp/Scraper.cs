@@ -236,7 +236,7 @@ namespace GetNovelsApp.Core
                 if (entrada.Contains(checks))
                 {
                     EntradasIgnoradas++;
-                    Mensajero.MuestraError($"Scraper--> {EntradasIgnoradas} entradas ignoradas.");
+                    Mensajero.MuestraError($"Scraper --> {EntradasIgnoradas} entradas ignoradas.");
                     return false;
                 }
             }

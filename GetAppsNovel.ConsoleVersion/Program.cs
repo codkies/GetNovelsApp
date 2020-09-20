@@ -15,7 +15,7 @@ namespace GetAppsNovel.ConsoleVersion
         static void Main(string[] args)
         {
             //Ver control.            
-            string ver = "v0.8";
+            string ver = "v0.8.1";
             Mensajero.MuestraEspecial($"GetAppsNovel {ver}\n... Check version before commiting.");
 
             List<string> xPaths = new List<string>()
@@ -110,9 +110,8 @@ namespace GetAppsNovel.ConsoleVersion
                 }
                 else
                 {
-                    CantidadNovelas++;
+                    i--;                                        
                     Mensajero.MuestraError($"Program --> Descartada {Titulo}");
-                    i--;                    
                 }                
             }
         }

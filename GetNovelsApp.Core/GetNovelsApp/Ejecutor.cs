@@ -103,11 +103,11 @@ namespace GetNovelsApp.Core
 
             int CantidadIteraciones = UltimoCapActual - PrimerCapActual; //Cantidad de iteraciones
 
-
             Mensajero.MuestraEspecial($"\nEjecutor --> Buscando capitulos: {PrimerCapActual}-{UltimoCapActual}");
             Mensajero.MuestraEspecial($"Ejecutor --> Se realizarán {CantidadIteraciones} iteraciones.");
             for (int i = 1; i <= CantidadIteraciones; i++)
             {
+
                 //Core:
                 Mensajero.MuestraNotificacion($"Ejecutor --> Comenzando iteracion #{i}...");
                 Capitulo Capitulo = ScraperActual.ObtenCapitulo(LinkActual);                
