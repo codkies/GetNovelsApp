@@ -15,9 +15,8 @@ namespace GetNovelsApp.Core
         public Scraper(Configuracion configuracion)
         {
             Configuracion = configuracion;
-            Mensajero.MuestraNotificacion($"Scraper--> Comenzando conexion.");
+            Mensajero.MuestraNotificacion($"Scraper --> Comenzando conexion.");
             Conexion = new HtmlWeb();
-            IndexCapitulos = 1;
         }
 
         #endregion
@@ -42,7 +41,6 @@ namespace GetNovelsApp.Core
 
         Configuracion Configuracion;
 
-        int IndexCapitulos;
 
         private string DireccionActual;
 
@@ -52,25 +50,21 @@ namespace GetNovelsApp.Core
 
 
         #region Public
-        public Capitulo ObtenCapitulo(string direccion, int indexCapitulo)
+        public Capitulo ObtenCapitulo(string direccion)
         {
-            Mensajero.MuestraNotificacion($"Scraper--> Capitulo {indexCapitulo} comenzando. Direccion: {direccion}.");
-
             bool exito = true;
             DireccionActual = direccion;
-            IndexCapitulos = indexCapitulo;
 
             Capitulo capitulo = ScrappDireccion(DireccionActual, ref exito);
-            if (!capitulo.Equals(""))
+
+            if (capitulo == null)
             {
-                CapitulosEncontrados++;
-                CaracteresVistos += capitulo.Caracteres;
-                Mensajero.MuestraExito($"Scraper--> Capitulo {IndexCapitulos}, finalizado. Tiene {capitulo.Caracteres} caracteres.");
+                Mensajero.MuestraErrorMayor($"Scraper -->  Direccion {DireccionActual}, error. No se encontraron items con los xPaths establecidos.");
             }
-            else
-            {
-                Mensajero.MuestraError($"Scraper-->  Capitulo {indexCapitulo}, error. Deteniendo conexión.");
-            }
+
+            CapitulosEncontrados++;
+            CaracteresVistos += capitulo.Caracteres;
+            Mensajero.MuestraNotificacion($"Scraper --> Capitulo número {capitulo.NumeroCapitulo} tiene {capitulo.Caracteres} caracteres.");
 
             return capitulo;
         }
@@ -94,9 +88,7 @@ namespace GetNovelsApp.Core
 
             if(posibleColeccion == null)
             {
-                Mensajero.MuestraError("No se encontraron nodes con los xPaths ingresados. Presiona enter para cerrar el programa.");
-                Console.ReadLine();
-                Environment.Exit(0);
+                Mensajero.MuestraErrorMayor("Scraper --> No se encontraron nodes con los xPaths ingresados. Presiona enter para cerrar el programa.");
             }
 
             foreach (var item in posibleColeccion)
@@ -111,18 +103,24 @@ namespace GetNovelsApp.Core
             if (exito)
             {
                 string texto = OrdenaCapitulo(CapituloDesordenado);
-                Capitulo capitulo = new Capitulo(texto, IndexCapitulos);
+                Capitulo capitulo = new Capitulo(texto, direccion);
                 return capitulo;
             }
             else
             {
-                return new Capitulo(string.Empty, -1);
+                return null;
             }
         }
 
         private string EncuentraSiguienteCapitulo()
         {
-            string posibleSiguienteDireccion = SumaUnoALink(DireccionActual);
+            string posibleSiguienteDireccion = BuscaBotonNext(DireccionActual);
+            if (posibleSiguienteDireccion.Equals(string.Empty))
+            {
+                Mensajero.MuestraCambioEstado("Scraper --> No se encontró un boton de siguiente episodio. Se intentará adivinar el siguiente link...");
+                posibleSiguienteDireccion = SumaUnoALink(DireccionActual);
+            }
+
             HtmlDocument doc = Conexion.Load(posibleSiguienteDireccion);
 
             HtmlNodeCollection posibleColeccion = null;
@@ -136,7 +134,7 @@ namespace GetNovelsApp.Core
 
             if (!Hay)
             {
-                Mensajero.MuestraError($"Scraper--> No existe un siguiente capitulo. Probando agregando sufijo -end");
+                Mensajero.MuestraError($"Scraper --> No se encontró un siguiente capitulo... Probando agregando sufijo -end");
                 posibleSiguienteDireccion += "-end";
 
                 doc = Conexion.Load(posibleSiguienteDireccion);
@@ -147,10 +145,13 @@ namespace GetNovelsApp.Core
                     if (posibleColeccion != null) break;
                 }
 
-                Hay = posibleColeccion?.Count > 0;
-            }
-
-            if (!Hay) posibleSiguienteDireccion = string.Empty;
+                if (posibleColeccion?.Count < 1)
+                {
+                    Mensajero.MuestraError($"Scraper --> No se encontró un siguiente capitulo.");
+                    posibleSiguienteDireccion = string.Empty;
+                }
+            }  
+            else Mensajero.MuestraCambioEstado($"Scraper --> Se encontró la dirección.");
 
             return posibleSiguienteDireccion;
         }
@@ -171,7 +172,7 @@ namespace GetNovelsApp.Core
                     capitulo += letra.ToString(); //1  
 
                     //Haciendo un check de que hayan mas caracteres
-                    if (i == direccionNueva.Length - 1) break; //Si es el ultimo i, rompe el loop.
+                    if (i == DireccionAProbar.Length - 1) break; //Si es el ultimo i, rompe el loop.
 
                     //Revisando los siguientes caracteres.
                     int siguiente = i + 1;
@@ -202,19 +203,7 @@ namespace GetNovelsApp.Core
                         {
                             capitulo = $"0{capitulo}";
                         }
-                    }
-
-                    //Revisa la cantidad de ceros a la izquierda.
-                    /*ie: 
-                    original = 007
-                    longitudMinima = 3
-
-                    capituloEncontrado = 8.
-                    longitudNueva = 1
-
-                    ceros= 2;
-                    final = 008.
-                    */
+                    }                  
 
                     direccionNueva += capitulo;
                     i = siguiente + 1 < DireccionAProbar.Length - 1 ? siguiente + 1 : DireccionAProbar.Length;
@@ -271,27 +260,37 @@ namespace GetNovelsApp.Core
         #endregion
 
 
-        #region New
+        #region New       
 
+        private List<string> xPathsToNextLink => Configuracion.xPathsBotonSiguiente;
 
-        public string xPathToNextLink { get; private set; } = "//a[@class = 'next next-link' ]";
-
-        private string test_EncuentraSiguienteCap(string direccionActual)
+        /// <summary>
+        /// Busca en la direccion ingresada, el boton para pasar de pagina. Regresa el link de ese boton. If not, regresa string.empty.
+        /// </summary>
+        /// <param name="direccionActual"></param>
+        /// <returns></returns>
+        private string BuscaBotonNext(string direccionActual)
         {
             HtmlDocument doc = Conexion.Load(direccionActual);
 
             string link = string.Empty;
+            HtmlNodeCollection posiblesNodos = null;
 
-            foreach (var item in doc.DocumentNode.SelectNodes(xPathToNextLink))
+            foreach (string xPath in xPathsToNextLink)
             {
-                //Cargar esto cuando se hace scrapea.
-                //link = item.GetAttributeValue("href", string.Empty);
-                link = item.Attributes["href"].Value;
-                if (link.Equals(string.Empty)) continue;
-                else break;
-            }
+                posiblesNodos = doc.DocumentNode.SelectNodes(xPath);
 
-            if (link.Equals(string.Empty)) Mensajero.MuestraError("Siguiente link no encontrado");
+                if (posiblesNodos == null) continue;
+                if (posiblesNodos.Count < 1) continue;
+
+                string posibleLink = posiblesNodos[0].Attributes["href"].Value;
+
+                if (!posibleLink.Equals(string.Empty))
+                {
+                    link = posibleLink;
+                    break;
+                }             
+            }
 
             return link;
         }

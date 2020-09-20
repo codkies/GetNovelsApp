@@ -16,8 +16,8 @@ namespace GetNovelsApp.Core
 
         public PdfConstructor(Novela Novela, Configuracion Configuracion)
         {
-            this.Novela = Novela;
-            this.Configuracion = Configuracion;
+            this.NovelaActual = Novela;
+            this.ConfiguracionActual = Configuracion;
         }
 
         #endregion
@@ -26,23 +26,27 @@ namespace GetNovelsApp.Core
 
         public int DocumentosCreados { get; private set; } = 0;
 
-        private string Path => Configuracion.PathCarpeta;
+        private string Path => ConfiguracionActual.PathCarpeta;
 
-        private int CapitulosPorPdf => Configuracion.CapitulosPorPdf;
+        private int CapitulosPorPdf => ConfiguracionActual.CapitulosPorPdf;
 
-        private string TituloNovela => Novela.Titulo;
+        private string TituloNovela => NovelaActual.Titulo;
 
-        private bool CreaPdf => Capitulos.Count >= CapitulosPorPdf;
+        private bool CreaPdf => Capitulos?.Count >= CapitulosPorPdf;
+
+        private List<Capitulo> Capitulos => NovelaActual?.CapitulosEnNovela;
+
+        private bool QuedanCapitulosPorImprimir => NovelaActual != null;
+
 
         #endregion
 
         #region Fields
 
-        private Novela Novela;
+        private Novela NovelaActual;
 
-        private Configuracion Configuracion;
+        private Configuracion ConfiguracionActual;
 
-        private List<Capitulo> Capitulos = new List<Capitulo>();
 
         #endregion
 
@@ -53,14 +57,14 @@ namespace GetNovelsApp.Core
         //Eventos
         public void FinalizoNovela()
         {
-            if (Capitulos.Count > 0) ConstruyePDF();
+            if (QuedanCapitulosPorImprimir) ConstruyePDF();
         }
         //-------------
 
 
         public void AgregaCapitulo(Capitulo CapituloNuevo)
         {
-            Capitulos.Add(CapituloNuevo);
+            NovelaActual.AgregaCapitulo(CapituloNuevo);
             if (CreaPdf) ConstruyePDF();
         }
 
@@ -85,7 +89,7 @@ namespace GetNovelsApp.Core
                     CierraDocumento(pdf, document);
 
                     TituloPDF = $"{Path}{TituloNovela} - {i + 1}-{i + CapitulosPorPdf}.pdf";
-                    Mensajero.MuestraNotificacion($"Constructor-- > Creando { TituloPDF}.");
+                    Mensajero.MuestraNotificacion($"Constructor-- > Creando {TituloPDF}.");
 
                     writer = new PdfWriter(TituloPDF);
                     pdf = new PdfDocument(writer);
@@ -95,23 +99,22 @@ namespace GetNovelsApp.Core
                     capitulosEnPdf = 0;
                 }
 
-                Capitulo capitulo = Capitulos[i];
-                string TextoCapitulo = Capitulos[i].Texto;
+                Capitulo capitulo = Capitulos[i];                
 
-                Paragraph header = new Paragraph($"{TituloNovela} - Chapter {capitulo.NumeroCapitulo}").SetTextAlignment(TextAlignment.CENTER).SetFontSize(20);
+                Paragraph header = new Paragraph($"{TituloNovela} - {capitulo.TituloCapitulo}").SetTextAlignment(TextAlignment.CENTER).SetFontSize(20);
                 document.Add(header);
 
                 LineSeparator ls = new LineSeparator(new SolidLine());
                 document.Add(ls);
 
-                Paragraph texto = new Paragraph(TextoCapitulo).SetTextAlignment(TextAlignment.JUSTIFIED).SetFontSize(15);
+                Paragraph texto = new Paragraph(capitulo.Texto).SetTextAlignment(TextAlignment.JUSTIFIED).SetFontSize(15);
                 document.Add(texto);
 
                 capitulosEnPdf++;
             }
 
             CierraDocumento(pdf, document);
-            LimpiaCapitulos();
+            NovelaActual = null;
         }
 
 
@@ -125,14 +128,6 @@ namespace GetNovelsApp.Core
             document.Close();
         }
 
-
-        /// <summary>
-        /// Limpia el record de capitulos en este constructor.
-        /// </summary>
-        private void LimpiaCapitulos()
-        {
-            Capitulos.Clear();
-        } 
         #endregion
     }
 }

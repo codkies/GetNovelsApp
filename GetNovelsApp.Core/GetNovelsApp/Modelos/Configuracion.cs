@@ -19,8 +19,15 @@ namespace GetNovelsApp.Core.Modelos
         /// </summary>
         public string PathCarpeta;
 
-        public Configuracion(List<string> xPaths, string pathCarpeta, int capitulosPorPdf)
+
+        /// <summary>
+        /// Lista de xPaths para encontrar el boton de pasar página.
+        /// </summary>
+        public List<string> xPathsBotonSiguiente;
+
+        public Configuracion(List<string> xPaths, List<string> xPathsBotonSiguiente, string pathCarpeta, int capitulosPorPdf)
         {
+            this.xPathsBotonSiguiente = xPathsBotonSiguiente;
             this.xPaths = xPaths;
             PathCarpeta = pathCarpeta;
             CapitulosPorPdf = capitulosPorPdf;

@@ -25,12 +25,53 @@ namespace GetNovelsApp.Core.Utilidades
     public static class Mensajero
     {
         private const ConsoleColor ColorError = ConsoleColor.Red;
+
         private const ConsoleColor ColorNotificacion = ConsoleColor.DarkYellow;
+        private const ConsoleColor ColorCambioEstado = ConsoleColor.Yellow;
+
+        private const ConsoleColor ColorEspecial = ConsoleColor.White;
         private const ConsoleColor ColorExito = ConsoleColor.DarkCyan;
-        private const ConsoleColor ColorEspecial = ConsoleColor.White;      
-        
+
         /*To do:
         Cambiar los enums por un State design pattern*/
+
+        /// <summary>
+        /// Este mensaje rompe la aplicacion.
+        /// </summary>
+        /// <param name="mensaje"></param>
+        /// <param name="TipoMensajero"></param>
+        public static void MuestraErrorMayor(string mensaje, TipoMensajero TipoMensajero = TipoMensajero.Console)
+        {
+            switch (TipoMensajero)
+            {
+                case TipoMensajero.Console:
+                    mensaje += " Presiona enter para cerrar el programa.";
+                    Console.ForegroundColor = ColorError;
+                    MuestraError(mensaje);
+                    Console.ReadLine();
+                    Environment.Exit(0);
+                    break;
+                case TipoMensajero.WPF:
+                    throw new NotImplementedException();
+                default:
+                    break;
+            }
+        }
+
+        public static void MuestraCambioEstado(string mensaje, TipoMensajero TipoMensajero = TipoMensajero.Console)
+        {
+            switch (TipoMensajero)
+            {
+                case TipoMensajero.Console:
+                    Console.ForegroundColor = ColorCambioEstado;
+                    Console.WriteLine(mensaje);
+                    break;
+                case TipoMensajero.WPF:
+                    throw new NotImplementedException();
+                default:
+                    break;
+            }
+        }
 
         public static void MuestraError(string mensaje, TipoMensajero TipoMensajero = TipoMensajero.Console)
         {
