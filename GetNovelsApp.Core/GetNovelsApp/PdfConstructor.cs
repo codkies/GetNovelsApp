@@ -15,21 +15,21 @@ namespace GetNovelsApp.Core
     {
         #region Constructores
 
-        public PdfConstructor(Novela Novela, Configuracion Configuracion)
+        public PdfConstructor(Novela Novela)
         {
             this.NovelaActual = Novela;
-            this.ConfiguracionActual = Configuracion;
         }
 
         #endregion
+
 
         #region Propiedades
 
         public int DocumentosCreados { get; private set; } = 0;
 
-        private string Path => ConfiguracionActual.PathCarpeta;
+        private string Path => NovelaActual.CarpetaPath;
 
-        private int CapitulosPorPdf => ConfiguracionActual.CapitulosPorPdf;
+        private int CapitulosPorPdf => Configuracion.CapitulosPorPdf;
 
         private string TituloNovela => NovelaActual.Titulo;
 
@@ -37,17 +37,15 @@ namespace GetNovelsApp.Core
 
         private List<Capitulo> CapitulosSinImprimir => NovelaActual.CapitulosSinImprimir;
 
-        private bool HayCapitulosPorImprimir => NovelaActual.HayCapitulosPorImprimir;
+        private bool HayCapitulosPorImprimir => NovelaActual.TengoCapitulosPorImprimir;
 
 
         #endregion
 
+
         #region Fields
 
         private Novela NovelaActual;
-
-        private Configuracion ConfiguracionActual;
-
 
         #endregion
 

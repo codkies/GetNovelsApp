@@ -2,38 +2,53 @@
 
 namespace GetNovelsApp.Core.Modelos
 {
-    public struct Configuracion
+    public static class Configuracion
     {
         /// <summary>
-        /// Capitulos por pdf
+        /// Capitulos por pdf.
         /// </summary>
-        public int CapitulosPorPdf;
+        public static int CapitulosPorPdf { get; private set; } = 100;
+
 
         /// <summary>
         /// Lista de xPaths a revisar.
         /// </summary>
-        public List<string> xPaths;
+        public static List<string> xPathsTextos { get; private set; } = new List<string>()
+            {
+                "//div[@class = 'cha-words']/p",
+                "//div[@class = 'text-left']/p",
+                "//*[@class = 'desc']/p"
+            };
+
 
         /// <summary>
-        /// Carpeta donde guardar la novela.
+        /// Lista de xPaths para conseguir los botones next.
         /// </summary>
-        public string PathCarpeta;
+        public static List<string> xPathsSiguienteBoton { get; private set; } = new List<string>()
+            {
+                "//div[@class='nav-next']/a", //Wuxiaworldsite
+                "//li/a[@class='next next-link']", //readlightnovels
+
+            };
 
 
         /// <summary>
-        /// Lista de xPaths para encontrar el boton de pasar página.
+        /// Lista de xPaths para conseguir los titulos.
         /// </summary>
-        public List<string> xPathsBotonSiguiente;
+        public static List<string> xPathsTitulo { get; private set; } = new List<string>()
+            {
+                "//h3"
+            };
 
-        public Configuracion(List<string> xPaths, List<string> xPathsBotonSiguiente, string pathCarpeta, int capitulosPorPdf)
-        {
-            this.xPathsBotonSiguiente = xPathsBotonSiguiente;
-            this.xPaths = xPaths;
-            PathCarpeta = pathCarpeta;
-            CapitulosPorPdf = capitulosPorPdf;
-        }
+
+        /// <summary>
+        /// Lista de xPaths para conseguir los links de los capitulos.
+        /// </summary>
+        public static List<string> xPathsLinks { get; private set; } = new List<string>()
+            {
+                "//ul[@class= 'main version-chap active']/li/a",
+                "//li[@class= 'wp-manga-chapter  ']/a"
+            };
     }
+
 }
-
-
-//iText7_Test(Test, "Novela X", 2, Path);

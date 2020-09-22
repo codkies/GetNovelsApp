@@ -2,9 +2,9 @@
 using System.Web;
 using HtmlAgilityPack;
 using GetNovelsApp.Core.Utilidades;
-using System.IO;
-using System;
 using GetNovelsApp.Core.Modelos;
+using GetNovelsApp.Core.Conexiones;
+using System.Linq;
 
 namespace GetNovelsApp.Core
 {
@@ -12,16 +12,16 @@ namespace GetNovelsApp.Core
     {
         #region Constructor
 
-        public Scraper(Configuracion configuracion)
+        public Scraper()
         {
-            Configuracion = configuracion;
-            Mensajero.MuestraNotificacion($"Scraper --> Comenzando conexion.");
-            Conexion = new HtmlWeb();
+            Mensajero.MuestraNotificacion($"Scraper --> Creando conector.");
+            conector = new Conector(tiempoTopeEnSegundos: 300); //5 minutos de tiempo de espera
         }
 
         #endregion
 
-        #region Props & Fields
+
+        #region Props
 
         //Informacion
         public int EntradasIgnoradas { get; private set; } = 0;
@@ -30,135 +30,215 @@ namespace GetNovelsApp.Core
 
         public int CapitulosEncontrados { get; private set; } = 0;
 
-        public string SiguienteDireccion => EncuentraSiguienteCapitulo();
-
-        private List<string> xPaths => Configuracion.xPaths;
-
 
         #endregion
 
-        #region Fields
 
-        Configuracion Configuracion;
+        #region Fields
 
 
         private string DireccionActual;
 
-        private HtmlWeb Conexion;
+
+        /// <summary>
+        /// Instancia inicializada en el constructor del Scraper.
+        /// </summary>
+        private Conector conector;
+
+
+        private HtmlDocument DocActual;
+
+
+        private HtmlDocument DocSiguiente;
 
         #endregion
 
 
-        #region Public
+        #region Capitulo Actual
+
         public Capitulo ObtenCapitulo(string direccion)
         {
-            bool exito = true;
             DireccionActual = direccion;
 
-            Capitulo capitulo = ScrappDireccion(DireccionActual, ref exito);
+            List<string> Nodos = ObtenNodosCapitulo(DireccionActual);
+            string Texto = OrdenaCapitulo(Nodos);
+            Capitulo capitulo = new Capitulo(Texto, direccion);
 
             if (capitulo == null)
             {
+                //Este mensaje rompe la app.
                 Mensajero.MuestraErrorMayor($"Scraper -->  Direccion {DireccionActual}, error. No se encontraron items con los xPaths establecidos.");
             }
 
             CapitulosEncontrados++;
             CaracteresVistos += capitulo.Caracteres;
-            Mensajero.MuestraNotificacion($"Scraper --> Capitulo número {capitulo.NumeroCapitulo} tiene {capitulo.Caracteres} caracteres.");
+            Mensajero.MuestraNotificacion($"Scraper --> {capitulo.TituloCapitulo} tiene {capitulo.Caracteres} caracteres.");
 
             return capitulo;
         }
 
-        #endregion
 
-        #region Private
-
-        private Capitulo ScrappDireccion(string direccion, ref bool exito)
+        private List<string> ObtenNodosCapitulo(string direccion)
         {
-            HtmlDocument doc = Conexion.Load(direccion);
+            DocActual = conector.HardConnect(direccion, 5000); //5s entre intento de conexion.            
 
-            List<string> CapituloDesordenado = new List<string>();
+            HtmlNodeCollection nodes = conector.ObtenNodes(DocActual, Configuracion.xPathsTextos);
 
-            HtmlNodeCollection posibleColeccion = null;
-            foreach (string xPath in xPaths)
-            {
-                posibleColeccion = doc.DocumentNode.SelectNodes(xPath);
-                if (posibleColeccion != null) break;
-            }
+            List<string> CapituloDesordenado = ObtenInnerText(nodes);
 
-            if(posibleColeccion == null)
-            {
-                Mensajero.MuestraErrorMayor("Scraper --> No se encontraron nodes con los xPaths ingresados. Presiona enter para cerrar el programa.");
-            }
+            if (CapituloDesordenado.Any()) return CapituloDesordenado;
+            else return null;
+        }
 
-            foreach (var item in posibleColeccion)
+
+        private List<string> ObtenInnerText(HtmlNodeCollection nodes)
+        {
+            List<string> CapitulosDesordenado = new List<string>();
+
+            foreach (var item in nodes)
             {
                 string entrada = item.InnerText;
                 bool paso = RevisaEntrada(entrada);
-                if (paso) CapituloDesordenado.Add(entrada);
+                if (paso) CapitulosDesordenado.Add(entrada);
             }
 
-            exito = CapituloDesordenado.Count > 0;
-
-            if (exito)
-            {
-                string texto = OrdenaCapitulo(CapituloDesordenado);
-                Capitulo capitulo = new Capitulo(texto, direccion);
-                return capitulo;
-            }
-            else
-            {
-                return null;
-            }
+            return CapitulosDesordenado;
         }
+
+
+        private string OrdenaCapitulo(List<string> capituloDesordenado)
+        {
+            string capituloOrdenado = string.Empty;
+            foreach (string entrada in capituloDesordenado)
+            {
+                var x = HttpUtility.HtmlDecode(entrada);
+                capituloOrdenado += $"{x}\n\n";
+            }
+            return capituloOrdenado;
+        }
+
+
+        /// <summary>
+        /// Revisa si una entrada pasa los Checks
+        /// </summary>
+        /// <param name="entrada"></param>
+        /// <returns></returns>
+        private bool RevisaEntrada(string entrada)
+        {
+            List<string> Checks = new List<string>()
+            {
+                "Edited by", "Translated by", "Editor:", "Translator:"
+            };
+
+            foreach (string checks in Checks)
+            {
+                if (entrada.Contains(checks))
+                {
+                    EntradasIgnoradas++;
+                    Mensajero.MuestraError($"Scraper --> {EntradasIgnoradas} entradas ignoradas.");
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
+
+        #endregion
+
+
+
+
+        #region Legacy
+
+        private string SiguienteDireccion => EncuentraSiguienteCapitulo();
 
         private string EncuentraSiguienteCapitulo()
         {
-            string posibleSiguienteDireccion = BuscaBotonNext(DireccionActual);
+            Mensajero.MuestraNotificacion("Scraper --> Ejecutando busqueda de siguiente episodio en botones del actual");
+            //Probando 2 maneras de conseguir el siguiente link
+            string posibleSiguienteDireccion = BuscaBotonNext(DocActual);
+
             if (posibleSiguienteDireccion.Equals(string.Empty))
             {
                 Mensajero.MuestraCambioEstado("Scraper --> No se encontró un boton de siguiente episodio. Se intentará adivinar el siguiente link...");
                 posibleSiguienteDireccion = SumaUnoALink(DireccionActual);
             }
 
-            HtmlDocument doc = Conexion.Load(posibleSiguienteDireccion);
+            bool encontrada = PruebaDireccion(posibleSiguienteDireccion, ref DocSiguiente, out HtmlNodeCollection _);
 
-            HtmlNodeCollection posibleColeccion = null;
-            foreach (string xPath in xPaths)
+            if (!encontrada)//Si estas 2 maneras no funcionaron, se prueba una tercera:
             {
-                posibleColeccion = doc.DocumentNode.SelectNodes(xPath);
-                if (posibleColeccion != null) break;
-            }
-            
-            bool Hay = posibleColeccion?.Count > 0;
+                Mensajero.MuestraError($"Scraper --> No se pudo adivinar el siguiente link... Probando agregando sufijo -end");
 
-            if (!Hay)
-            {
-                Mensajero.MuestraError($"Scraper --> No se encontró un siguiente capitulo... Probando agregando sufijo -end");
-                posibleSiguienteDireccion += "-end";
+                posibleSiguienteDireccion = SumaEnd(posibleSiguienteDireccion);
+                bool encontrada2 = PruebaDireccion(posibleSiguienteDireccion, ref DocSiguiente, out HtmlNodeCollection _);
 
-                doc = Conexion.Load(posibleSiguienteDireccion);
-                posibleColeccion = null;
-                foreach (string xPath in xPaths)
-                {
-                    posibleColeccion = doc.DocumentNode.SelectNodes(xPath);
-                    if (posibleColeccion != null) break;
-                }
-
-                if (posibleColeccion?.Count < 1)
+                if (!encontrada2)
                 {
                     Mensajero.MuestraError($"Scraper --> No se encontró un siguiente capitulo.");
                     posibleSiguienteDireccion = string.Empty;
                 }
-            }  
+                else
+                {
+                    Mensajero.MuestraCambioEstado($"Scraper --> Se encontró un siguiente capitulo agregando el sufijo -end.");
+                }
+            }
             else Mensajero.MuestraCambioEstado($"Scraper --> Se encontró la dirección.");
 
             return posibleSiguienteDireccion;
         }
 
 
+        /// <summary>
+        /// Prueba si una dirección se le encuentra algo.
+        /// </summary>
+        /// <param name="posibleSiguienteDireccion"></param>
+        /// <param name="DocSiguiente"></param>
+        /// <param name="posibleColeccion"></param>
+        /// <returns></returns>
+        private bool PruebaDireccion(string posibleSiguienteDireccion, ref HtmlDocument DocSiguiente, out HtmlNodeCollection posibleColeccion)
+        {
+            Mensajero.MuestraCambioEstado("Scraper --> Comprobando siguiente dirección.");
+            DocSiguiente = conector.HardConnect(posibleSiguienteDireccion);
+            posibleColeccion = conector.ObtenNodes(DocSiguiente, Configuracion.xPathsTextos);
+            return posibleColeccion.Any();
+        }
+
+
+        private string SumaEnd(string posibleSiguienteDireccion)
+        {
+            posibleSiguienteDireccion += "-end";
+            return posibleSiguienteDireccion;
+        }
+
+
+        /// <summary>
+        /// Busca en el DocActual los xPathsToNextLink
+        /// </summary>
+        /// <param name="DocActual">HtmlDocument de la pagina en donde buscarlos</param>
+        /// <returns></returns>
+        private string BuscaBotonNext(HtmlDocument DocActual)
+        {
+            HtmlNodeCollection posiblesNodos = conector.ObtenNodes(DocActual, Configuracion.xPathsLinks);            
+
+            string link = string.Empty;
+
+            foreach (HtmlNode nodo in posiblesNodos)
+            {
+                string posibleLink = nodo.Attributes["href"].Value;
+                if (!posibleLink.Equals(string.Empty))
+                {
+                    link = posibleLink;
+                    break;
+                }
+            }
+            return link;
+        }
+
+
         private string SumaUnoALink(string DireccionAProbar)
-        {   
+        {
             string direccionNueva = string.Empty;
             string capitulo = string.Empty;
 
@@ -203,7 +283,7 @@ namespace GetNovelsApp.Core
                         {
                             capitulo = $"0{capitulo}";
                         }
-                    }                  
+                    }
 
                     direccionNueva += capitulo;
                     i = siguiente + 1 < DireccionAProbar.Length - 1 ? siguiente + 1 : DireccionAProbar.Length;
@@ -217,86 +297,6 @@ namespace GetNovelsApp.Core
 
             return direccionNueva;
         }
-
-
-        /// <summary>
-        /// Revisa si una entrada pasa los Checks
-        /// </summary>
-        /// <param name="entrada"></param>
-        /// <returns></returns>
-        private bool RevisaEntrada(string entrada)
-        {
-            List<string> Checks = new List<string>()
-            {
-                "Edited by", "Translated by", "Editor:", "Translator:"
-            };
-
-            foreach (string checks in Checks)
-            {
-                if (entrada.Contains(checks))
-                {
-                    EntradasIgnoradas++;
-                    Mensajero.MuestraError($"Scraper --> {EntradasIgnoradas} entradas ignoradas.");
-                    return false;
-                }
-            }
-            return true;
-        }
-
-
-        private string OrdenaCapitulo(List<string> capituloDesordenado)
-        {
-            string capituloOrdenado = string.Empty;
-            foreach (string entrada in capituloDesordenado)
-            {
-                var x = HttpUtility.HtmlDecode(entrada);
-                capituloOrdenado += $"{x}\n\n";
-            }
-            return capituloOrdenado;
-        }
-
-
-
         #endregion
-
-
-        #region New       
-
-        private List<string> xPathsToNextLink => Configuracion.xPathsBotonSiguiente;
-
-        /// <summary>
-        /// Busca en la direccion ingresada, el boton para pasar de pagina. Regresa el link de ese boton. If not, regresa string.empty.
-        /// </summary>
-        /// <param name="direccionActual"></param>
-        /// <returns></returns>
-        private string BuscaBotonNext(string direccionActual)
-        {
-            HtmlDocument doc = Conexion.Load(direccionActual);
-
-            string link = string.Empty;
-            HtmlNodeCollection posiblesNodos = null;
-
-            foreach (string xPath in xPathsToNextLink)
-            {
-                posiblesNodos = doc.DocumentNode.SelectNodes(xPath);
-
-                if (posiblesNodos == null) continue;
-                if (posiblesNodos.Count < 1) continue;
-
-                string posibleLink = posiblesNodos[0].Attributes["href"].Value;
-
-                if (!posibleLink.Equals(string.Empty))
-                {
-                    link = posibleLink;
-                    break;
-                }             
-            }
-
-            return link;
-        }
-
-
-        #endregion
-
     }
 }

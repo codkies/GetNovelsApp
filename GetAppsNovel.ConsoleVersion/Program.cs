@@ -1,40 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.InteropServices.WindowsRuntime;
 using GetNovelsApp.Core;
 using GetNovelsApp.Core.Modelos;
 using GetNovelsApp.Core.Utilidades;
 
 namespace GetAppsNovel.ConsoleVersion
 {
-
     class Program
     {
         //Fix entry point stuff.
         static void Main(string[] args)
         {
             //Ver control.            
-            string ver = "v0.8.1";
-            Mensajero.MuestraEspecial($"GetAppsNovel {ver}\n... Check version before commiting.");
+            string ver = "v0.10.0";
+            Mensajero.MuestraEspecial($"GetAppsNovel {ver}\n    ... Check version before commiting.");
 
-            List<string> xPaths = new List<string>()
-            {
-                "//div[@class = 'cha-words']/p",
-                "//div[@class = 'text-left']/p",
-                "//*[@class = 'desc']/p"
-            };
-
-            List<string> xPathsSiguienteBoton = new List<string>()
-            {
-                "//div[@class='nav-next']/a", //Wuxiaworldsite
-                "//li/a[@class='next next-link']", //readlightnovels
-
-            };
+            PideInformacionUsuario(out List<Novela> Novelas);
 
 
-            PideInformacionUsuario(xPaths, xPathsSiguienteBoton, out Dictionary<Novela, Configuracion> Novelas);
-            
+            //List<Novela> Novelas = new List<Novela>()
+            //{
+            //    new Novela("https://wuxiaworld.site/novel/the-king-of-the-battlefield/", "C:\\Users\\Juan\\Desktop\\Novelas\\The King of the Battlefield")
+            //};
 
             //Diagnostics:
             var stopwatch = new Stopwatch();
@@ -42,13 +30,13 @@ namespace GetAppsNovel.ConsoleVersion
 
             //Core:
             Ejecutor ejecutor = new Ejecutor();
-            foreach (KeyValuePair<Novela, Configuracion> entry  in Novelas)
+            foreach (Novela novela in Novelas)
             {
-                Mensajero.MuestraEspecial($"Program --> Comenzando novela {entry.Key.Titulo}");
-                System.IO.Directory.CreateDirectory(entry.Value.PathCarpeta);
+                Mensajero.MuestraEspecial($"Program --> Comenzando novela {novela.Titulo}");
+                System.IO.Directory.CreateDirectory(novela.CarpetaPath);
 
-                ejecutor.Ejecuta(entry.Key, entry.Value);
-                Mensajero.MuestraExito($"Program --> Terminando novela {entry.Key.Titulo}");
+                ejecutor.Ejecuta(novela);
+                Mensajero.MuestraExito($"Program --> Terminando novela {novela.Titulo}");
             }
 
             //Diagnostics:
@@ -66,54 +54,75 @@ namespace GetAppsNovel.ConsoleVersion
         /// </summary>
         /// <param name="xPaths"></param>
         /// <param name="Novelas"></param>
-        private static void PideInformacionUsuario(List<string> xPaths, List<string> xPathsSiguienteBoton, out Dictionary<Novela, Configuracion> Novelas)
+        private static void PideInformacionUsuario(out List<Novela> Novelas)
         {
-            Novelas = new Dictionary<Novela, Configuracion>();
+            Novelas = new List<Novela>();
             //Obteniendo informacion de novelas.  
-            MuestraInput("\nCantidad de novelas:", out string cantidadNovelas);
-            int CantidadNovelas = int.Parse(cantidadNovelas);
-            //Inputs:
-            for (int i = 1; i <= CantidadNovelas; i++)
-            {
-                //Campos de input:
-                MuestraInput($"\nTitulo de la novela #{i}:", out string Titulo);
-                MuestraInput("Link del primer capitulo:", out string link);
-                MuestraInput("Ultimo capitulo:", out string _ultimoCap);
-                MuestraInput("Capitulos por PDF:", out string capsPorPDF);
-                MuestraInput("Carpeta: (Se creará una subcarpeta con el titulo de la novela)", out string Path);               
 
+            bool InputFinalizado = false;
+            int numeroDeNovelas = 1;
+
+            MuestraInput("Carpeta: (Se creará una subcarpeta con el titulo de cada novela).", out string Path);
+
+            while (!InputFinalizado)
+            {
+                //Campos de input:                
+                MuestraInput("Link de la página principal de la novelas:", out string LinkNovela);
+
+                Mensajero.MuestraNotificacion("\nObteniendo información de novela...\n");
+
+                //Arreglando informacion:
+                Path = Path.Replace(@"\\", @"\\\\");
+                Novela novela = new Novela(LinkNovela, Path);
 
                 ///Confirmando con el usuario:
-                Mensajero.MuestraNotificacion($"Titulo: {Titulo}\n" +
-                                            $"Link: {link}\n" +
-                                            $"UltimoCap: {_ultimoCap}\n" +
-                                            $"CapitulosPorPdf: {capsPorPDF}\n" +
-                                            $"Carpeta: {Path}");
+                Mensajero.MuestraNotificacion($"Titulo: {novela.Titulo}\n" +
+                                            $"Link: {LinkNovela}\n" +
+                                            $"Cantidad de capitulos: {novela.LinksDeCapitulos.Count}\n" +
+                                            $"CapitulosPorPdf: {Configuracion.CapitulosPorPdf}\n" +
+                                            $"Carpeta: {novela.CarpetaPath}");
 
-                MuestraInput("\n... Y para confirmar. Enter para repetir.", out string respuesta, ColorTitulo: ConsoleColor.Red);
+                MuestraInput("\n Confirmar (Y/N)", out string respuesta, ColorTitulo: ConsoleColor.Red);
 
-                if (respuesta.Equals("y"))
+
+                if (respuesta.Equals("y") | respuesta.Equals("yes"))
                 {
-                    //Manipulado la info del usuario:
-                    int capitulosPorPdf = int.Parse(capsPorPDF);
-                    int ultimoCap = int.Parse(_ultimoCap);
-                    Path = Path.Replace(@"\\", @"\\\\");
-                    Path += $"\\{Titulo}\\";
-
-                    ///Creando Structs:
-                    Novela novela = new Novela(Titulo, link, ultimoCap);
-
-                    Configuracion configuracion = new Configuracion(xPaths, xPathsSiguienteBoton, Path, capitulosPorPdf);
-                    //Agregando el 
-                    Novelas.Add(novela, configuracion);
-                    Mensajero.MuestraNotificacion($"Program --> Confirmada {Titulo}");
+                    Novelas.Add(novela);
+                    numeroDeNovelas++;
+                    Mensajero.MuestraNotificacion($"Program --> Confirmada {novela.Titulo}");
                 }
                 else
                 {
-                    i--;                                        
-                    Mensajero.MuestraError($"Program --> Descartada {Titulo}");
-                }                
+                    Mensajero.MuestraError($"Program --> Descartada {novela.Titulo}");
+                }
+
+
+                bool decisionTomada = false;
+                while (!decisionTomada)
+                {
+                    string decision = Mensajero.TomaMensaje("Quieres agregar otra novela? (Y/N)");
+                    if (decision.Equals("n") | decision.Equals("no") | decision.Equals("not"))
+                    {
+                        decisionTomada = true;
+                        InputFinalizado = true;
+                    }
+                    else if (decision.Equals("y") | decision.Equals("yes") | decision.Equals("ye"))
+                    {
+                        decisionTomada = true;
+                    }
+                }
+
+                if (!InputFinalizado) continue;
+                Mensajero.MuestraNotificacion($"\nSe obtendrán {Novelas.Count} novelas:");
+                for (int i = 0; i < Novelas.Count; i++)
+                {
+                    Novela n = Novelas[i];
+                    Mensajero.MuestraNotificacion($"#{i + 1} {n.Titulo}");
+                }
+                Mensajero.TomaMensaje("\nPresiona cualquier tecla para comenzar.");
             }
+
+
         }
 
 
@@ -122,7 +131,7 @@ namespace GetAppsNovel.ConsoleVersion
             Console.ForegroundColor = ColorTitulo;
             Console.WriteLine(titulo);
             Console.ForegroundColor = ColorEscrito;
-            Obten = Console.ReadLine();            
+            Obten = Console.ReadLine();
         }
 
         private static void MustraResultado(Ejecutor ejecutor, Stopwatch stopwatch)
@@ -142,6 +151,7 @@ namespace GetAppsNovel.ConsoleVersion
         }
 
         #endregion
+
     }
 }
 

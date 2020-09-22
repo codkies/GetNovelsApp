@@ -35,6 +35,20 @@ namespace GetNovelsApp.Core.Utilidades
         /*To do:
         Cambiar los enums por un State design pattern*/
 
+        
+        public static string TomaMensaje(string enunciado,TipoMensajero TipoMensajero = TipoMensajero.Console)
+        {            
+            switch (TipoMensajero)
+            {
+                case TipoMensajero.Console:
+                    Console.ForegroundColor = ColorEspecial;
+                    Console.WriteLine(enunciado);
+                    return Console.ReadLine();
+                default:
+                    throw new NotImplementedException("No se ha implementado otros tipos de mensajero.");
+            }
+        }
+
         /// <summary>
         /// Este mensaje rompe la aplicacion.
         /// </summary>

@@ -3,7 +3,7 @@ using GetNovelsApp.Core.Utilidades;
 
 namespace GetNovelsApp.Core.Modelos
 {
-    public class Capitulo
+    public class Capitulo  
     {
         #region Constructores
 

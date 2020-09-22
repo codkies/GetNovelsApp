@@ -1,19 +1,53 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using GetNovelsApp.Core.Conexiones;
+using GetNovelsApp.Core.Modelos;
+using HtmlAgilityPack;
+using Org.BouncyCastle.Crypto.Engines;
 
 namespace GetNovelsApp.Core.Utilidades
 {
-    public struct InformacionCapitulo
-    {
-        public string TituloCapitulo;
-        public int Valor;
-        public int NumeroCapitulo;
 
-        public InformacionCapitulo(string tituloCapitulo, int valor, int numeroCapitulo)
-        {
-            TituloCapitulo = tituloCapitulo;
-            Valor = valor;
-            NumeroCapitulo = numeroCapitulo;
-        }
+    public struct InformacionNovela
+    {
+        /// <summary>
+        /// Titulo de la novela
+        /// </summary>
+        public string Titulo;
+
+        /// <summary>
+        /// Link a su pagina principal de la novela
+        /// </summary>
+        public string LinkPaginaPrincipal;
+
+
+        /// <summary>
+        /// Lista de todos los links de los capitulos
+        /// </summary>
+        public List<string> LinksDeCapitulos;
+
+
+        /// <summary>
+        /// Link de su primer capitulo
+        /// </summary>
+        public string PrimerLink => LinksDeCapitulos.First();
+
+        /// <summary>
+        /// Link de su ultimo capitulo
+        /// </summary>
+        public string UltimoLink => LinksDeCapitulos.Last();
+
+        /// <summary>
+        /// Numero de su primer capitulo
+        /// </summary>
+        public int PrimerCapitulo;
+
+        /// <summary>
+        /// Numero de su ultimo capitulo
+        /// </summary>
+        public int UltimoCapitulo;
     }
 
     public static class ManipuladorDeLinks
@@ -36,13 +70,9 @@ namespace GetNovelsApp.Core.Utilidades
                 //Preparations.
                 char letra = DireccionAProbar[i];
                 bool EsUnNumero = char.IsDigit(letra);
-                CapituloEscrito = string.Empty;
+                //CapituloEscrito = string.Empty;
 
-                if(gruposDeNumeros > 0 & !EsUnNumero)
-                {
-                    //CapituloEscrito += letra.ToString();
-                }
-                else if (!EsUnNumero) continue;                
+                if (!EsUnNumero) continue;                
 
                 gruposDeNumeros++;
                 //Haciendo un check de que hayan mas caracteres
@@ -88,5 +118,40 @@ namespace GetNovelsApp.Core.Utilidades
 
             return infoDelCapituloSegunElLink;
         }
+
+
+        public static InformacionNovela EncuentraInformacionNovela(string LinkPaginaPrincipal)
+        {
+            Conector conector = new Conector(60 * 2);
+
+            HtmlDocument website = conector.HardConnect(LinkPaginaPrincipal);
+
+            //Titulo:
+            HtmlNodeCollection nodosTitulo = conector.ObtenNodes(website, Configuracion.xPathsTitulo);
+            string Titulo = HttpUtility.HtmlDecode(nodosTitulo.FirstOrDefault().InnerText);
+            HtmlNodeCollection nodosLinksCapitulos = conector.ObtenNodes(website, Configuracion.xPathsLinks);
+
+            //Tomando información:
+            Titulo = Titulo.Replace("\n", "").Replace("\t", "").Trim();
+
+            List<string> LinksDeCapitulos = new List<string>();
+            for (int i = nodosLinksCapitulos.Count - 1; i > -1 ; i--)
+            {
+                HtmlNode node = nodosLinksCapitulos[i];
+                LinksDeCapitulos.Add(node.Attributes["href"].Value);
+            }
+
+            InformacionNovela infoNovela = new InformacionNovela()
+            {
+                Titulo = Titulo,
+                LinkPaginaPrincipal = LinkPaginaPrincipal,
+                LinksDeCapitulos = LinksDeCapitulos,
+                PrimerCapitulo = EncuentraInformacionCapitulo(LinksDeCapitulos.First()).NumeroCapitulo,
+                UltimoCapitulo = EncuentraInformacionCapitulo(LinksDeCapitulos.Last()).NumeroCapitulo
+            };
+
+            return infoNovela;
+        }
+
     }
 }

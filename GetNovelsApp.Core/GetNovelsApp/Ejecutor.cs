@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 using GetNovelsApp.Core.Utilidades;
 using GetNovelsApp.Core.Modelos;
+using System.Runtime.CompilerServices;
+using System.Linq;
+using System.Diagnostics;
 
 namespace GetNovelsApp.Core
 {
@@ -36,22 +39,19 @@ namespace GetNovelsApp.Core
         /// </summary>
         /// <param name="novelaNueva"></param>
         /// <param name="configNueva"></param>
-        private void ActualizaReferencias(Novela novelaNueva, Configuracion configNueva)
+        private void ActualizaReferencias(Novela novelaNueva)
         {
             NovelaActual = novelaNueva;
-            ConfiguracionActual = configNueva;
 
             TituloActual = novelaNueva.Titulo;
             LinkActual = novelaNueva.PrimerLink;
             PrimerCapActual = novelaNueva.PrimerNumeroCapitulo;
-            UltimoCapActual = novelaNueva.UltimoCap;
+            UltimoCapActual = novelaNueva.UltimoNumeroCapitulo;
 
-            PathActual = configNueva.PathCarpeta;
-            CapitulosPorPDFActual = configNueva.CapitulosPorPdf;
-            xPathsActual = configNueva.xPaths;
+            PathActual = novelaNueva.CarpetaPath;
 
-            ScraperActual = new Scraper(configNueva);
-            ConstructorActual = new PdfConstructor(NovelaActual, ConfiguracionActual);
+            ScraperActual = new Scraper();
+            ConstructorActual = new PdfConstructor(NovelaActual);
         }
 
         #endregion
@@ -81,7 +81,6 @@ namespace GetNovelsApp.Core
 
         private Novela NovelaActual;
 
-        private Configuracion ConfiguracionActual;
 
         string TituloActual;
         string LinkActual;
@@ -97,54 +96,31 @@ namespace GetNovelsApp.Core
         #endregion
 
 
-        public void Ejecuta(Novela novelaNueva, Configuracion configNueva)
+        public void Ejecuta(Novela novelaNueva)
         {
-            ActualizaReferencias(novelaNueva, configNueva);
-
-            int CantidadIteraciones = UltimoCapActual - PrimerCapActual; //Cantidad de iteraciones
+            ActualizaReferencias(novelaNueva);
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
 
             Mensajero.MuestraEspecial($"\nEjecutor --> Buscando capitulos: {PrimerCapActual}-{UltimoCapActual}");
-            Mensajero.MuestraEspecial($"Ejecutor --> Se realizarán {CantidadIteraciones} iteraciones.");
-            for (int i = 1; i <= CantidadIteraciones; i++)
+            Mensajero.MuestraEspecial($"Ejecutor --> Se realizarán {NovelaActual.LinksDeCapitulos.Count} iteraciones.");
+
+            for (int i = 1; i <= NovelaActual.LinksDeCapitulos.Count; i++)
             {
+                string Link = NovelaActual.LinksDeCapitulos[i];
 
                 //Core:
-                Mensajero.MuestraNotificacion($"Ejecutor --> Comenzando iteracion #{i}...");
-                Capitulo Capitulo = ScraperActual.ObtenCapitulo(LinkActual);                
-                ConstructorActual.AgregaCapitulo(Capitulo);
-
-                //Cosas relacionadas al loop:
-                if(Capitulo.Valor > 1)
-                {
-                    //Cambios:
-                    int valorNuevo = CantidadIteraciones - (Capitulo.Valor - 1); //Valor nuevo de la CantidadIteraciones.
-                    Skips += (Capitulo.Valor - 1);
-                    Mensajero.MuestraCambioEstado($"Ejecutor --> El capitulo {Capitulo.TituloCapitulo} vale por {Capitulo.Valor}. Se reducirá la cantidad de iteraciones totales de {CantidadIteraciones} a {valorNuevo}.");
-                    CantidadIteraciones = valorNuevo; //Itera 1 vez menos si el capitulo contaba como 2 capitulos.  
-                }
+                Mensajero.MuestraNotificacion($"\nEjecutor --> Comenzando iteracion #{i}...");
+                Capitulo Capitulo = ScraperActual.ObtenCapitulo(Link);
+                ConstructorActual.AgregaCapitulo(Capitulo);                
 
                 //Mensajes:
-                Mensajero.MuestraEspecial($"Ejecutor --> Capitulo {Capitulo.NumeroCapitulo} obtenido.");
+                Mensajero.MuestraEspecial($"Ejecutor --> {Capitulo.TituloCapitulo} obtenido.");
                 Mensajero.MuestraExito($"Ejecutor --> Iteracion #{i} completada.");
-
-                if(i < CantidadIteraciones)
-                {
-                    Mensajero.MuestraNotificacion($"\nEjecutor --> Buscando siguiente direccion...");
-                    LinkActual = ScraperActual.SiguienteDireccion;
-
-                    bool HayOtroCapitulo = !LinkActual.Equals(string.Empty);
-                    if (!HayOtroCapitulo)
-                    {
-                        Mensajero.MuestraNotificacion($"Ejecutor--> No se encontró otro capitulo. Capitulo {i} fue el ultimo hallado.");
-                        ConstructorActual.FinalizoNovela();
-                        break;
-                    }
-                }
-                else
-                {
-                    Mensajero.MuestraExito($"\nEjecutor --> Se han finalizado todas las iteraciones.");
-                }
             }
+
+            stopwatch.Stop();
+            Mensajero.MuestraExito($"\nEjecutor --> Se han finalizado todas las iteraciones. Tiempo tomado: {stopwatch.ElapsedMilliseconds/1000}s.");
             ConstructorActual.FinalizoNovela();
             RecolectaInformacion();
         }

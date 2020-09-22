@@ -1,24 +1,31 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using GetNovelsApp.Core.Utilidades;
-using iText.Layout.Element;
 
 namespace GetNovelsApp.Core.Modelos
 {
     public class Novela
     {
-        /// <summary>
-        /// Empieza a crear una novela.
-        /// </summary>
-        /// <param name="titulo"></param>
-        /// <param name="ultimoCap"></param>
-        public Novela(string titulo, string primerLink, int ultimoCap)
+        public Novela(string link, string FolderPath)
         {
-            Titulo = titulo;
+            CarpetaPath = FolderPath;
+            InformacionNovela info = ManipuladorDeLinks.EncuentraInformacionNovela(link);
+
+            Titulo = info.Titulo;
+            CarpetaPath += $"\\{Titulo}\\";
+            LinkPaginaPrincipal = info.LinkPaginaPrincipal;
+
+            LinksDeCapitulos = info.LinksDeCapitulos;
+            PrimerLink = info.PrimerLink;
+            UltimoLink = info.UltimoLink;
+
+            PrimerNumeroCapitulo = info.PrimerCapitulo;
+            UltimoNumeroCapitulo = info.UltimoCapitulo;
+
             CapitulosSinImprimir = new List<Capitulo>();
             CapitulosImpresos = new List<Capitulo>();
-            UltimoCap = ultimoCap;
-            PrimerLink = primerLink;
-        }
+        }       
+
 
         #region Fields
 
@@ -27,10 +34,46 @@ namespace GetNovelsApp.Core.Modelos
         /// </summary>
         public string Titulo;
 
+
+        /// <summary>
+        /// Direccion a la carpeta donde se guardará la novela
+        /// </summary>
+        public string CarpetaPath;
+
+        /// <summary>
+        /// Link a su pagina principal de la novela
+        /// </summary>
+        public string LinkPaginaPrincipal;
+
+
+        /// <summary>
+        /// Lista de todos los links de los capitulos
+        /// </summary>
+        public List<string> LinksDeCapitulos;
+
+
+        /// <summary>
+        /// Link del primer capitulo.
+        /// </summary>
+        public string PrimerLink;
+
+
+        /// <summary>
+        /// Link del ultimo capitulo.
+        /// </summary>
+        public string UltimoLink;
+
+
+        #endregion
+
+
+        #region Props
+
         /// <summary>
         /// Capitulos presentes en esta novela que no han sido metidos en el PDF
         /// </summary>
         public List<Capitulo> CapitulosSinImprimir { get; private set; }
+
 
         /// <summary>
         /// Capitulos presentes en esta novela que ya han sido metidos en el PDF
@@ -41,27 +84,20 @@ namespace GetNovelsApp.Core.Modelos
         /// <summary>
         /// Capitulo final especificado por el usuario.
         /// </summary>
-        public int UltimoCap;
-
-        public string PrimerLink;
-
-
-        #endregion
-
-
-       #region Props
+        public int UltimoNumeroCapitulo { get; private set; }
 
 
         /// <summary>
         /// Primer capitulo de la novela. Encotrado segun el link Original.
         /// </summary>
-        public int PrimerNumeroCapitulo => ManipuladorDeLinks.EncuentraInformacionCapitulo(PrimerLink).NumeroCapitulo;
+        public int PrimerNumeroCapitulo { get; private set; }
 
 
-        public bool HayCapitulosPorImprimir => CapitulosSinImprimir.Count > 0;
+        public bool TengoCapitulosPorImprimir => CapitulosSinImprimir.Count > 0;
 
 
         #endregion
+
 
         /// <summary>
         /// Agrega un capitulo a la novela.
@@ -71,6 +107,7 @@ namespace GetNovelsApp.Core.Modelos
         {
             CapitulosSinImprimir.Add(capituloNuevo);
         }
+
 
         /// <summary>
         /// Informa que X capitulo ha sido impreso.
@@ -82,5 +119,4 @@ namespace GetNovelsApp.Core.Modelos
             CapitulosImpresos.Add(capitulo);
         }
     }
-    
 }
