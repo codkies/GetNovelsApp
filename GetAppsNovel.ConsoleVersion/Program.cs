@@ -14,7 +14,7 @@ namespace GetAppsNovel.ConsoleVersion
         static async Task Main(string[] args)
         {
             //Ver control.            
-            string ver = "v0.11.2"; //Dynamic Async (Si el capitulo no se pudo obtener, permite al usuario escribirlo).
+            string ver = "v0.11.3"; //Dynamic Async (Mejorados los formularios).
             Mensajero.MuestraEspecial($"GetAppsNovel {ver}\n    ... Check version before commiting.");
 
             PideInformacionUsuario(out List<Novela> Novelas);
@@ -89,13 +89,13 @@ namespace GetAppsNovel.ConsoleVersion
             bool InputFinalizado = false;
             int numeroDeNovelas = 1;
 
-            MuestraInput("Carpeta: (Se creará una subcarpeta con el titulo de cada novela).", out string Path);
+            string Path = Mensajero.TomaMensaje("Carpeta: (Se creará una subcarpeta, con el titulo todas novela, dentro de la dirección que introduzcas).");
 
             while (!InputFinalizado)
             {
-                //Campos de input:                
-                MuestraInput("Link de la página principal de la novelas:", out string LinkNovela);
-                MuestraInput("Desde qué capitulo se comenzará ?", out string _comienzo);
+                //Campos de input:   
+                string LinkNovela = Mensajero.TomaMensaje("Link de la página principal de la novelas:");
+                string _comienzo = Mensajero.TomaMensaje("Desde qué capitulo se comenzará ?");
 
                 Mensajero.MuestraNotificacion("\nObteniendo información de novela...\n");
 
@@ -116,8 +116,8 @@ namespace GetAppsNovel.ConsoleVersion
                                             $"CapitulosPorPdf: {Configuracion.CapitulosPorPdf}\n" +
                                             $"Carpeta: {novela.CarpetaPath}");
 
-                MuestraInput("\n Confirmar (Y/N)", out string respuesta, ColorTitulo: ConsoleColor.Red);
 
+                string respuesta = Mensajero.TomaMensaje("\n Confirmar (Y/N)");
 
                 if (respuesta.Equals("y") | respuesta.Equals("yes"))
                 {
@@ -159,14 +159,6 @@ namespace GetAppsNovel.ConsoleVersion
 
         }
 
-
-        private static void MuestraInput(string titulo, out string Obten, ConsoleColor ColorTitulo = ConsoleColor.Cyan, ConsoleColor ColorEscrito = ConsoleColor.White)
-        {
-            Console.ForegroundColor = ColorTitulo;
-            Console.WriteLine(titulo);
-            Console.ForegroundColor = ColorEscrito;
-            Obten = Console.ReadLine();
-        }
 
         private static void MustraResultado(Ejecutor ejecutor, Stopwatch stopwatch)
         {

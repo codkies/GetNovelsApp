@@ -84,7 +84,7 @@ namespace GetNovelsApp.Core.Utilidades
                 bool decisionTomada = false;
                 while (!decisionTomada)
                 {
-                    inputUserTitulo = Mensajero.TomaMensaje($"Escribe el titulo del capitulo: (la regla es 'Chapter ' + numeroCapitulo)");
+                    inputUserTitulo = Mensajero.TomaMensaje($"\nEscribe el titulo del capitulo: (En general es 'Chapter - (numeroCapitulo)')");
                     inputUserNumCap = Mensajero.TomaMensaje($"Escribe el numero del capitulo: (puede tener decimales pero no acepta letras):");
                     inputUserValorCap = Mensajero.TomaMensaje($"Escribe por cuantos capitulos vale este: (si es un solo cap, el valor es 1. No acepta decimales ni letras):");
 

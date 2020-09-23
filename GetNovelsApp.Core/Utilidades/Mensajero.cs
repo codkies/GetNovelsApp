@@ -25,6 +25,7 @@ namespace GetNovelsApp.Core.Utilidades
     public static class Mensajero
     {
         private const ConsoleColor ColorError = ConsoleColor.Red;
+        private const ConsoleColor ColorFormulario = ConsoleColor.Cyan;
 
         private const ConsoleColor ColorNotificacion = ConsoleColor.DarkYellow;
         private const ConsoleColor ColorCambioEstado = ConsoleColor.Yellow;
@@ -41,8 +42,9 @@ namespace GetNovelsApp.Core.Utilidades
             switch (TipoMensajero)
             {
                 case TipoMensajero.Console:
-                    Console.ForegroundColor = ColorEspecial;
+                    Console.ForegroundColor = ColorFormulario;
                     Console.WriteLine(enunciado);
+                    Console.ForegroundColor = ColorEspecial;                    
                     return Console.ReadLine();
                 default:
                     throw new NotImplementedException("No se ha implementado otros tipos de mensajero.");
