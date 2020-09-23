@@ -88,16 +88,17 @@ namespace GetNovelsApp.Core.Utilidades
 
         public static InformacionNovela EncuentraInformacionNovela(string LinkPaginaPrincipal)
         {
+            //Conexiones:
             Conector conector = new Conector(60 * 2);
+            HtmlNodeCollection[] htmlNodes =  conector.IntenaVariosNodos(LinkPaginaPrincipal, Configuracion.xPathsTitulo, Configuracion.xPathsLinks);
 
-            HtmlDocument website = conector.HardConnect(LinkPaginaPrincipal);
+            //Referencias:
+            HtmlNodeCollection nodosTitulo = htmlNodes[0];
+            HtmlNodeCollection nodosLinksCapitulos = htmlNodes[1];
 
-            //Titulo:
-            HtmlNodeCollection nodosTitulo = conector.ObtenNodes(website, Configuracion.xPathsTitulo);
-            string Titulo = HttpUtility.HtmlDecode(nodosTitulo.FirstOrDefault().InnerText);
-            HtmlNodeCollection nodosLinksCapitulos = conector.ObtenNodes(website, Configuracion.xPathsLinks);
 
             //Tomando información:
+            string Titulo = HttpUtility.HtmlDecode(nodosTitulo.FirstOrDefault().InnerText);
             Titulo = Titulo.Replace("\n", "").Replace("\t", "").Trim();
 
             List<string> LinksDeCapitulos = new List<string>();
@@ -115,6 +116,38 @@ namespace GetNovelsApp.Core.Utilidades
 
             return infoNovela;
         }
+
+
+
+        //public static InformacionNovela EncuentraInformacionNovela(string LinkPaginaPrincipal)
+        //{
+        //    Conector conector = new Conector(60 * 2);
+        //    HtmlNodeCollection[] htmlNodes = conector.IntenaVariosNodos(LinkPaginaPrincipal, Configuracion.xPathsTitulo, Configuracion.xPathsLinks);
+        //    HtmlDocument website = conector.HardConnect(LinkPaginaPrincipal);
+
+        //    //Titulo:
+        //    HtmlNodeCollection nodosTitulo = conector.ObtenNodes(website, Configuracion.xPathsTitulo);
+        //    string Titulo = HttpUtility.HtmlDecode(nodosTitulo.FirstOrDefault().InnerText);
+        //    HtmlNodeCollection nodosLinksCapitulos = conector.ObtenNodes(website, Configuracion.xPathsLinks);
+
+        //    //Tomando información:
+        //    Titulo = Titulo.Replace("\n", "").Replace("\t", "").Trim();
+
+        //    List<string> LinksDeCapitulos = new List<string>();
+        //    for (int i = nodosLinksCapitulos.Count - 1; i > -1; i--)
+        //    {
+        //        HtmlNode node = nodosLinksCapitulos[i];
+        //        LinksDeCapitulos.Add(node.Attributes["href"].Value);
+        //    }
+
+        //    float PrimerCapitulo = EncuentraInformacionCapitulo(LinksDeCapitulos.First()).NumeroCapitulo;
+        //    float UltimoCapitulo = EncuentraInformacionCapitulo(LinksDeCapitulos.Last()).NumeroCapitulo;
+
+
+        //    InformacionNovela infoNovela = new InformacionNovela(Titulo, LinkPaginaPrincipal, LinksDeCapitulos, PrimerCapitulo, UltimoCapitulo);
+
+        //    return infoNovela;
+        //}
 
     }
 }

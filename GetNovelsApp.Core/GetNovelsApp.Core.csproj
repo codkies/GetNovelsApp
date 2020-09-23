@@ -97,6 +97,7 @@
     <Compile Include="GetNovelsApp\Ejecutor.cs" />
     <Compile Include="GetNovelsApp\Modelos\Capitulo.cs" />
     <Compile Include="GetNovelsApp\Modelos\Configuracion.cs" />
+    <Compile Include="Utilidades\OrdenadorCapitulos.cs" />
     <Compile Include="GetNovelsApp\PdfConstructor.cs" />
     <Compile Include="GetNovelsApp\Modelos\Novela.cs" />
     <Compile Include="GetNovelsApp\Modelos\InformacionCapitulo.cs" />

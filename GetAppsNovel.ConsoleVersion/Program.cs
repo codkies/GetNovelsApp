@@ -14,7 +14,7 @@ namespace GetAppsNovel.ConsoleVersion
         static async Task Main(string[] args)
         {
             //Ver control.            
-            string ver = "v0.11.0"; //Async
+            string ver = "v0.11.1"; //Async
             Mensajero.MuestraEspecial($"GetAppsNovel {ver}\n    ... Check version before commiting.");
 
             PideInformacionUsuario(out List<Novela> Novelas);
@@ -39,6 +39,8 @@ namespace GetAppsNovel.ConsoleVersion
             MustraResultado(ejecutor, stopwatch);
         }
 
+        #region Async
+
         private static async Task IteraNovelasAsync(List<Novela> Novelas, Ejecutor ejecutor)
         {
             foreach (Novela novela in Novelas)
@@ -46,10 +48,15 @@ namespace GetAppsNovel.ConsoleVersion
                 Mensajero.MuestraEspecial($"Program --> Comenzando novela {novela.Titulo}");
                 System.IO.Directory.CreateDirectory(novela.CarpetaPath);
 
-                await ejecutor.t_EjecutaAsync(novela);
+                await ejecutor.EjecutaAsync(novela);
                 Mensajero.MuestraExito($"Program --> Terminando novela {novela.Titulo}");
             }
         }
+
+        #endregion
+
+        #region Sync
+
 
         private static void IteraNovelas(List<Novela> Novelas, Ejecutor ejecutor)
         {
@@ -63,6 +70,7 @@ namespace GetAppsNovel.ConsoleVersion
             }
         }
 
+        #endregion
 
 
         #region Cosas de input de la consola

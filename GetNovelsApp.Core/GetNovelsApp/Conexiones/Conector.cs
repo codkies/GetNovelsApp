@@ -6,11 +6,14 @@ using System.Runtime.CompilerServices;
 using System.Web.WebSockets;
 using GetNovelsApp.Core.Utilidades;
 using HtmlAgilityPack;
+using iText.Kernel.Pdf.Canvas.Parser.ClipperLib;
 
 namespace GetNovelsApp.Core.Conexiones
 {
     public class Conector
     {
+        #region Ctors
+
         /// <summary>
         /// Construye un conector.
         /// </summary>
@@ -21,9 +24,128 @@ namespace GetNovelsApp.Core.Conexiones
             TiempoTopMilisegundos = tiempoTopeEnSegundos * 1000;
         }
 
-        public HtmlWeb Conexion { get; private set; }
+        #endregion
 
-        public int TiempoTopMilisegundos { get; private set; }
+        #region Fields
+
+        private HtmlWeb Conexion;
+
+        private int TiempoTopMilisegundos;
+
+        #endregion
+
+
+        #region Publicos
+
+        /// <summary>
+        /// Regresa nodos de un website acorde a los xPaths.
+        /// </summary>
+        /// <param name="direccion"></param>
+        /// <param name="xPaths"></param>
+        /// <returns></returns>
+        public HtmlNodeCollection IntentaNodos(string direccion, List<string> xPaths)
+        {
+            HtmlDocument website = ObtenWebsite(direccion);
+
+            HtmlNodeCollection nodos = null;
+
+            while (nodos == null)
+            {
+                nodos = ObtenNodes(website, xPaths); //Check for null.
+                if (nodos == null)
+                {
+                    Mensajero.MuestraError("Conector --> No se consiguieron los nodos segun los xPaths. Presiona enter para reintentar.");
+                    Console.ReadLine();
+                    website = ObtenWebsite(direccion);
+                }
+            }
+
+            return nodos;
+        }
+
+
+        /// <summary>
+        /// Regresa un Array de HtmlNodeCollection del website al que lleva la dirección. Index 0 corresponderá a los nodos del xPathsOne. Index 1 corresponderá a los nodos del xPathsTwo.
+        /// </summary>
+        /// <param name="direccion">Link al website.</param>
+        /// <param name="xPathsOne">xPaths de los primeros nodos.</param>
+        /// <param name="xPathsTwo">xPaths de los segundos nodos.</param>
+        /// <returns></returns>
+        public HtmlNodeCollection[] IntenaVariosNodos(string direccion, List<string> xPathsOne, List<string> xPathsTwo)
+        {
+            HtmlNodeCollection[] htmlNodes = new HtmlNodeCollection[2];
+
+            HtmlDocument website = ObtenWebsite(direccion);
+
+            HtmlNodeCollection nodosOne = null;
+            HtmlNodeCollection nodosTwo = null;
+
+            while (nodosOne == null | nodosTwo == null)
+            {
+                nodosOne = ObtenNodes(website, xPathsOne); //Check for null.
+                nodosTwo = ObtenNodes(website, xPathsTwo); //Check for null.
+
+                if (nodosOne == null | nodosTwo == null)
+                {
+                    Mensajero.MuestraError("Conector --> No se consiguieron los nodos segun los xPaths. Presiona enter para reintentar.");
+                    Console.ReadLine();
+                    website = ObtenWebsite(direccion);
+                }
+            }
+
+            htmlNodes[0] = nodosOne;
+            htmlNodes[1] = nodosTwo;
+
+            return htmlNodes;
+        }
+
+
+        /// <summary>
+        /// Regresa una Lista de HtmlNodeCollection. El index de cada xPath corresponde al index de sus nodos en la lista.
+        /// </summary>
+        /// <param name="direccion">Link al website.</param>
+        /// <param name="ListOfxPaths">Lista de xPaths a conseguir en el website.</param>
+        /// <returns></returns>
+        public List<HtmlNodeCollection> IntenaVariosNodos(string direccion, List<List<string>> ListOfxPaths)
+        {
+            HtmlDocument website = ObtenWebsite(direccion);
+
+            List<HtmlNodeCollection> AllHtmlNodes = null;            
+
+            while (AllHtmlNodes == null)
+            {
+                foreach (List<string> xPaths in ListOfxPaths)
+                {
+                    HtmlNodeCollection posiblesNodos = ObtenNodes(website, xPaths);
+
+                    if(posiblesNodos == null) //Consiguelos todos o ninguno.
+                    {
+                        AllHtmlNodes = null;
+                        Debug.WriteLine("Conector --> Error. \n" +
+                                        $"Direccion: {direccion} \n" +
+                                        $"xPaths: {xPaths}");
+                        break;
+                    }
+
+                    AllHtmlNodes.Add(posiblesNodos);
+                }
+
+                if (AllHtmlNodes == null)
+                {
+                    Mensajero.MuestraError("Conector --> No se consiguieron los nodos segun los xPaths. Presiona enter para reintentar.");
+                    Console.ReadLine();
+                    website = ObtenWebsite(direccion);
+                }
+            }
+
+            return AllHtmlNodes;
+        }
+
+
+        #endregion
+
+
+        #region Privados
 
 
         /// <summary>
@@ -32,43 +154,34 @@ namespace GetNovelsApp.Core.Conexiones
         /// <param name="direccion"></param>
         /// <param name="tiempoDeEspera"></param>
         /// <returns></returns>
-        public HtmlDocument HardConnect(string direccion, int tiempoDeEspera = 5000)
+        private HtmlDocument ObtenWebsite(string direccion, int tiempoDeEspera = 5000)
         {
             //Mensajero.MuestraNotificacion("Conector --> Comenzando conexión...");
             HtmlDocument doc = null;
 
-            Stopwatch stopwatchTotal = new Stopwatch();
-
-            stopwatchTotal.Start();
-            while (doc == null & stopwatchTotal.ElapsedMilliseconds < TiempoTopMilisegundos)
+            while (doc == null)
             {
                 try
                 {
                     doc = Conexion.Load(direccion);
                 }
-                catch(TimeoutException)
+                catch (TimeoutException)
                 {
                     Mensajero.MuestraNotificacion("Conector --> Timeout. Reintentando...");
-                    System.Threading.Thread.Sleep(tiempoDeEspera); //Wait for 5seconds 
-
-                    if (stopwatchTotal.ElapsedMilliseconds > 60000)
-                    {
-                        Mensajero.MuestraError($"Han pasado {stopwatchTotal.ElapsedMilliseconds / 1000}s intentando conectar con {direccion}");
-                    }
+                    System.Threading.Thread.Sleep(tiempoDeEspera); //Wait for 5seconds                     
                 }
-                catch(System.Net.WebException)
+                catch (WebException)
                 {
-                    Mensajero.MuestraErrorMayor("No hay internet.");
+                    Mensajero.MuestraError("Conector --> Pareces no tener internet. Presiona enter para reintentarlo.");
+                    Console.ReadLine();
+                    continue;
                 }
             }
-            if(doc == null) Mensajero.MuestraErrorMayor("Conector --> Superado el tiempo de espera para obtener website.");
-            //else Mensajero.MuestraNotificacion("Conector --> Conexion establecida.");
             return doc;
         }
 
 
-
-        public HtmlNodeCollection ObtenNodes(HtmlDocument doc, List<string> xPaths)
+        private HtmlNodeCollection ObtenNodes(HtmlDocument doc, List<string> xPaths)
         {
             //Mensajero.MuestraNotificacion("Conector --> Buscando nodes...");
             HtmlNodeCollection posibleColeccion = null;
@@ -80,23 +193,13 @@ namespace GetNovelsApp.Core.Conexiones
             {
                 posibleColeccion = doc.DocumentNode.SelectNodes(xPath);
                 if (posibleColeccion != null) break;
-            }            
+            }
 
-            if (posibleColeccion == null) Mensajero.MuestraErrorMayor("Conector --> Nodes no encontrados.");
-            //else Mensajero.MuestraNotificacion("Conector --> Nodes encontrados.");
             return posibleColeccion;
         }
 
-
-        #region Shorthands
-
-        public HtmlNodeCollection ObtenNodes(HtmlDocument doc, string xPath)
-        {
-            return ObtenNodes(doc, new List<string>() { xPath });
-        }
-
-
         #endregion
+
 
     }
 }

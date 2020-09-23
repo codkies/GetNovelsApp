@@ -114,6 +114,11 @@ namespace GetNovelsApp.Core.Modelos
         public int CantidadCapitulosPorImprimir => _CapitulosSinImprimir.Count;
 
 
+        /// <summary>
+        /// Cantidad total de links que contiene esta novela.
+        /// </summary>
+        public int CantidadLinks => LinksDeCapitulos.Count;
+
         #endregion
 
 

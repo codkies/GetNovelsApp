@@ -5,6 +5,7 @@ using GetNovelsApp.Core.Utilidades;
 using GetNovelsApp.Core.Modelos;
 using GetNovelsApp.Core.Conexiones;
 using System.Linq;
+using System;
 
 namespace GetNovelsApp.Core
 {
@@ -60,15 +61,9 @@ namespace GetNovelsApp.Core
         {
             DireccionActual = direccion;
 
-            List<string> Nodos = ObtenNodosCapitulo(DireccionActual);
-            string Texto = OrdenaCapitulo(Nodos);
+            List<string> textosRaw = ObtenTextoRaw(DireccionActual);
+            string Texto = OrdenaTextoRaw(textosRaw);
             Capitulo capitulo = new Capitulo(Texto, direccion);
-
-            if (capitulo == null)
-            {
-                //Este mensaje rompe la app.
-                Mensajero.MuestraErrorMayor($"Scraper -->  Direccion {DireccionActual}, error. No se encontraron items con los xPaths establecidos.");
-            }
 
             CapitulosEncontrados++;
             CaracteresVistos += capitulo.Caracteres;
@@ -78,13 +73,11 @@ namespace GetNovelsApp.Core
         }
 
 
-        private List<string> ObtenNodosCapitulo(string direccion)
+        private List<string> ObtenTextoRaw(string direccion)
         {
-            DocActual = conector.HardConnect(direccion, 5000); //5s entre intento de conexion.            
+            HtmlNodeCollection nodos = conector.IntentaNodos(direccion, Configuracion.xPathsTextos);       
 
-            HtmlNodeCollection nodes = conector.ObtenNodes(DocActual, Configuracion.xPathsTextos);
-
-            List<string> CapituloDesordenado = ObtenInnerText(nodes);
+            List<string> CapituloDesordenado = ObtenInnerText(nodos);
 
             if (CapituloDesordenado.Any()) return CapituloDesordenado;
             else return null;
@@ -106,7 +99,7 @@ namespace GetNovelsApp.Core
         }
 
 
-        private string OrdenaCapitulo(List<string> capituloDesordenado)
+        private string OrdenaTextoRaw(List<string> capituloDesordenado)
         {
             string capituloOrdenado = string.Empty;
             foreach (string entrada in capituloDesordenado)
@@ -142,8 +135,6 @@ namespace GetNovelsApp.Core
             return true;
         }
 
-
-
         #endregion
 
 
@@ -151,6 +142,7 @@ namespace GetNovelsApp.Core
 
         #region Legacy
 
+        /*
         private string SiguienteDireccion => EncuentraSiguienteCapitulo();
 
         private string EncuentraSiguienteCapitulo()
@@ -201,8 +193,9 @@ namespace GetNovelsApp.Core
         {
             Mensajero.MuestraCambioEstado("Scraper --> Comprobando siguiente dirección.");
             DocSiguiente = conector.HardConnect(posibleSiguienteDireccion);
-            posibleColeccion = conector.ObtenNodes(DocSiguiente, Configuracion.xPathsTextos);
-            return posibleColeccion.Any();
+            conector.ObtenNodes(DocSiguiente, Configuracion.xPathsTextos, out HtmlNodeCollection _posibleColeccion);
+            
+            throw new NotImplementedException();
         }
 
 
@@ -248,7 +241,7 @@ namespace GetNovelsApp.Core
                 bool EsUnNumero = char.IsDigit(letra);
                 if (EsUnNumero)
                 {
-                    /*Encontrando el primero numero y revisando si es 0*/
+                    //Encontrando el primero numero y revisando si es 0
                     capitulo += letra.ToString(); //1  
 
                     //Haciendo un check de que hayan mas caracteres
@@ -297,6 +290,7 @@ namespace GetNovelsApp.Core
 
             return direccionNueva;
         }
+        */
         #endregion
     }
 }
