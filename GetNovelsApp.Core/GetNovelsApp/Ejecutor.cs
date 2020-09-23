@@ -33,27 +33,6 @@ namespace GetNovelsApp.Core
             CapitulosEncontrados += ScraperActual.CapitulosEncontrados;
         }
 
-
-        /// <summary>
-        /// Actualizando referencias para la siguiente iteracion.  
-        /// </summary>
-        /// <param name="novelaNueva"></param>
-        /// <param name="configNueva"></param>
-        private void ActualizaReferencias(Novela novelaNueva)
-        {
-            NovelaActual = novelaNueva;
-
-            TituloActual = novelaNueva.Titulo;
-            LinkActual = novelaNueva.PrimerLink;
-            PrimerCapActual = novelaNueva.PrimerNumeroCapitulo;
-            UltimoCapActual = novelaNueva.UltimoNumeroCapitulo;
-
-            PathActual = novelaNueva.CarpetaPath;
-
-            ScraperActual = new Scraper();
-            ConstructorActual = new PdfConstructor(NovelaActual);
-        }
-
         #endregion
 
 
@@ -75,54 +54,128 @@ namespace GetNovelsApp.Core
 
         #region Fields
 
-        public Scraper ScraperActual;
+        private Scraper ScraperActual;
 
-        public PdfConstructor ConstructorActual;
+        private PdfConstructor ConstructorActual;
 
         private Novela NovelaActual;
 
 
-        string TituloActual;
-        string LinkActual;
-        int UltimoCapActual;
-        int PrimerCapActual;
+        /// <summary>
+        /// Ultimo capitulo segun la novela.
+        /// </summary>
+        private float UltimoCapActual => NovelaActual.UltimoNumeroCapitulo;
 
-        string PathActual;
-        int CapitulosPorPDFActual;
 
-        List<string> xPathsActual = new List<string>(); 
-        
+        /// <summary>
+        /// Primer capitulo segun la novela.
+        /// </summary>
+        private float PrimerCapActual => NovelaActual.PrimerNumeroCapitulo;
+
+
+
 
         #endregion
 
 
+        #region Core
+
         public void Ejecuta(Novela novelaNueva)
         {
-            ActualizaReferencias(novelaNueva);
+            //Actualizando referencias
+            TomaReferencias(novelaNueva);
+            //------------------------------------------
+
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            Mensajero.MuestraEspecial($"\nEjecutor --> Buscando capitulos: {PrimerCapActual}-{UltimoCapActual}");
-            Mensajero.MuestraEspecial($"Ejecutor --> Se realizarán {NovelaActual.LinksDeCapitulos.Count} iteraciones.");
+            Mensajero.MuestraEspecial($"\nEjecutor --> {NovelaActual.Titulo} tiene {UltimoCapActual} capitulos. Se empezará desde el link #{NovelaActual.EmpezarEn}");
+            Mensajero.MuestraEspecial($"Ejecutor --> Se realizarán {NovelaActual.LinksDeCapitulos.Count - NovelaActual.EmpezarEn} iteraciones.");
 
-            for (int i = 1; i <= NovelaActual.LinksDeCapitulos.Count; i++)
+            for (int i = NovelaActual.EmpezarEn; i < NovelaActual.LinksDeCapitulos.Count; i++)
             {
                 string Link = NovelaActual.LinksDeCapitulos[i];
 
                 //Core:
                 Mensajero.MuestraNotificacion($"\nEjecutor --> Comenzando iteracion #{i}...");
-                Capitulo Capitulo = ScraperActual.ObtenCapitulo(Link);
-                ConstructorActual.AgregaCapitulo(Capitulo);                
+                Capitulo Capitulo = ScrapCapitulo(Link);
 
                 //Mensajes:
                 Mensajero.MuestraEspecial($"Ejecutor --> {Capitulo.TituloCapitulo} obtenido.");
-                Mensajero.MuestraExito($"Ejecutor --> Iteracion #{i} completada.");
+                Mensajero.MuestraExito($"Ejecutor --> Iteracion #{i}/{NovelaActual.LinksDeCapitulos.Count} completada.");
             }
 
             stopwatch.Stop();
-            Mensajero.MuestraExito($"\nEjecutor --> Se han finalizado todas las iteraciones. Tiempo tomado: {stopwatch.ElapsedMilliseconds/1000}s.");
+            Mensajero.MuestraExito($"\nEjecutor --> Se han finalizado todas las iteraciones. Tiempo tomado: {stopwatch.ElapsedMilliseconds / 1000}s.");
             ConstructorActual.FinalizoNovela();
             RecolectaInformacion();
         }
+
+
+        private Capitulo ScrapCapitulo(string Link)
+        {
+            Capitulo Capitulo = ScraperActual.ObtenCapitulo(Link);
+            ConstructorActual.AgregaCapitulo(Capitulo);
+            return Capitulo;
+        }
+
+
+        private void TomaReferencias(Novela novelaNueva)
+        {
+            NovelaActual = novelaNueva;
+
+            ScraperActual = new Scraper();
+            ConstructorActual = new PdfConstructor(NovelaActual);
+        }
+
+        #endregion
+
+        //Testing:
+
+        public void t_Ejecuta(Novela novelaNueva)
+        {
+            //Actualizando referencias
+            TomaReferencias(novelaNueva);
+            //------------------------------------------
+
+            //Preparaciones:
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            Mensajero.MuestraEspecial($"\nEjecutor --> {NovelaActual.Titulo} tiene {UltimoCapActual} capitulos. Se empezará desde el link #{NovelaActual.EmpezarEn}");
+            Mensajero.MuestraEspecial($"Ejecutor --> Se realizarán {NovelaActual.LinksDeCapitulos.Count - NovelaActual.EmpezarEn} iteraciones.");
+            //------------------------------------------------------------------------------------------------------------------------------
+
+
+            //Scraping:
+            List<Capitulo> ScrapedChapters = new List<Capitulo>();            
+
+            for (int i = NovelaActual.EmpezarEn; i < NovelaActual.LinksDeCapitulos.Count; i++)
+            {
+                string Link = NovelaActual.LinksDeCapitulos[i];
+                
+                Mensajero.MuestraNotificacion($"\nEjecutor --> Comenzando iteracion #{i}...");
+                Capitulo Capitulo = ScraperActual.ObtenCapitulo(Link);
+                ScrapedChapters.Add(Capitulo);
+                Mensajero.MuestraExito($"Ejecutor --> Iteracion #{i}/{NovelaActual.LinksDeCapitulos.Count} completada.");
+            }
+
+            //Imprimiendo:
+            foreach (Capitulo cap in ScrapedChapters)
+            {
+                ConstructorActual.AgregaCapitulo(cap);
+            }
+
+            //Reportando:            
+            stopwatch.Stop();
+            Mensajero.MuestraExito($"\nEjecutor --> Se han finalizado todas las iteraciones. Tiempo tomado: {stopwatch.ElapsedMilliseconds / 1000}s.");
+            ConstructorActual.FinalizoNovela();
+            RecolectaInformacion();
+        }
+
+
+
+
+
     }
 }

@@ -52,7 +52,7 @@ namespace GetNovelsApp.Core.Modelos
         /// <summary>
         /// El numero de este capitulo.
         /// </summary>
-        public int NumeroCapitulo;
+        public float NumeroCapitulo;
 
         /// <summary>
         /// El titulo de este capitulo.
@@ -101,6 +101,7 @@ namespace GetNovelsApp.Core.Modelos
                 return textoLleno & tituloCapLleno & linkEstablecido & valorEstablecido & numeroEstablecido;
             }
         } 
+
         #endregion
     }
 }

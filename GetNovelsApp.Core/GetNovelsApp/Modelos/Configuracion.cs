@@ -37,7 +37,8 @@ namespace GetNovelsApp.Core.Modelos
         /// </summary>
         public static List<string> xPathsTitulo { get; private set; } = new List<string>()
             {
-                "//h3"
+                "//h3", 
+                "//h1"
             };
 
 

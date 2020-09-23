@@ -1,16 +1,16 @@
-﻿namespace GetNovelsApp.Core.Utilidades
+﻿namespace GetNovelsApp.Core.Modelos
 {
     public struct InformacionCapitulo
     {
-        public string TituloCapitulo;
-        public int Valor;
-        public int NumeroCapitulo;
-
-        public InformacionCapitulo(string tituloCapitulo, int valor, int numeroCapitulo)
+        public InformacionCapitulo(string tituloCapitulo, int valor, float numeroCapitulo)
         {
             TituloCapitulo = tituloCapitulo;
             Valor = valor;
             NumeroCapitulo = numeroCapitulo;
         }
+
+        public string TituloCapitulo;
+        public int Valor;
+        public float NumeroCapitulo;
     }
 }

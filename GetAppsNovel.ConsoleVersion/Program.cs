@@ -6,14 +6,14 @@ using GetNovelsApp.Core.Modelos;
 using GetNovelsApp.Core.Utilidades;
 
 namespace GetAppsNovel.ConsoleVersion
-{
+{ 
     class Program
     {
         //Fix entry point stuff.
         static void Main(string[] args)
         {
             //Ver control.            
-            string ver = "v0.10.0";
+            string ver = "v0.10.3";
             Mensajero.MuestraEspecial($"GetAppsNovel {ver}\n    ... Check version before commiting.");
 
             PideInformacionUsuario(out List<Novela> Novelas);
@@ -68,17 +68,24 @@ namespace GetAppsNovel.ConsoleVersion
             {
                 //Campos de input:                
                 MuestraInput("Link de la página principal de la novelas:", out string LinkNovela);
+                MuestraInput("Desde qué capitulo se comenzará ?", out string _comienzo);
 
                 Mensajero.MuestraNotificacion("\nObteniendo información de novela...\n");
 
+                int comienzo = int.Parse(_comienzo);
+                comienzo = comienzo > 1 ? comienzo : 1;
+
+                
+
                 //Arreglando informacion:
                 Path = Path.Replace(@"\\", @"\\\\");
-                Novela novela = new Novela(LinkNovela, Path);
+                Novela novela = new Novela(LinkNovela, Path, comienzo);
 
                 ///Confirmando con el usuario:
                 Mensajero.MuestraNotificacion($"Titulo: {novela.Titulo}\n" +
                                             $"Link: {LinkNovela}\n" +
-                                            $"Cantidad de capitulos: {novela.LinksDeCapitulos.Count}\n" +
+                                            $"Se comenzará desdel capitulo: {comienzo}\n" +
+                                            $"Cantidad de capitulos: {novela.LinksDeCapitulos.Count - comienzo + 1}\n" +
                                             $"CapitulosPorPdf: {Configuracion.CapitulosPorPdf}\n" +
                                             $"Carpeta: {novela.CarpetaPath}");
 
