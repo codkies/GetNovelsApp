@@ -11,6 +11,9 @@ using System.Linq;
 
 namespace GetNovelsApp.Core
 {
+    /// <summary>
+    /// Encargado de aceptar capitulos e imprimirlos.
+    /// </summary>
     public class PdfConstructor
     {
         #region Constructores
@@ -58,15 +61,17 @@ namespace GetNovelsApp.Core
         #endregion
 
          
-        #region Methods
+        #region Metodos Publicos
 
 
-        //Eventos
+        /// <summary>
+        /// Evento?
+        /// </summary>
         public void FinalizoNovela()
         {
             if (HayCapitulosPorImprimir) ConstruyePDF();
         }
-        //-------------
+        
 
 
         public void AgregaCapitulo(Capitulo CapituloNuevo)
@@ -75,6 +80,7 @@ namespace GetNovelsApp.Core
             if (CreaPdf) ConstruyePDF();
         }
 
+        #region Privados
         private void ConstruyePDF()
         {
             int capitulosEnPdf = 0;
@@ -109,7 +115,7 @@ namespace GetNovelsApp.Core
                     capitulosEnPdf = 0;
                 }
 
-                Capitulo capitulo = CapitulosAImprimir[i];                
+                Capitulo capitulo = CapitulosAImprimir[i];
 
                 Paragraph header = new Paragraph($"{TituloNovela} - {capitulo.TituloCapitulo}").SetTextAlignment(TextAlignment.CENTER).SetFontSize(20);
                 document.Add(header);
@@ -124,7 +130,7 @@ namespace GetNovelsApp.Core
                 capitulosEnPdf++;
             }
 
-            CierraDocumento(pdf, document);                        
+            CierraDocumento(pdf, document);
         }
 
 
@@ -136,7 +142,10 @@ namespace GetNovelsApp.Core
         private static void CierraDocumento(PdfDocument pdf, Document document)
         {
             document.Close();
-        }
+        } 
+
+        #endregion
+
 
         #endregion
     }

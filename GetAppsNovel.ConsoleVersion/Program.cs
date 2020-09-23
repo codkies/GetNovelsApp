@@ -14,7 +14,7 @@ namespace GetAppsNovel.ConsoleVersion
         static async Task Main(string[] args)
         {
             //Ver control.            
-            string ver = "v0.11.1"; //Async
+            string ver = "v0.11.2"; //Dynamic Async (Si el capitulo no se pudo obtener, permite al usuario escribirlo).
             Mensajero.MuestraEspecial($"GetAppsNovel {ver}\n    ... Check version before commiting.");
 
             PideInformacionUsuario(out List<Novela> Novelas);

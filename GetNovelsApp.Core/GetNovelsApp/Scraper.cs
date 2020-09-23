@@ -37,31 +37,19 @@ namespace GetNovelsApp.Core
 
         #region Fields
 
-
-        private string DireccionActual;
-
-
         /// <summary>
         /// Instancia inicializada en el constructor del Scraper.
         /// </summary>
         private Conector conector;
 
-
-        private HtmlDocument DocActual;
-
-
-        private HtmlDocument DocSiguiente;
-
         #endregion
 
 
-        #region Capitulo Actual
+        #region Scraping Capitulo
 
         public Capitulo ObtenCapitulo(string direccion)
         {
-            DireccionActual = direccion;
-
-            List<string> textosRaw = ObtenTextoRaw(DireccionActual);
+            List<string> textosRaw = ObtenTextoRaw(direccion);
             string Texto = OrdenaTextoRaw(textosRaw);
             Capitulo capitulo = new Capitulo(Texto, direccion);
 
@@ -73,9 +61,10 @@ namespace GetNovelsApp.Core
         }
 
 
+        #region Privados
         private List<string> ObtenTextoRaw(string direccion)
         {
-            HtmlNodeCollection nodos = conector.IntentaNodos(direccion, Configuracion.xPathsTextos);       
+            HtmlNodeCollection nodos = conector.IntentaNodos(direccion, Configuracion.xPathsTextos);
 
             List<string> CapituloDesordenado = ObtenInnerText(nodos);
 
@@ -134,6 +123,9 @@ namespace GetNovelsApp.Core
             }
             return true;
         }
+
+        #endregion
+
 
         #endregion
 
