@@ -34,7 +34,7 @@ namespace GetNovelsApp.Core.Conexiones
         /// <returns></returns>
         public HtmlDocument HardConnect(string direccion, int tiempoDeEspera = 5000)
         {
-            Mensajero.MuestraNotificacion("Conector --> Comenzando conexión...");
+            //Mensajero.MuestraNotificacion("Conector --> Comenzando conexión...");
             HtmlDocument doc = null;
 
             Stopwatch stopwatchTotal = new Stopwatch();
@@ -62,7 +62,7 @@ namespace GetNovelsApp.Core.Conexiones
                 }
             }
             if(doc == null) Mensajero.MuestraErrorMayor("Conector --> Superado el tiempo de espera para obtener website.");
-            else Mensajero.MuestraNotificacion("Conector --> Conexion establecida.");
+            //else Mensajero.MuestraNotificacion("Conector --> Conexion establecida.");
             return doc;
         }
 
@@ -70,7 +70,7 @@ namespace GetNovelsApp.Core.Conexiones
 
         public HtmlNodeCollection ObtenNodes(HtmlDocument doc, List<string> xPaths)
         {
-            Mensajero.MuestraNotificacion("Conector --> Buscando nodes...");
+            //Mensajero.MuestraNotificacion("Conector --> Buscando nodes...");
             HtmlNodeCollection posibleColeccion = null;
 
             Stopwatch stopwatchTotal = new Stopwatch();
@@ -83,7 +83,7 @@ namespace GetNovelsApp.Core.Conexiones
             }            
 
             if (posibleColeccion == null) Mensajero.MuestraErrorMayor("Conector --> Nodes no encontrados.");
-            else Mensajero.MuestraNotificacion("Conector --> Nodes encontrados.");
+            //else Mensajero.MuestraNotificacion("Conector --> Nodes encontrados.");
             return posibleColeccion;
         }
 

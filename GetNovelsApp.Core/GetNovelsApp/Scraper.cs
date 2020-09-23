@@ -72,7 +72,7 @@ namespace GetNovelsApp.Core
 
             CapitulosEncontrados++;
             CaracteresVistos += capitulo.Caracteres;
-            Mensajero.MuestraNotificacion($"Scraper --> {capitulo.TituloCapitulo} tiene {capitulo.Caracteres} caracteres.");
+            //Mensajero.MuestraNotificacion($"Scraper --> {capitulo.TituloCapitulo} tiene {capitulo.Caracteres} caracteres.");
 
             return capitulo;
         }

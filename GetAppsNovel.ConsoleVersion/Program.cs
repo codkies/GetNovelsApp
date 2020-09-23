@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using GetNovelsApp.Core;
 using GetNovelsApp.Core.Modelos;
 using GetNovelsApp.Core.Utilidades;
@@ -10,10 +11,10 @@ namespace GetAppsNovel.ConsoleVersion
     class Program
     {
         //Fix entry point stuff.
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             //Ver control.            
-            string ver = "v0.10.3";
+            string ver = "v0.11.0"; //Async
             Mensajero.MuestraEspecial($"GetAppsNovel {ver}\n    ... Check version before commiting.");
 
             PideInformacionUsuario(out List<Novela> Novelas);
@@ -30,6 +31,28 @@ namespace GetAppsNovel.ConsoleVersion
 
             //Core:
             Ejecutor ejecutor = new Ejecutor();
+            //IteraNovelas(Novelas, ejecutor);
+            await IteraNovelasAsync(Novelas, ejecutor);
+
+            //Diagnostics:
+            stopwatch.Stop();
+            MustraResultado(ejecutor, stopwatch);
+        }
+
+        private static async Task IteraNovelasAsync(List<Novela> Novelas, Ejecutor ejecutor)
+        {
+            foreach (Novela novela in Novelas)
+            {
+                Mensajero.MuestraEspecial($"Program --> Comenzando novela {novela.Titulo}");
+                System.IO.Directory.CreateDirectory(novela.CarpetaPath);
+
+                await ejecutor.t_EjecutaAsync(novela);
+                Mensajero.MuestraExito($"Program --> Terminando novela {novela.Titulo}");
+            }
+        }
+
+        private static void IteraNovelas(List<Novela> Novelas, Ejecutor ejecutor)
+        {
             foreach (Novela novela in Novelas)
             {
                 Mensajero.MuestraEspecial($"Program --> Comenzando novela {novela.Titulo}");
@@ -38,10 +61,6 @@ namespace GetAppsNovel.ConsoleVersion
                 ejecutor.Ejecuta(novela);
                 Mensajero.MuestraExito($"Program --> Terminando novela {novela.Titulo}");
             }
-
-            //Diagnostics:
-            stopwatch.Stop();
-            MustraResultado(ejecutor, stopwatch);
         }
 
 

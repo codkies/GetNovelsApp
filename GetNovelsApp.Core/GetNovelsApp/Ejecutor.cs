@@ -6,6 +6,8 @@ using GetNovelsApp.Core.Modelos;
 using System.Runtime.CompilerServices;
 using System.Linq;
 using System.Diagnostics;
+using System.Threading.Tasks;
+using iText.Layout.Properties;
 
 namespace GetNovelsApp.Core
 {
@@ -130,9 +132,11 @@ namespace GetNovelsApp.Core
 
         #endregion
 
-        //Testing:
-
-        public void t_Ejecuta(Novela novelaNueva)
+        /// <summary>
+        /// Testing async.
+        /// </summary>
+        /// <param name="novelaNueva"></param>
+        public async Task t_EjecutaAsync(Novela novelaNueva)
         {
             //Actualizando referencias
             TomaReferencias(novelaNueva);
@@ -148,17 +152,9 @@ namespace GetNovelsApp.Core
 
 
             //Scraping:
-            List<Capitulo> ScrapedChapters = new List<Capitulo>();            
-
-            for (int i = NovelaActual.EmpezarEn; i < NovelaActual.LinksDeCapitulos.Count; i++)
-            {
-                string Link = NovelaActual.LinksDeCapitulos[i];
-                
-                Mensajero.MuestraNotificacion($"\nEjecutor --> Comenzando iteracion #{i}...");
-                Capitulo Capitulo = ScraperActual.ObtenCapitulo(Link);
-                ScrapedChapters.Add(Capitulo);
-                Mensajero.MuestraExito($"Ejecutor --> Iteracion #{i}/{NovelaActual.LinksDeCapitulos.Count} completada.");
-            }
+            Mensajero.MuestraNotificacion("Ejecutor --> Comenzando Scrap");
+            List<Capitulo> ScrapedChapters = await ScrapCapitulosAsync(); //Depede de que este script tenga las referencias a la novela actual.
+            Mensajero.MuestraNotificacion("Ejecutor --> Finalizado Scrap");
 
             //Imprimiendo:
             foreach (Capitulo cap in ScrapedChapters)
@@ -173,9 +169,44 @@ namespace GetNovelsApp.Core
             RecolectaInformacion();
         }
 
+        private async Task<List<Capitulo>> ScrapCapitulosAsync()
+        {
+            List<Capitulo> ScrapedChapters = new List<Capitulo>();
+            List<Task<Capitulo>> tareas = new List<Task<Capitulo>>();
 
 
+            for (int i = NovelaActual.EmpezarEn; i < NovelaActual.LinksDeCapitulos.Count; i++)
+            {
+                string Link = NovelaActual.LinksDeCapitulos[i];                
+                tareas.Add(Task.Run(() => ScraperActual.ObtenCapitulo(Link)));                
+            }
+
+            var resultados = await Task.WhenAll(tareas);
+
+            List<Capitulo> capsDesordenados = new List<Capitulo>(resultados);
+            
+            capsDesordenados.Sort(new OrdenadorCapitulos());
+
+            foreach (Capitulo cap in capsDesordenados)
+            {
+                ScrapedChapters.Add(cap);
+            }
+            
+            return ScrapedChapters;
+        }
+    }
 
 
+    public class OrdenadorCapitulos : Comparer<Capitulo>
+    {
+        public override int Compare(Capitulo x, Capitulo y)
+        {
+            if (x.NumeroCapitulo > y.NumeroCapitulo)
+                return 1;
+            else if (x.NumeroCapitulo < y.NumeroCapitulo)
+                return -1;
+            else
+                throw new NotSupportedException("Ambos capitulos tienen el mismo numero");
+        }
     }
 }

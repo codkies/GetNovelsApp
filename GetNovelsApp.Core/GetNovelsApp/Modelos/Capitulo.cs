@@ -5,23 +5,8 @@ namespace GetNovelsApp.Core.Modelos
 {
     public class Capitulo  
     {
-        #region Constructores
-
-        /// <summary>
-        /// Empieza a crear un capitulo.
-        /// </summary>
-        public Capitulo(string link)
-        {
-            Link = link;
-
-            InformacionCapitulo info = ManipuladorDeLinks.EncuentraInformacionCapitulo(link);
-            TituloCapitulo = info.TituloCapitulo;
-            NumeroCapitulo = info.NumeroCapitulo;
-            Valor = info.Valor;
-
-            Texto = string.Empty;
-        }
-
+        #region Constructor
+        
         /// <summary>
         /// Crea un capitulo con su texto
         /// </summary>
@@ -47,27 +32,27 @@ namespace GetNovelsApp.Core.Modelos
         /// <summary>
         /// Lo que compone este capitulo.
         /// </summary>
-        public string Texto;
+        public readonly string Texto;
 
         /// <summary>
         /// El numero de este capitulo.
         /// </summary>
-        public float NumeroCapitulo;
+        public readonly float NumeroCapitulo;
 
         /// <summary>
         /// El titulo de este capitulo.
         /// </summary>
-        public string TituloCapitulo;
+        public readonly string TituloCapitulo;
 
         /// <summary>
         /// Link a este capitulo.
         /// </summary>
-        public string Link;
+        public readonly string Link;
 
         /// <summary>
         /// Cuantos valores numericos toma este capitulo. 99% veces este valor = 1
         /// </summary>
-        public int Valor;
+        public readonly int Valor;
 
         #endregion
 
