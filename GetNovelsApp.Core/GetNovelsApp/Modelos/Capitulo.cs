@@ -1,5 +1,5 @@
 ﻿using System.Security.AccessControl;
-using GetNovelsApp.Core.Utilidades;
+using GetNovelsApp.Core.Conexiones;
 
 namespace GetNovelsApp.Core.Modelos
 {

@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
-using System.Runtime.CompilerServices;
-using System.Web.WebSockets;
-using GetNovelsApp.Core.Utilidades;
+using GetNovelsApp.Core.Reportaje;
 using HtmlAgilityPack;
-using iText.Kernel.Pdf.Canvas.Parser.ClipperLib;
 
 namespace GetNovelsApp.Core.Conexiones
 {
-    public class Conector
+    public class Conector : IReportero
     {
         #region Ctors
 
@@ -31,6 +28,8 @@ namespace GetNovelsApp.Core.Conexiones
         private HtmlWeb Conexion;
 
         private int TiempoTopMilisegundos;
+
+        public string Nombre => "Conector";
 
         #endregion
 
@@ -54,8 +53,8 @@ namespace GetNovelsApp.Core.Conexiones
                 nodos = ObtenNodes(website, xPaths); //Check for null.
                 if (nodos == null)
                 {
-                    Mensajero.MuestraError("Conector --> No se consiguieron los nodos segun los xPaths. Presiona enter para reintentar.");
-                    Console.ReadLine();
+                    AppGlobalMensajero.ReportaError("No se consiguieron los nodos segun los xPaths. Reintentando...", this);
+                    website = null;
                     website = ObtenWebsite(direccion);
                 }
             }
@@ -82,13 +81,12 @@ namespace GetNovelsApp.Core.Conexiones
 
             while (nodosOne == null | nodosTwo == null)
             {
-                nodosOne = ObtenNodes(website, xPathsOne); //Check for null.
-                nodosTwo = ObtenNodes(website, xPathsTwo); //Check for null.
+                if(nodosOne == null) nodosOne = ObtenNodes(website, xPathsOne); //Check for null.
+                if (nodosTwo == null) nodosTwo = ObtenNodes(website, xPathsTwo); //Check for null.
 
                 if (nodosOne == null | nodosTwo == null)
                 {
-                    Mensajero.MuestraError("Conector --> No se consiguieron los nodos segun los xPaths. Presiona enter para reintentar.");
-                    Console.ReadLine();
+                    AppGlobalMensajero.ReportaError("No se consiguieron los nodos segun los xPaths. Reintentando...", this);
                     website = ObtenWebsite(direccion);
                 }
             }
@@ -121,9 +119,9 @@ namespace GetNovelsApp.Core.Conexiones
                     if(posiblesNodos == null) //Consiguelos todos o ninguno.
                     {
                         AllHtmlNodes = null;
-                        Debug.WriteLine("Conector --> Error. \n" +
+                        Debug.WriteLine("Error. \n" +
                                         $"Direccion: {direccion} \n" +
-                                        $"xPaths: {xPaths}");
+                                        $"xPaths: {xPaths}", this);
                         break;
                     }
 
@@ -132,8 +130,7 @@ namespace GetNovelsApp.Core.Conexiones
 
                 if (AllHtmlNodes == null)
                 {
-                    Mensajero.MuestraError("Conector --> No se consiguieron los nodos segun los xPaths. Presiona enter para reintentar.");
-                    Console.ReadLine();
+                    AppGlobalMensajero.ReportaError("No se consiguieron los nodos segun los xPaths. Reintentando...", this);
                     website = ObtenWebsite(direccion);
                 }
             }
@@ -157,27 +154,35 @@ namespace GetNovelsApp.Core.Conexiones
         private HtmlDocument ObtenWebsite(string direccion, int tiempoDeEspera = 5000)
         {
             //Mensajero.MuestraNotificacion("Conector --> Comenzando conexión...");
-            HtmlDocument doc = null;
+            HtmlWeb Conexion = new HtmlWeb();
+            HtmlDocument website = null;
 
-            while (doc == null)
-            {
+            while (website == null)
+            { 
                 try
                 {
-                    doc = Conexion.Load(direccion);
+                    website = Conexion.Load(direccion);
+                }
+                catch (ObjectDisposedException)
+                {
+                    AppGlobalMensajero.ReportaError("System.ObjectDisposedException", this);
+                    Conexion = new HtmlWeb();
+                    website = null;
                 }
                 catch (TimeoutException)
                 {
-                    Mensajero.MuestraNotificacion("Conector --> Timeout. Reintentando...");
-                    System.Threading.Thread.Sleep(tiempoDeEspera); //Wait for 5seconds                     
+                    AppGlobalMensajero.Reporta("Timeout. Reintentando...", this);
+                    website = null;
+                    System.Threading.Thread.Sleep(tiempoDeEspera); //Wait for 5seconds                    
                 }
                 catch (WebException)
                 {
-                    Mensajero.MuestraError("Conector --> Pareces no tener internet. Presiona enter para reintentarlo.");
-                    Console.ReadLine();
+                    AppGlobalMensajero.ReportaError("Pareces no tener internet. Reintentando...", this);
+                    website = null;
                     continue;
                 }
             }
-            return doc;
+            return website;
         }
 
 

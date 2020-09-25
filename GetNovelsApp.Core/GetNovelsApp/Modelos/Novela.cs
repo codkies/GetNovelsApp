@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using GetNovelsApp.Core.Utilidades;
+using GetNovelsApp.Core.Conexiones;
 
 namespace GetNovelsApp.Core.Modelos
 {
@@ -15,6 +15,7 @@ namespace GetNovelsApp.Core.Modelos
 
             Titulo = info.Titulo;
             CarpetaPath += $"\\{Titulo}\\";
+            // CarpetaPath = FolderPath +  $"\\{Titulo}\\";
             LinkPaginaPrincipal = info.LinkPaginaPrincipal;
 
             LinksDeCapitulos = info.LinksDeCapitulos;

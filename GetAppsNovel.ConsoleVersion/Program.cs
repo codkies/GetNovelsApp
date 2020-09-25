@@ -1,182 +1,57 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using GetNovelsApp.Core;
+using GetNovelsApp.Core.Configuracion;
+using GetNovelsApp.Core.CreadorDocumentos;
 using GetNovelsApp.Core.Modelos;
-using GetNovelsApp.Core.Utilidades;
+using GetNovelsApp.Core.Reportaje;
 
 namespace GetAppsNovel.ConsoleVersion
-{ 
+{
     class Program
     {
+        static readonly ConsoleUI mensajero = new ConsoleUI();
+        static readonly ConfiguracionBasica configuracion = new ConfiguracionBasica();
+        static readonly GetNovels getNovels = new GetNovels(configuracion, mensajero);
+        static readonly ComunicadorUsuario comunicador = new ComunicadorUsuario();
+
         //Fix entry point stuff.
         static async Task Main(string[] args)
         {
             //Ver control.            
-            string ver = "v0.11.3"; //Dynamic Async (Mejorados los formularios).
-            Mensajero.MuestraEspecial($"GetAppsNovel {ver}\n    ... Check version before commiting.");
+            string ver = "v0.12.0"; //Orden de libreria.
+            mensajero.ReportaEspecial($"GetAppsNovel {ver} ... Check version before commiting.", comunicador);
 
-            PideInformacionUsuario(out List<Novela> Novelas);
-
-
-            //List<Novela> Novelas = new List<Novela>()
-            //{
-            //    new Novela("https://wuxiaworld.site/novel/the-king-of-the-battlefield/", "C:\\Users\\Juan\\Desktop\\Novelas\\The King of the Battlefield")
-            //};
+            //Pidiendo info al usuario:
+            List<Novela> Novelas = comunicador.PideInformacionUsuario();
 
             //Diagnostics:
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
             //Core:
-            Ejecutor ejecutor = new Ejecutor();
-            //IteraNovelas(Novelas, ejecutor);
-            await IteraNovelasAsync(Novelas, ejecutor);
+            await PasaNovelasEjecutadorAsync(Novelas);
 
             //Diagnostics:
             stopwatch.Stop();
-            MustraResultado(ejecutor, stopwatch);
+            comunicador.MustraResultado(getNovels, stopwatch);
         }
 
-        #region Async
-
-        private static async Task IteraNovelasAsync(List<Novela> Novelas, Ejecutor ejecutor)
+        private static async Task PasaNovelasEjecutadorAsync(List<Novela> Novelas)
         {
             foreach (Novela novela in Novelas)
             {
-                Mensajero.MuestraEspecial($"Program --> Comenzando novela {novela.Titulo}");
+                mensajero.ReportaEspecial($"Comenzando novela \"{novela.Titulo}\"", comunicador);
                 System.IO.Directory.CreateDirectory(novela.CarpetaPath);
 
-                await ejecutor.EjecutaAsync(novela);
-                Mensajero.MuestraExito($"Program --> Terminando novela {novela.Titulo}");
+                await getNovels.EjecutaAsync(novela, TiposDocumentos.PDF); //Hardcoeando aqui el pdf.
+                mensajero.ReportaEspecial($"Terminando novela \"{novela.Titulo}\"", comunicador);
             }
         }
 
-        #endregion
-
-        #region Sync
-
-
-        private static void IteraNovelas(List<Novela> Novelas, Ejecutor ejecutor)
-        {
-            foreach (Novela novela in Novelas)
-            {
-                Mensajero.MuestraEspecial($"Program --> Comenzando novela {novela.Titulo}");
-                System.IO.Directory.CreateDirectory(novela.CarpetaPath);
-
-                ejecutor.Ejecuta(novela);
-                Mensajero.MuestraExito($"Program --> Terminando novela {novela.Titulo}");
-            }
-        }
-
-        #endregion
-
-
-        #region Cosas de input de la consola
-
-
-        /// <summary>
-        /// Crea un formulario para que el usuario meta la informacion a buscar.
-        /// </summary>
-        /// <param name="xPaths"></param>
-        /// <param name="Novelas"></param>
-        private static void PideInformacionUsuario(out List<Novela> Novelas)
-        {
-            Novelas = new List<Novela>();
-            //Obteniendo informacion de novelas.  
-
-            bool InputFinalizado = false;
-            int numeroDeNovelas = 1;
-
-            string Path = Mensajero.TomaMensaje("Carpeta: (Se creará una subcarpeta, con el titulo todas novela, dentro de la dirección que introduzcas).");
-
-            while (!InputFinalizado)
-            {
-                //Campos de input:   
-                string LinkNovela = Mensajero.TomaMensaje("Link de la página principal de la novelas:");
-                string _comienzo = Mensajero.TomaMensaje("Desde qué capitulo se comenzará ?");
-
-                Mensajero.MuestraNotificacion("\nObteniendo información de novela...\n");
-
-                int comienzo = int.Parse(_comienzo);
-                comienzo = comienzo > 1 ? comienzo : 1;
-
-                
-
-                //Arreglando informacion:
-                Path = Path.Replace(@"\\", @"\\\\");
-                Novela novela = new Novela(LinkNovela, Path, comienzo);
-
-                ///Confirmando con el usuario:
-                Mensajero.MuestraNotificacion($"Titulo: {novela.Titulo}\n" +
-                                            $"Link: {LinkNovela}\n" +
-                                            $"Se comenzará desdel capitulo: {comienzo}\n" +
-                                            $"Cantidad de capitulos: {novela.LinksDeCapitulos.Count - comienzo + 1}\n" +
-                                            $"CapitulosPorPdf: {Configuracion.CapitulosPorPdf}\n" +
-                                            $"Carpeta: {novela.CarpetaPath}");
-
-
-                string respuesta = Mensajero.TomaMensaje("\n Confirmar (Y/N)");
-
-                if (respuesta.Equals("y") | respuesta.Equals("yes"))
-                {
-                    Novelas.Add(novela);
-                    numeroDeNovelas++;
-                    Mensajero.MuestraNotificacion($"Program --> Confirmada {novela.Titulo}");
-                }
-                else
-                {
-                    Mensajero.MuestraError($"Program --> Descartada {novela.Titulo}");
-                }
-
-
-                bool decisionTomada = false;
-                while (!decisionTomada)
-                {
-                    string decision = Mensajero.TomaMensaje("Quieres agregar otra novela? (Y/N)");
-                    if (decision.Equals("n") | decision.Equals("no") | decision.Equals("not"))
-                    {
-                        decisionTomada = true;
-                        InputFinalizado = true;
-                    }
-                    else if (decision.Equals("y") | decision.Equals("yes") | decision.Equals("ye"))
-                    {
-                        decisionTomada = true;
-                    }
-                }
-
-                if (!InputFinalizado) continue;
-                Mensajero.MuestraNotificacion($"\nSe obtendrán {Novelas.Count} novelas:");
-                for (int i = 0; i < Novelas.Count; i++)
-                {
-                    Novela n = Novelas[i];
-                    Mensajero.MuestraNotificacion($"#{i + 1} {n.Titulo}");
-                }
-                Mensajero.TomaMensaje("\nPresiona cualquier tecla para comenzar.");
-            }
-
-
-        }
-
-
-        private static void MustraResultado(Ejecutor ejecutor, Stopwatch stopwatch)
-        {
-            TimeSpan ts = stopwatch.Elapsed;
-            string report = ts.ToString("hh\\:mm\\:ss\\.ff");
-
-            Mensajero.MuestraEspecial($"Finalizado el proceso en {report}. Resumen: \n" +
-                        $"  Se han creado {ejecutor.DocumentosCreados} documentos.\n" +
-                        $"  Se han ignorado {ejecutor.EntradasIgnoradas} entradas.\n" +
-                        $"  Se han saltado {ejecutor.Skips} iteraciones.\n" +
-                        $"  Se han obtenido {ejecutor.CapitulosEncontrados} capitulos.\n" +
-                        $"  Para un total de {ejecutor.CaracteresVistos} caracteres.");
-
-            Mensajero.MuestraExito("press Enter to exit.");
-            Console.ReadLine();
-        }
-
-        #endregion
 
     }
 }
