@@ -24,17 +24,18 @@ namespace GetNovelsApp.Core.Conexiones
         private readonly static LinkScraper MiReportero = new LinkScraper();
 
         #endregion
-
+         
         /// <summary>
         /// Encuentra el numero del capitulo según el link.
         /// </summary>
         /// <param name="LinkCapitulo"></param>
         /// <returns></returns>
-        public static InformacionCapitulo EncuentraInformacionCapitulo(string LinkCapitulo)
+        public static InformacionCapitulo EncuentraInformacionCapitulo(Uri _LinkCapitulo)
         {
             string numCapEscrito = string.Empty; //Para llevar record de numeros en formato de string. Luego se convierte a float.
             string TituloCapitulo = string.Empty; //Titulo del cap.
             int gruposDeNumeros = 0; //Grupos de numeros en el Link. ie: website.com/10-12/ ->> tiene 2 grupos de numeros.
+            string LinkCapitulo = _LinkCapitulo.ToString();
 
             for (int i = 0; i < LinkCapitulo.Length; i++)
             {
@@ -88,8 +89,8 @@ namespace GetNovelsApp.Core.Conexiones
             if (gruposDeNumeros < 1)
             {
                 //Esto romperá la app si varios mensajes (async) ocurren al mismo tiempo?...
-                AppGlobalMensajero.ReportaError("No se pudo determinar el valor del capitulo.", MiReportero);
-                AppGlobalMensajero.Reporta($"La dirección es: \n{LinkCapitulo}.", MiReportero);
+                Comunicador.ReportaError("No se pudo determinar el valor del capitulo.", MiReportero);
+                Comunicador.Reporta($"La dirección es: \n{LinkCapitulo}.", MiReportero);
 
                 string inputUserTitulo = string.Empty;
                 string inputUserNumCap = string.Empty;
@@ -98,17 +99,17 @@ namespace GetNovelsApp.Core.Conexiones
                 bool decisionTomada = false;
                 while (!decisionTomada)
                 {
-                    inputUserTitulo = AppGlobalMensajero.PideInput($"\nEscribe el titulo del capitulo: (En general es 'Chapter - (numeroCapitulo)')", MiReportero);
-                    inputUserNumCap = AppGlobalMensajero.PideInput($"Escribe el numero del capitulo: (puede tener decimales pero no acepta letras):", MiReportero);
-                    inputUserValorCap = AppGlobalMensajero.PideInput($"Escribe por cuantos capitulos vale este: (si es un solo cap, el valor es 1. No acepta decimales ni letras):", MiReportero);
+                    inputUserTitulo = Comunicador.PideInput($"\nEscribe el titulo del capitulo: (En general es 'Chapter - (numeroCapitulo)')", MiReportero);
+                    inputUserNumCap = Comunicador.PideInput($"Escribe el numero del capitulo: (puede tener decimales pero no acepta letras):", MiReportero);
+                    inputUserValorCap = Comunicador.PideInput($"Escribe por cuantos capitulos vale este: (si es un solo cap, el valor es 1. No acepta decimales ni letras):", MiReportero);
 
-                    AppGlobalMensajero.Reporta("Has escrito:\n" +
+                    Comunicador.Reporta("Has escrito:\n" +
                                                     $"Direccion: {LinkCapitulo}\n" +
                                                     $"Titulo cap: {inputUserTitulo}\n" +
                                                     $"Numero del capitulo: {inputUserNumCap}\n" +
                                                     $"Valor del capitulo: {inputUserValorCap}",
                                                     MiReportero);
-                    string decision = AppGlobalMensajero.PideInput("Presiona (Y) para confirmar. Cualquier otra tecla para repetir.", MiReportero);
+                    string decision = Comunicador.PideInput("Presiona (Y) para confirmar. Cualquier otra tecla para repetir.", MiReportero);
 
                     if (decision.Equals("y") | decision.Equals("yes"))
                     {
@@ -134,17 +135,17 @@ namespace GetNovelsApp.Core.Conexiones
         }
 
 
-        public static InformacionNovela EncuentraInformacionNovela(string LinkPaginaPrincipal)
+        public static InformacionNovela EncuentraInformacionNovela(Uri LinkPaginaPrincipal)
         {
             //Conexiones:
             Conector conector = new Conector(60 * 2); //2 minutos.
-            HtmlNodeCollection[] htmlNodes = conector.IntenaVariosNodos(LinkPaginaPrincipal, AppGlobalConfig.xPathsTitulo, AppGlobalConfig.xPathsLinks);
+            HtmlNodeCollection[] htmlNodes = conector.IntenaVariosNodos(LinkPaginaPrincipal, GetNovelsConfig.xPathsTitulo, GetNovelsConfig.xPathsLinks);
 
             //Referencias:
             HtmlNodeCollection nodosTitulo = htmlNodes[0];
             HtmlNodeCollection nodosLinksCapitulos = htmlNodes[1];
             string Titulo = ObtenInnerText(nodosTitulo);
-            List<string> LinksDeCapitulos = ObtenLinks(nodosLinksCapitulos, OrdenLinks.Descendiente);
+            List<Uri> LinksDeCapitulos = ObtenLinks(nodosLinksCapitulos, OrdenLinks.Descendiente);
             float numPrimerCap = EncuentraInformacionCapitulo(LinksDeCapitulos.First()).NumeroCapitulo;
             float numUltimoCap = EncuentraInformacionCapitulo(LinksDeCapitulos.Last()).NumeroCapitulo;
 
@@ -169,16 +170,16 @@ namespace GetNovelsApp.Core.Conexiones
         /// <param name="nodosLinksCapitulos">Nodos de los que se extraen</param>
         /// <param name="orden">Orden que se enlistan</param>
         /// <returns></returns>
-        private static List<string> ObtenLinks(HtmlNodeCollection nodosLinksCapitulos, OrdenLinks orden = OrdenLinks.Descendiente)
+        private static List<Uri> ObtenLinks(HtmlNodeCollection nodosLinksCapitulos, OrdenLinks orden)
         {
-            List<string> LinksDeCapitulos = new List<string>();
+            List<Uri> LinksDeCapitulos = new List<Uri>();
 
             if (orden == OrdenLinks.Descendiente)
             {
                 for (int i = nodosLinksCapitulos.Count - 1; i > -1; i--)
                 {
                     HtmlNode node = nodosLinksCapitulos[i];
-                    LinksDeCapitulos.Add(node.Attributes["href"].Value);
+                    LinksDeCapitulos.Add(new Uri(node.Attributes["href"].Value));
                 }
             }
             else
@@ -186,7 +187,7 @@ namespace GetNovelsApp.Core.Conexiones
                 for (int i = 0; i < nodosLinksCapitulos.Count; i++)
                 {
                     HtmlNode node = nodosLinksCapitulos[i];
-                    LinksDeCapitulos.Add(node.Attributes["href"].Value);
+                    LinksDeCapitulos.Add(new Uri(node.Attributes["href"].Value));
                 }
             }
 

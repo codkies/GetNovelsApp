@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Runtime.InteropServices;
 using GetNovelsApp.Core.Conexiones;
 
@@ -7,7 +9,7 @@ namespace GetNovelsApp.Core.Modelos
 {
     public class Novela
     {
-        public Novela(string link, string FolderPath, int EmpezarEn)
+        public Novela(Uri link, string FolderPath, int EmpezarEn)
         {
             this.EmpezarEn = EmpezarEn;
             CarpetaPath = FolderPath;
@@ -49,25 +51,25 @@ namespace GetNovelsApp.Core.Modelos
         /// <summary>
         /// Link a su pagina principal de la novela
         /// </summary>
-        public readonly string LinkPaginaPrincipal;
+        public readonly Uri LinkPaginaPrincipal;
 
 
         /// <summary>
         /// Lista de todos los links de los capitulos
         /// </summary>
-        public readonly List<string> LinksDeCapitulos;
+        public readonly List<Uri> LinksDeCapitulos;
 
 
         /// <summary>
         /// Link del primer capitulo.
         /// </summary>
-        public readonly string PrimerLink;
+        public readonly Uri PrimerLink;
 
 
         /// <summary>
         /// Link del ultimo capitulo.
         /// </summary>
-        public readonly string UltimoLink;
+        public readonly Uri UltimoLink;
         
 
         /// <summary>
@@ -93,21 +95,21 @@ namespace GetNovelsApp.Core.Modelos
         #region Props
 
         /// <summary>
+        /// Define si esta novela tiene capitulos por imprimir
+        /// </summary>
+        private bool TengoCapitulosPorImprimir => _CapitulosSinImprimir.Count > 0;
+
+        /// <summary>
         /// Capitulos presentes en esta novela que no han sido metidos en el PDF
         /// </summary>
-        public IEnumerable<Capitulo> CapitulosSinImprimir => new List<Capitulo>(_CapitulosSinImprimir);
+        public ReadOnlyCollection<Capitulo> CapitulosSinImprimir => _CapitulosSinImprimir.AsReadOnly();
 
 
         /// <summary>
         /// Capitulos presentes en esta novela que ya han sido metidos en el PDF
         /// </summary>
-        public IEnumerable<Capitulo> CapitulosImpresos => new List<Capitulo>(_CapitulosImpresos);        
+        public ReadOnlyCollection<Capitulo> CapitulosImpresos => _CapitulosImpresos.AsReadOnly();        
 
-
-        /// <summary>
-        /// Define si esta novela tiene capitulos por imprimir
-        /// </summary>
-        public bool TengoCapitulosPorImprimir => _CapitulosSinImprimir.Count > 0;
 
         /// <summary>
         /// Define la cantidad de capitulos que esta novela tiene que no se han impreso.
@@ -143,19 +145,5 @@ namespace GetNovelsApp.Core.Modelos
             _CapitulosImpresos.Add(capitulo);
         }
 
-
-        /// <summary>
-        /// Toma un capitulo de los capitulos sin imprimir.
-        /// </summary>
-        /// <param name="indexCapitulo">Index del capitulo en la lista de capitulos sin imprimir.</param>
-        /// <returns></returns>
-        public Capitulo ConsigueCapituloSinImprimir(int indexCapitulo)
-        {
-            if (_CapitulosSinImprimir.Count < indexCapitulo)
-                throw new IndexOutOfRangeException("index capitulo");
-
-            return _CapitulosSinImprimir[indexCapitulo];
-        }
-        
     }
 }

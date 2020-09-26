@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
+using GetNovelsApp.Core.Reportaje;
 
 namespace GetNovelsApp.Core.ConfiguracionApp
 {
     /// <summary>
-    /// Hacerla una clase?
+    /// Interfaz para la configuracion de la app.
     /// </summary>
     public interface IConfig
     {
+        IComunicador Comunicador { get; }
+
         /// <summary>
         /// Cantidad de capitulos que se intentan conseguir a la vez.
         /// </summary>
@@ -15,7 +18,7 @@ namespace GetNovelsApp.Core.ConfiguracionApp
         /// <summary>
         /// Capitulos por pdf.
         /// </summary>
-        int CapitulosPorPdf { get; }
+        int CapitulosPorDocumento { get; }
 
         /// <summary>
         /// Lista de xPaths a revisar.

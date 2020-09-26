@@ -1,4 +1,5 @@
-﻿using System.Security.AccessControl;
+﻿using System;
+using System.Security.AccessControl;
 using GetNovelsApp.Core.Conexiones;
 
 namespace GetNovelsApp.Core.Modelos
@@ -12,7 +13,7 @@ namespace GetNovelsApp.Core.Modelos
         /// </summary>
         /// <param name="texto"></param>
         /// <param name="link"></param>
-        public Capitulo(string texto, string link)
+        public Capitulo(string texto, Uri link)
         {
             Link = link;
 
@@ -47,7 +48,7 @@ namespace GetNovelsApp.Core.Modelos
         /// <summary>
         /// Link a este capitulo.
         /// </summary>
-        public readonly string Link;
+        public readonly Uri Link;
 
         /// <summary>
         /// Cuantos valores numericos toma este capitulo. 99% veces este valor = 1
@@ -70,22 +71,6 @@ namespace GetNovelsApp.Core.Modelos
         public int Caracteres => Texto.Length;
 
 
-        /// <summary>
-        /// Revisa que todas las propieades de este capitulo esten establecidas..
-        /// </summary>
-        public bool CapituloLleno
-        {
-            get
-            {
-                bool textoLleno = !Texto.Equals(string.Empty);
-                bool tituloCapLleno = !TituloCapitulo.Equals(string.Empty);
-                bool linkEstablecido = !Link.Equals(string.Empty);
-
-                bool valorEstablecido = Valor > 0;
-                bool numeroEstablecido = NumeroCapitulo > 0;
-                return textoLleno & tituloCapLleno & linkEstablecido & valorEstablecido & numeroEstablecido;
-            }
-        } 
 
         #endregion
     }

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30406.217
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetAppsNovel.ConsoleVersion", "GetAppsNovel.ConsoleVersion\GetAppsNovel.ConsoleVersion.csproj", "{BB496D80-CAFE-4607-8EFF-1D802108B9E7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetNovelApp.ConsoleVersion", "GetAppsNovel.ConsoleVersion\GetNovelApp.ConsoleVersion.csproj", "{BB496D80-CAFE-4607-8EFF-1D802108B9E7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetNovelsApp.Core", "GetNovelsApp.Core\GetNovelsApp.Core.csproj", "{002573F4-5120-4F5F-86DA-C93DAD0B86BA}"
 EndProject

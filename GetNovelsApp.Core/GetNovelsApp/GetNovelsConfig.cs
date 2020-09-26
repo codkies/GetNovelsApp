@@ -1,16 +1,18 @@
 ﻿using System.Collections.Generic;
 using GetNovelsApp.Core.ConfiguracionApp;
+using GetNovelsApp.Core.Reportaje;
 
 namespace GetNovelsApp.Core.Configuracion
 {
     /// <summary>
-    /// Configuracion actual de toda la libreria.
+    /// Configuracion actual de toda la libreria. Requiere de un IConfig.
     /// </summary>
-    public static class AppGlobalConfig 
+    public static class GetNovelsConfig 
     {
         public static void EstableceConfig(IConfig configuracion)
         {
             ConfiguracionActual = configuracion;
+            Comunicador.EstableceConfig(configuracion.Comunicador);
         }
 
         /// <summary>
@@ -29,7 +31,7 @@ namespace GetNovelsApp.Core.Configuracion
         /// <summary>
         /// Capitulos por pdf.
         /// </summary>
-        public static int CapitulosPorPdf => ConfiguracionActual.CapitulosPorPdf;
+        public static int CapitulosPorPdf => ConfiguracionActual.CapitulosPorDocumento;
 
 
         /// <summary>

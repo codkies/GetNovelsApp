@@ -6,14 +6,18 @@ namespace GetNovelsApp.Core.Reportaje
     /// <summary>
     /// Encargado de enviar mensajes al usuario
     /// </summary>
-    public static class AppGlobalMensajero
+    public static class Comunicador
     {
-        public static void EstableceConfig(IMensajero mensajero)
+        public static void EstableceConfig(IComunicador mensajero)
         {
             Mensajero = mensajero;
         }
 
-        private static IMensajero Mensajero;
+        private static IComunicador Mensajero;
+
+
+
+        #region Implementaciones del IComunicador
 
 
         /// <summary>
@@ -76,6 +80,7 @@ namespace GetNovelsApp.Core.Reportaje
         public static void ReportaEspecial(string enunciado, IReportero reportero)
         {
             Mensajero.ReportaEspecial(enunciado, reportero);
-        }
+        } 
+        #endregion
     }
 }

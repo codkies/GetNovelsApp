@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
 using GetNovelsApp.Core.Modelos;
 
-namespace GetNovelsApp.Core.CreadorDocumentos.Constructores
+namespace GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores
 {
-    public delegate void NotificaCapituloImpreso(Capitulo cap);
+    public delegate void NotificaCapituloImpreso(Capitulo cap, Novela novela);
     public delegate void NotificaDocumentoCreado(string tituloDocumento);
 
-    public abstract class Constructor
+    /// <summary>
+    /// Constructor basico que implementa IConstructor
+    /// </summary>
+    public abstract class ConstructorBasico : IConstructor
     {
         protected abstract int CapitulosPorDoc { get; }
         protected abstract string Path { get; }

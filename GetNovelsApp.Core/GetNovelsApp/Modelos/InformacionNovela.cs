@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace GetNovelsApp.Core.Modelos
 {
     public struct InformacionNovela
     {
-        public InformacionNovela(string titulo, string linkPaginaPrincipal, List<string> linksDeCapitulos, float primerCapitulo, float ultimoCapitulo)
+        public InformacionNovela(string titulo, Uri linkPaginaPrincipal, List<Uri> linksDeCapitulos, float primerCapitulo, float ultimoCapitulo)
         {
             Titulo = titulo;
             LinkPaginaPrincipal = linkPaginaPrincipal;
@@ -23,24 +24,24 @@ namespace GetNovelsApp.Core.Modelos
         /// <summary>
         /// Link a su pagina principal de la novela
         /// </summary>
-        public string LinkPaginaPrincipal;
+        public Uri LinkPaginaPrincipal;
 
 
         /// <summary>
         /// Lista de todos los links de los capitulos
         /// </summary>
-        public List<string> LinksDeCapitulos;
+        public List<Uri> LinksDeCapitulos;
 
 
         /// <summary>
         /// Link de su primer capitulo
         /// </summary>
-        public string PrimerLink => LinksDeCapitulos.First();
+        public Uri PrimerLink => LinksDeCapitulos.First();
 
         /// <summary>
         /// Link de su ultimo capitulo
         /// </summary>
-        public string UltimoLink => LinksDeCapitulos.Last();
+        public Uri UltimoLink => LinksDeCapitulos.Last();
 
         /// <summary>
         /// Numero de su primer capitulo

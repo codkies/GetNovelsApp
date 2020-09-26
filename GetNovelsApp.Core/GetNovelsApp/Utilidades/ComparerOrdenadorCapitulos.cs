@@ -7,7 +7,7 @@ namespace GetNovelsApp.Core.Utilidades
     /// <summary>
     /// Ordena capitulos acorde a sus numeros
     /// </summary>
-    public class OrdenadorCapitulos : Comparer<Capitulo>
+    public class ComparerOrdenadorCapitulos : Comparer<Capitulo>
     {
         public override int Compare(Capitulo x, Capitulo y)
         {

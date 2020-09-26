@@ -16,7 +16,7 @@ namespace GetNovelsApp.Core
 
         public Scraper()
         {
-            AppGlobalMensajero.Reporta($"Creando conector.", this);
+            Comunicador.Reporta($"Creando conector.", this);
             conector = new Conector(tiempoTopeEnSegundos: 300); //5 minutos de tiempo de espera
         }
 
@@ -50,7 +50,7 @@ namespace GetNovelsApp.Core
 
         #region Scraping Capitulo
 
-        public Capitulo ObtenCapitulo(string direccion)
+        public Capitulo ObtenCapitulo(Uri direccion)
         {
             List<string> textosRaw = ObtenTextoRaw(direccion);
             string Texto = OrdenaTextoRaw(textosRaw);
@@ -64,9 +64,9 @@ namespace GetNovelsApp.Core
 
 
         #region Privados
-        private List<string> ObtenTextoRaw(string direccion)
+        private List<string> ObtenTextoRaw(Uri direccion)
         {
-            HtmlNodeCollection nodos = conector.IntentaNodos(direccion, AppGlobalConfig.xPathsTextos);
+            HtmlNodeCollection nodos = conector.IntentaNodos(direccion, GetNovelsConfig.xPathsTextos);
 
             List<string> CapituloDesordenado = ObtenInnerText(nodos);
 

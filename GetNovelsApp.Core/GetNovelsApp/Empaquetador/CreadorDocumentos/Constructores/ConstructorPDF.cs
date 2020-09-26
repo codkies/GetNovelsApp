@@ -9,13 +9,14 @@ using iText.Layout;
 using iText.Layout.Element;
 using iText.Layout.Properties;
 
-namespace GetNovelsApp.Core.CreadorDocumentos.Constructores
+namespace GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores
 {
-    public class ConstructorPDF : Constructor
+    public class ConstructorPDF : ConstructorBasico
     {
         #region Constructor & Setup
-        public ConstructorPDF(int capitulosPorPDF, string direccionGuardarPDF, string tituloHeader, NotificaCapituloImpreso capituloImpreso, NotificaDocumentoCreado documentoCreado)
+        public ConstructorPDF(Novela novela, int capitulosPorPDF, string direccionGuardarPDF, string tituloHeader, NotificaCapituloImpreso capituloImpreso, NotificaDocumentoCreado documentoCreado)
         {
+            this.Novela = novela;
             this.capitulosPorPDF = capitulosPorPDF;
             this.direccionGuardarPDF = direccionGuardarPDF;
             this.tituloHeader = tituloHeader;
@@ -23,7 +24,7 @@ namespace GetNovelsApp.Core.CreadorDocumentos.Constructores
             this.documentoCreado = documentoCreado;
         }
 
-
+        readonly Novela Novela;
         readonly int capitulosPorPDF;
         readonly string direccionGuardarPDF;
         readonly string tituloHeader;
@@ -94,7 +95,7 @@ namespace GetNovelsApp.Core.CreadorDocumentos.Constructores
                 Paragraph texto = new Paragraph(capitulo.Texto).SetTextAlignment(TextAlignment.JUSTIFIED).SetFontSize(15);
                 document.Add(texto);
 
-                CapituloImpreso?.Invoke(capitulo);
+                CapituloImpreso?.Invoke(capitulo, Novela);
                 capitulosEnPdf++;
             }
 

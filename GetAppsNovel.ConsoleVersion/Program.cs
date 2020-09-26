@@ -1,32 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
+
 using GetNovelsApp.Core;
-using GetNovelsApp.Core.Configuracion;
-using GetNovelsApp.Core.CreadorDocumentos;
+using GetNovelsApp.Core.Empaquetadores;
 using GetNovelsApp.Core.Modelos;
-using GetNovelsApp.Core.Reportaje;
 
 namespace GetAppsNovel.ConsoleVersion
 {
     class Program
-    {
-        static readonly ConsoleUI mensajero = new ConsoleUI();
-        static readonly ConfiguracionBasica configuracion = new ConfiguracionBasica();
-        static readonly GetNovels getNovels = new GetNovels(configuracion, mensajero);
-        static readonly ComunicadorUsuario comunicador = new ComunicadorUsuario();
+    {        
+        static readonly ConfiguracionConsoleUI configuracion = new ConfiguracionConsoleUI();
+        static readonly GetNovels getNovels = new GetNovels(configuracion);        
 
         //Fix entry point stuff.
         static async Task Main(string[] args)
         {
             //Ver control.            
-            string ver = "v0.12.0"; //Orden de libreria.
-            mensajero.ReportaEspecial($"GetAppsNovel {ver} ... Check version before commiting.", comunicador);
+            string ver = "v0.13.0";
+            string message = "Interfaces everywhere & DB.";
+            configuracion.ConsoleUI.ReportaEspecial($"    GetNovelsApp {ver}: {message}", configuracion.ConsoleUI);
 
             //Pidiendo info al usuario:
-            List<Novela> Novelas = comunicador.PideInformacionUsuario();
+            List<Novela> Novelas = configuracion.ConsoleUI.PideInformacionUsuario();
 
             //Diagnostics:
             var stopwatch = new Stopwatch();
@@ -37,18 +34,36 @@ namespace GetAppsNovel.ConsoleVersion
 
             //Diagnostics:
             stopwatch.Stop();
-            comunicador.MustraResultado(getNovels, stopwatch);
+            configuracion.ConsoleUI.MustraResultado(getNovels, stopwatch);            
         }
 
         private static async Task PasaNovelasEjecutadorAsync(List<Novela> Novelas)
         {
             foreach (Novela novela in Novelas)
             {
-                mensajero.ReportaEspecial($"Comenzando novela \"{novela.Titulo}\"", comunicador);
+                configuracion.ConsoleUI.ReportaEspecial($"Comenzando novela \"{novela.Titulo}\"", configuracion.ConsoleUI);
                 System.IO.Directory.CreateDirectory(novela.CarpetaPath);
 
                 await getNovels.EjecutaAsync(novela, TiposDocumentos.PDF); //Hardcoeando aqui el pdf.
-                mensajero.ReportaEspecial($"Terminando novela \"{novela.Titulo}\"", comunicador);
+                configuracion.ConsoleUI.ReportaEspecial($"Terminando novela \"{novela.Titulo}\"", configuracion.ConsoleUI);
+                
+                //Preguntando al usuario si quiere imprimir la novela.
+                bool decisionTomada = false;
+                while (decisionTomada == false)
+                {
+                    string decision = configuracion.ConsoleUI.PreguntaSiSeImprime(novela);
+                    if (decision.Equals("y") | decision.Equals("yes"))
+                    {
+                        EventsManager.Invoke_ImprimeNovela(novela, TiposDocumentos.PDF);
+                        decisionTomada = true;
+                    }
+                    else if (decision.Equals("n") | decision.Equals("no"))
+                    {
+                        configuracion.ConsoleUI.ReportaEspecial($"La novela \"{novela.Titulo}\"se ha guardado en la base de datos.",
+                            configuracion.ConsoleUI);
+                        decisionTomada = true;
+                    }
+                }
             }
         }
 

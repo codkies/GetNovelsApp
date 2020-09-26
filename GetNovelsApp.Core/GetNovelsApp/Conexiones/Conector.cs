@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using GetNovelsApp.Core.Reportaje;
 using HtmlAgilityPack;
@@ -42,7 +43,7 @@ namespace GetNovelsApp.Core.Conexiones
         /// <param name="direccion"></param>
         /// <param name="xPaths"></param>
         /// <returns></returns>
-        public HtmlNodeCollection IntentaNodos(string direccion, List<string> xPaths)
+        public HtmlNodeCollection IntentaNodos(Uri direccion, List<string> xPaths)
         {
             HtmlDocument website = ObtenWebsite(direccion);
 
@@ -53,7 +54,7 @@ namespace GetNovelsApp.Core.Conexiones
                 nodos = ObtenNodes(website, xPaths); //Check for null.
                 if (nodos == null)
                 {
-                    AppGlobalMensajero.ReportaError("No se consiguieron los nodos segun los xPaths. Reintentando...", this);
+                    Comunicador.ReportaError("No se consiguieron los nodos segun los xPaths. Reintentando...", this);
                     website = null;
                     website = ObtenWebsite(direccion);
                 }
@@ -70,7 +71,7 @@ namespace GetNovelsApp.Core.Conexiones
         /// <param name="xPathsOne">xPaths de los primeros nodos.</param>
         /// <param name="xPathsTwo">xPaths de los segundos nodos.</param>
         /// <returns></returns>
-        public HtmlNodeCollection[] IntenaVariosNodos(string direccion, List<string> xPathsOne, List<string> xPathsTwo)
+        public HtmlNodeCollection[] IntenaVariosNodos(Uri direccion, List<string> xPathsOne, List<string> xPathsTwo)
         {
             HtmlNodeCollection[] htmlNodes = new HtmlNodeCollection[2];
 
@@ -86,7 +87,7 @@ namespace GetNovelsApp.Core.Conexiones
 
                 if (nodosOne == null | nodosTwo == null)
                 {
-                    AppGlobalMensajero.ReportaError("No se consiguieron los nodos segun los xPaths. Reintentando...", this);
+                    Comunicador.ReportaError("No se consiguieron los nodos segun los xPaths. Reintentando...", this);
                     website = ObtenWebsite(direccion);
                 }
             }
@@ -104,7 +105,7 @@ namespace GetNovelsApp.Core.Conexiones
         /// <param name="direccion">Link al website.</param>
         /// <param name="ListOfxPaths">Lista de xPaths a conseguir en el website.</param>
         /// <returns></returns>
-        public List<HtmlNodeCollection> IntenaVariosNodos(string direccion, List<List<string>> ListOfxPaths)
+        public List<HtmlNodeCollection> IntenaVariosNodos(Uri direccion, List<List<string>> ListOfxPaths)
         {
             HtmlDocument website = ObtenWebsite(direccion);
 
@@ -130,7 +131,7 @@ namespace GetNovelsApp.Core.Conexiones
 
                 if (AllHtmlNodes == null)
                 {
-                    AppGlobalMensajero.ReportaError("No se consiguieron los nodos segun los xPaths. Reintentando...", this);
+                    Comunicador.ReportaError("No se consiguieron los nodos segun los xPaths. Reintentando...", this);
                     website = ObtenWebsite(direccion);
                 }
             }
@@ -151,7 +152,7 @@ namespace GetNovelsApp.Core.Conexiones
         /// <param name="direccion"></param>
         /// <param name="tiempoDeEspera"></param>
         /// <returns></returns>
-        private HtmlDocument ObtenWebsite(string direccion, int tiempoDeEspera = 5000)
+        private HtmlDocument ObtenWebsite(Uri direccion, int tiempoDeEspera = 5000)
         {
             //Mensajero.MuestraNotificacion("Conector --> Comenzando conexión...");
             HtmlWeb Conexion = new HtmlWeb();
@@ -165,19 +166,19 @@ namespace GetNovelsApp.Core.Conexiones
                 }
                 catch (ObjectDisposedException)
                 {
-                    AppGlobalMensajero.ReportaError("System.ObjectDisposedException", this);
+                    Comunicador.ReportaError("System.ObjectDisposedException", this);
                     Conexion = new HtmlWeb();
                     website = null;
                 }
                 catch (TimeoutException)
                 {
-                    AppGlobalMensajero.Reporta("Timeout. Reintentando...", this);
+                    Comunicador.Reporta("Timeout. Reintentando...", this);
                     website = null;
                     System.Threading.Thread.Sleep(tiempoDeEspera); //Wait for 5seconds                    
                 }
                 catch (WebException)
                 {
-                    AppGlobalMensajero.ReportaError("Pareces no tener internet. Reintentando...", this);
+                    Comunicador.ReportaError("Pareces no tener internet. Reintentando...", this);
                     website = null;
                     continue;
                 }
@@ -190,17 +191,24 @@ namespace GetNovelsApp.Core.Conexiones
         {
             //Mensajero.MuestraNotificacion("Conector --> Buscando nodes...");
             HtmlNodeCollection posibleColeccion = null;
+            HtmlNodeCollection Coleccion = null;
+            int tamaño = 0;
 
             Stopwatch stopwatchTotal = new Stopwatch();
             stopwatchTotal.Start();
-
+            
             foreach (string xPath in xPaths)
             {
                 posibleColeccion = doc.DocumentNode.SelectNodes(xPath);
-                if (posibleColeccion != null) break;
+                if (posibleColeccion == null) continue;
+                if (posibleColeccion.Count > tamaño)
+                {
+                    Coleccion = posibleColeccion;
+                    tamaño = Coleccion.Count;
+                }
             }
 
-            return posibleColeccion;
+            return Coleccion;
         }
 
         #endregion

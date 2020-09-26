@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using GetNovelsApp.Core.Modelos;
 using GetNovelsApp.Core.Configuracion;
 using GetNovelsApp.Core.Reportaje;
-using GetNovelsApp.Core.CreadorDocumentos.Constructores;
+using GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores;
+using GetNovelsApp.Core.GetNovelsApp.Empaquetador.BaseDatos;
 
-namespace GetNovelsApp.Core.CreadorDocumentos
+namespace GetNovelsApp.Core.Empaquetadores
 {
     public enum TiposDocumentos
     {
@@ -18,14 +19,15 @@ namespace GetNovelsApp.Core.CreadorDocumentos
     /// <summary>
     /// Encargado de aceptar capitulos e imprimirlos.
     /// </summary>
-    public class Empaquetador : IReportero
-    {
+    public class EmpaquetadorNovelas : IReportero
+    {        
+
         #region Constructores & setup
 
-        public Empaquetador(Novela Novela, TiposDocumentos tipo)
+        public EmpaquetadorNovelas()
         {
-            NovelaActual = Novela;
-            Constructor = AsignaConstructor(tipo, AppGlobalConfig.CapitulosPorPdf, NovelaActual.CarpetaPath, NovelaActual.Titulo);
+            EventsManager.ImprimeNovela += ImprimeNovela;
+            Archivador = new Archivador();
         }
 
 
@@ -34,12 +36,12 @@ namespace GetNovelsApp.Core.CreadorDocumentos
         /// </summary>
         /// <param name="tipo"></param>
         /// <returns></returns>
-        private Constructor AsignaConstructor(TiposDocumentos tipo, int capsPorPDF, string direccion, string titulo)
+        private IConstructor AsignaConstructor(Novela novela, TiposDocumentos tipo, int capsPorPDF, string direccion, string titulo)
         {
             switch (tipo)
             {
                 case TiposDocumentos.PDF:
-                    return new ConstructorPDF(capsPorPDF, direccion, titulo, CapituloImpreso, DocumentoCreado);
+                    return new ConstructorPDF(novela, capsPorPDF, direccion, titulo, CapituloImpreso, DocumentoCreado);
                 default:
                     throw new NotImplementedException("No se han creado constructores para otros tipos de archivos que no sean PDF.");
             }
@@ -49,34 +51,15 @@ namespace GetNovelsApp.Core.CreadorDocumentos
         #endregion
 
 
-
         #region Props publicas
 
 
         public int DocumentosCreados { get; private set; } = 0;
 
-
-        #endregion
-
-
-        #region Propiedades
-
-
-        private string Path => NovelaActual.CarpetaPath;
-
-
-        private int CapitulosPorPdf => AppGlobalConfig.CapitulosPorPdf;
-
-
-        private string TituloNovela => NovelaActual.Titulo;
-
-
-        private bool CreaPdf => NovelaActual.CantidadCapitulosPorImprimir >= CapitulosPorPdf;
-
         public string Nombre => "Empaquetador";
 
-
         #endregion
+
 
 
         #region Fields
@@ -85,14 +68,10 @@ namespace GetNovelsApp.Core.CreadorDocumentos
         /// <summary>
         /// Constructor que se está usando para crear los documentos.
         /// </summary>
-        private readonly Constructor Constructor;
+        private IConstructor Constructor;
 
 
-        /// <summary>
-        /// Novela que se está empaquetando.
-        /// </summary>
-        private readonly Novela NovelaActual;
-
+        private readonly Archivador Archivador;
 
         #endregion
 
@@ -101,20 +80,16 @@ namespace GetNovelsApp.Core.CreadorDocumentos
 
         #region Metodos Publicos
 
-        /// <summary>
-        /// Notifica que la novela ha finalizado.
-        /// </summary>
-        public void FinalizoNovela()
-        {
-            if (NovelaActual.TengoCapitulosPorImprimir) EmpaquetaNovela();
-        }
 
-
-        public void AgregaCapitulo(Capitulo CapituloNuevo)
+        public void AgregaCapitulo(Capitulo CapituloNuevo, Novela novela)
         {
-            NovelaActual.AgregaCapitulo(CapituloNuevo);
-            //if (CreaPdf) legacy_EmpaquetaNovela();
-            if (CreaPdf) EmpaquetaNovela();
+            if (novela.CapitulosImpresos.Contains(CapituloNuevo))
+            {
+                throw new Exception("Este capitulo ya fue descargado");
+            }
+
+            novela.AgregaCapitulo(CapituloNuevo);
+            Archivador.CapituloObtenido(CapituloNuevo, novela);
         }
 
         
@@ -123,9 +98,10 @@ namespace GetNovelsApp.Core.CreadorDocumentos
 
         #region Core
 
-        private void EmpaquetaNovela()
+        private void ImprimeNovela(Novela novela, TiposDocumentos tipo)
         {
-            List<Capitulo> CapitulosAImprimir = new List<Capitulo>(NovelaActual.CapitulosSinImprimir);
+            Constructor = AsignaConstructor(novela, tipo, GetNovelsConfig.CapitulosPorPdf, novela.CarpetaPath, novela.Titulo);
+            List<Capitulo> CapitulosAImprimir = new List<Capitulo>(novela.CapitulosSinImprimir);
 
             Constructor.ConstruyeDocumento(CapitulosAImprimir);
         }
@@ -139,9 +115,9 @@ namespace GetNovelsApp.Core.CreadorDocumentos
         /// El constructor llama este metodo para notificar que un capitulo fue colocado en el documento.
         /// </summary>
         /// <param name="capitulo"></param>
-        private void CapituloImpreso(Capitulo capitulo)
+        private void CapituloImpreso(Capitulo capitulo, Novela novela)
         {
-            NovelaActual.CapituloFueImpreso(capitulo);
+            novela.CapituloFueImpreso(capitulo);
         }
 
 
@@ -152,7 +128,7 @@ namespace GetNovelsApp.Core.CreadorDocumentos
         private void DocumentoCreado(string tituloDocumento)
         {
             DocumentosCreados++;
-            AppGlobalMensajero.ReportaEspecial($"Creando {tituloDocumento}.", this);
+            Comunicador.ReportaEspecial($"Creando {tituloDocumento}.", this);
         }
 
         #endregion

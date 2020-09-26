@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
-  <asmv1:assemblyIdentity name="GetAppsNovel.ConsoleVersion.exe" version="0.10.0.3" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
+  <asmv1:assemblyIdentity name="GetNovelApp.ConsoleVersion.exe" version="0.10.0.3" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
   <application />
   <entryPoint>
-    <assemblyIdentity name="GetAppsNovel.ConsoleVersion" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
-    <commandLine file="GetAppsNovel.ConsoleVersion.exe" parameters="" />
+    <assemblyIdentity name="GetNovelApp.ConsoleVersion" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+    <commandLine file="GetNovelApp.ConsoleVersion.exe" parameters="" />
   </entryPoint>
   <trustInfo>
     <security>
@@ -78,26 +78,26 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="GetAppsNovel.ConsoleVersion.exe" size="16344">
-      <assemblyIdentity name="GetAppsNovel.ConsoleVersion" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="GetNovelApp.ConsoleVersion.exe" size="16856">
+      <assemblyIdentity name="GetNovelApp.ConsoleVersion" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>R2i0K7UPqKHfoe41+z9r83daoo0uVUcs2zNypwRV+60=</dsig:DigestValue>
+        <dsig:DigestValue>z4lC4EpW8oZbzHwgDI44KH2o2NxfFf9jAvmcHJX4TLg=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="GetNovelsApp.Core.dll" size="26112">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="GetNovelsApp.Core.dll" size="27648">
       <assemblyIdentity name="GetNovelsApp.Core" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>nXlHAoWEQ8vXcDPc2s6wdXj8RTiM4G+ZBG3hz4rQKAo=</dsig:DigestValue>
+        <dsig:DigestValue>usp2J7ibsgL2p6FUcbGYvymz5jKqq5V+FmbQFWaJuls=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -149,7 +149,7 @@
       </hash>
     </dependentAssembly>
   </dependency>
-  <file name="GetAppsNovel.ConsoleVersion.exe.config" size="189">
+  <file name="GetNovelApp.ConsoleVersion.exe.config" size="189">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />

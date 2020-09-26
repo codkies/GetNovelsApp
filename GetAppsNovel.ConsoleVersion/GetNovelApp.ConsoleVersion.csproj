@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{BB496D80-CAFE-4607-8EFF-1D802108B9E7}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>GetAppsNovel.ConsoleVersion</RootNamespace>
-    <AssemblyName>GetAppsNovel.ConsoleVersion</AssemblyName>
+    <RootNamespace>GetNovelApp.ConsoleVersion</RootNamespace>
+    <AssemblyName>GetNovelApp.ConsoleVersion</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -76,9 +76,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConfiguracionBasica.cs" />
+    <Compile Include="ConfiguracionConsoleUI.cs" />
     <Compile Include="ConsoleUI.cs" />
-    <Compile Include="ComunicadorUsuario.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\HayandoInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

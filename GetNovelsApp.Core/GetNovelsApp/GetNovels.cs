@@ -5,10 +5,12 @@ using GetNovelsApp.Core.Modelos;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System;
-using GetNovelsApp.Core.CreadorDocumentos;
+
 using GetNovelsApp.Core.Reportaje;
 using GetNovelsApp.Core.ConfiguracionApp;
 using GetNovelsApp.Core.Configuracion;
+using GetNovelsApp.Core.Empaquetadores;
+
 
 /* Ideas:       
    - Agregar variabilidad en la fuente y en el tamaño
@@ -24,10 +26,9 @@ namespace GetNovelsApp.Core
     {
         #region Constructores & Setup
 
-        public GetNovels(IConfig ConfiguracionApp, IMensajero mensajero)
+        public GetNovels(IConfig ConfiguracionApp)
         {
-            AppGlobalConfig.EstableceConfig(ConfiguracionApp);
-            AppGlobalMensajero.EstableceConfig(mensajero);
+            GetNovelsConfig.EstableceConfig(ConfiguracionApp);            
         }
 
         /// <summary>
@@ -56,7 +57,7 @@ namespace GetNovelsApp.Core
         /// <summary>
         /// Empaquetador que esta instancia del GetNovels está usando.
         /// </summary>
-        private Empaquetador MyEmpaquetador;
+        private EmpaquetadorNovelas MyEmpaquetador;
 
 
         /// <summary>
@@ -105,18 +106,18 @@ namespace GetNovelsApp.Core
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            AppGlobalMensajero.ReportaEspecial($"{MyNovela.Titulo} tiene {MiUltimoCapitulo} capitulos. Se empezará desde el link #{MyNovela.EmpezarEn}\n" +
+            Comunicador.ReportaEspecial($"{MyNovela.Titulo} tiene {MiUltimoCapitulo} capitulos. Se empezará desde el link #{MyNovela.EmpezarEn}\n" +
                                                 $"Se realizarán {MyNovela.LinksDeCapitulos.Count - MyNovela.EmpezarEn} iteraciones."
                                                 , this);
             //------------------------------------------------------------------------------------------------------------------------------
 
 
             //Scraping:
-            int tamañoBatch = AppGlobalConfig.TamañoBatch; 
+            int tamañoBatch = GetNovelsConfig.TamañoBatch; 
             int cantidadDeLinksAUtilizar = MyNovela.CantidadLinks - MyNovela.EmpezarEn;            
             int iteraciones = DivideYRedondeaUp(cantidadDeLinksAUtilizar, tamañoBatch);
 
-            AppGlobalMensajero.Reporta("Comenzando Scrap\n", this);
+            Comunicador.Reporta("Comenzando Scrap\n", this);
 
             for (int i = 0; i < iteraciones; i++)
             {                
@@ -124,36 +125,33 @@ namespace GetNovelsApp.Core
                 int xi = MyNovela.EmpezarEn + factor;
                 int xf = xi + tamañoBatch - 1;
 
-                AppGlobalMensajero.Reporta($"Batch {(i + 1)}/{iteraciones + 1}...", this);
+                Comunicador.Reporta($"Batch {(i + 1)}/{iteraciones + 1}...", this);
 
                 var resultados = await ScrapCapitulosAsync(xi, xf);
 
-                AppGlobalMensajero.Reporta($"... Guardando capitulos...", this);
+                Comunicador.Reporta($"... Guardando capitulos...", this);
 
                 foreach (Capitulo cap in resultados)
                 {
-                    MyEmpaquetador.AgregaCapitulo(cap);
+                    MyEmpaquetador.AgregaCapitulo(cap, novelaNueva);
                 }
 
-                AppGlobalMensajero.Reporta($"... {((i + 1) * 100) /(iteraciones + 1)}% completado...", this);
+                Comunicador.Reporta($"... {((i + 1) * 100) /(iteraciones + 1)}% completado...", this);
 
                 if (i != iteraciones - 1) //Solo espera si no eres el ultimo.
                 {
                     int segundos = 5;
-                    AppGlobalMensajero.Reporta($"... Esperando {segundos}s\n", this);
+                    Comunicador.Reporta($"... Esperando {segundos}s\n", this);
                     System.Threading.Thread.Sleep(segundos * 1000);
                 }
             }
 
-            AppGlobalMensajero.ReportaExito("\nFinalizado. Revisando si quedan capitulos...", this);
-
-            MyEmpaquetador.FinalizoNovela();
+            Comunicador.ReportaExito("\nFinalizados todos los batchs. Revisando si quedan capitulos...", this);            
 
             //Reportando:            
             stopwatch.Stop();
-            AppGlobalMensajero.ReportaExito($"Se han finalizado todas las iteraciones. Tiempo tomado: {stopwatch.ElapsedMilliseconds / (60 * 1000)}min.", this);
-            MyEmpaquetador.FinalizoNovela();
-            RecolectaInformacion();
+            Comunicador.ReportaExito($"Se han finalizado todas las iteraciones. Tiempo tomado: {stopwatch.ElapsedMilliseconds / (60 * 1000)}min.", this);
+            RecolectaInformacion();            
         }
 
 
@@ -175,7 +173,7 @@ namespace GetNovelsApp.Core
             List<Task<Capitulo>> tareas = new List<Task<Capitulo>>();
             for (int i = xi; i <= xf; i++)
             {
-                string Link = string.Empty;
+                Uri Link = null;
                 try
                 {   
                     Link = MyNovela.LinksDeCapitulos[i];
@@ -195,7 +193,7 @@ namespace GetNovelsApp.Core
 
             //Ordenando los capitulos:
             List<Capitulo> caps = new List<Capitulo>(resultados);
-            caps.Sort(new OrdenadorCapitulos());
+            caps.Sort(new ComparerOrdenadorCapitulos());
             return caps;
 
         }
@@ -223,7 +221,7 @@ namespace GetNovelsApp.Core
             MyNovela = novelaNueva;
 
             MyScraper = new Scraper();
-            MyEmpaquetador = new Empaquetador(MyNovela, tipoDoc);
+            MyEmpaquetador = new EmpaquetadorNovelas();
         }
 
         #endregion

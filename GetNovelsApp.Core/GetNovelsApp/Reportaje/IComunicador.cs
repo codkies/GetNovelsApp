@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GetNovelsApp.Core.Reportaje
 {
-    public interface IMensajero
+    public interface IComunicador
     {
         /// <summary>
         /// Toma un input del usuario.
