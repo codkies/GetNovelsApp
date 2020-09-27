@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GetNovelsApp.Core.ConfiguracionApp;
+using System.Web.WebSockets;
+using GetNovelsApp.Core.Empaquetador;
+using GetNovelsApp.Core.Empaquetadores;
 using GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores;
 using GetNovelsApp.Core.Modelos;
 
@@ -12,10 +9,28 @@ namespace GetNovelsApp.Core.GetNovelsApp
 {
     public class Factory
     {
-        //public static IConstructor BuildConstructor(int capitulosPorPDF, string direccionGuardarPDF, string tituloHeader, NotificaCapituloImpreso capituloImpreso, NotificaDocumentoCreado documentoCreado)
-        //{
-        //    return new ConstructorPDF(capitulosPorPDF, direccionGuardarPDF, tituloHeader, capituloImpreso, documentoCreado);
-        //}
-        
+
+        /// <summary>
+        /// Asigna un constructor dependiendo del tipo de archivo que se desee.
+        /// </summary>
+        /// <param name="tipo"></param>
+        /// <returns></returns>
+        public static IConstructor AsignaConstructor(Novela novela, TiposDocumentos tipo, int capsPorPDF, string direccion, string titulo, NotificaCapituloImpreso notCapImpreso, NotificaDocumentoCreado notDocCreado)
+        {
+            switch (tipo)
+            {
+                case TiposDocumentos.PDF:
+                    return new ConstructorPDF(novela, capsPorPDF, direccion, titulo, notCapImpreso, notDocCreado);
+                default:
+                    throw new NotImplementedException("No se han creado constructores para otros tipos de archivos que no sean PDF.");
+            }
+        }
+
+
+        public static Novela ObtenNovela(InformacionNovela info, int ID)
+        {
+            return new Novela(info, ID);
+        }
+
     }
 }

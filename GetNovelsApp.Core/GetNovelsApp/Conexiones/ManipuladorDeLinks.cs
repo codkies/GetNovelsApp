@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using GetNovelsApp.Core.Configuracion;
 using GetNovelsApp.Core.Modelos;
 using GetNovelsApp.Core.Reportaje;
 using HtmlAgilityPack;
@@ -146,11 +145,9 @@ namespace GetNovelsApp.Core.Conexiones
             HtmlNodeCollection nodosLinksCapitulos = htmlNodes[1];
             string Titulo = ObtenInnerText(nodosTitulo);
             List<Uri> LinksDeCapitulos = ObtenLinks(nodosLinksCapitulos, OrdenLinks.Descendiente);
-            float numPrimerCap = EncuentraInformacionCapitulo(LinksDeCapitulos.First()).NumeroCapitulo;
-            float numUltimoCap = EncuentraInformacionCapitulo(LinksDeCapitulos.Last()).NumeroCapitulo;
 
             //Ordeanando la información:
-            InformacionNovela info = new InformacionNovela(Titulo, LinkPaginaPrincipal, LinksDeCapitulos, numPrimerCap, numUltimoCap);
+            InformacionNovela info = new InformacionNovela(Titulo, LinkPaginaPrincipal, LinksDeCapitulos);
 
             return info;
         }

@@ -30,3 +30,9 @@ C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp_Console\GetAppsNovel.C
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp_Console\GetAppsNovel.ConsoleVersion\obj\Debug\GetNovelApp.ConsoleVersion.csproj.CopyComplete
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp_Console\GetAppsNovel.ConsoleVersion\obj\Debug\GetNovelApp.ConsoleVersion.exe
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp_Console\GetAppsNovel.ConsoleVersion\obj\Debug\GetNovelApp.ConsoleVersion.pdb
+C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp_Console\GetAppsNovel.ConsoleVersion\bin\Debug\System.Data.SQLite.dll
+C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp_Console\GetAppsNovel.ConsoleVersion\bin\Debug\Dapper.dll
+C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp_Console\GetAppsNovel.ConsoleVersion\bin\Debug\System.Data.SQLite.xml
+C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp_Console\GetAppsNovel.ConsoleVersion\bin\Debug\System.Data.SQLite.dll.config
+C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp_Console\GetAppsNovel.ConsoleVersion\bin\Debug\Dapper.xml
+C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp_Console\GetAppsNovel.ConsoleVersion\bin\Debug\NovelsDB.db

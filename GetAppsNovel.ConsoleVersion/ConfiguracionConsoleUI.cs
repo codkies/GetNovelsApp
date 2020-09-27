@@ -12,13 +12,19 @@ namespace GetAppsNovel.ConsoleVersion
     3) cambiar el nombre del mensajero global
     4) borrar propiedades que no están en uso
      */
-
     public class ConfiguracionConsoleUI : ConfiguracionBasica
     {
-        public ConfiguracionConsoleUI()
+        public ConfiguracionConsoleUI(ConsoleUI UI, string DireccionDiscoDuro, int BatchSize, int CapitulosPorDoc)
         {
+            _tamañoBatch = BatchSize;
+            _direccionDiscoDuro = DireccionDiscoDuro;
+            _capsPorDocumento = CapitulosPorDoc;
+
+            ConsoleUI = UI;
+
             InicializaConfiguracion();
         }
+
 
         private void InicializaConfiguracion()
         {
@@ -57,8 +63,10 @@ namespace GetAppsNovel.ConsoleVersion
 
         #region Fields
 
-
-        public ConsoleUI ConsoleUI { get; private set; } = new ConsoleUI();
+        /// <summary>
+        /// Referencia publica a la consola del programa.
+        /// </summary>
+        public readonly ConsoleUI ConsoleUI;
 
         Uri dominio = new Uri("https://wuxiaworld.site/");
 
@@ -66,7 +74,10 @@ namespace GetAppsNovel.ConsoleVersion
         public List<string> nextBtn;
         public List<string> titulo;
         public List<string> links;
-        public int _tamañoBatch = 25;
+
+        public int _tamañoBatch;
+        public int _capsPorDocumento;
+        public string _direccionDiscoDuro;
 
         public Website wuxiaworld_site;
 
@@ -76,14 +87,16 @@ namespace GetAppsNovel.ConsoleVersion
 
         #region Contrato privado (ConfiguracionBasica inheritence)
 
-        protected override int capsPorDocumento => 100; 
+        protected override int capsPorDocumento => _capsPorDocumento; 
 
         protected override int tamañoBatch => _tamañoBatch;
 
 
         protected override IPath xPaths => wuxiaworld_site;
 
-        protected override IComunicador comunicador => ConsoleUI; 
+        protected override IComunicador comunicador => ConsoleUI;
+
+        protected override string direccionDiscoDuro => _direccionDiscoDuro;
 
 
         #endregion

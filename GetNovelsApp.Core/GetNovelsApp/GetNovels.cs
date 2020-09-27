@@ -8,8 +8,8 @@ using System;
 
 using GetNovelsApp.Core.Reportaje;
 using GetNovelsApp.Core.ConfiguracionApp;
-using GetNovelsApp.Core.Configuracion;
 using GetNovelsApp.Core.Empaquetadores;
+using GetNovelsApp.Core.GetNovelsApp.Empaquetador.BaseDatos;
 
 
 /* Ideas:       
@@ -28,19 +28,8 @@ namespace GetNovelsApp.Core
 
         public GetNovels(IConfig ConfiguracionApp)
         {
-            GetNovelsConfig.EstableceConfig(ConfiguracionApp);            
-        }
-
-        /// <summary>
-        /// Obteniendo informacion de las iteraciones anteriores.
-        /// </summary>
-        private void RecolectaInformacion()
-        {
-            if (MyEmpaquetador == null | MyScraper == null) return;
-            DocumentosCreados += MyEmpaquetador.DocumentosCreados;
-            EntradasIgnoradas += MyScraper.EntradasIgnoradas;
-            CaracteresVistos += MyScraper.CaracteresVistos;
-            CapitulosEncontrados += MyScraper.CapitulosEncontrados;
+            GetNovelsConfig.EstableceConfig(ConfiguracionApp);
+            Archivador = new Archivador();
         }
 
         #endregion
@@ -77,6 +66,7 @@ namespace GetNovelsApp.Core
 
         #region Publico
 
+
         #region Props
 
         public int DocumentosCreados { get; private set; } = 0;
@@ -91,30 +81,37 @@ namespace GetNovelsApp.Core
 
         public string Nombre => "GetNovelsApp";
 
+        private readonly Archivador Archivador;
+
         #endregion
+
 
         /// <summary>
         /// Obtiene capitulos de una novela en el formato establecido y los coloca en la carpeta de la configuracion.
         /// </summary>
-        public async Task EjecutaAsync(Novela novelaNueva, TiposDocumentos tipoDoc)
+        public async Task<Novela> GetNovelAsync(InformacionNovela infoNovela, int ComienzaEn)
         {
+            //Revisado si la novela ya está en la base de datos.
+            Novela novelaNueva = Archivador.GuardaInfoNovela(infoNovela);
+
             //Actualizando referencias
-            PreparaNovelaNueva(novelaNueva, tipoDoc);
+            PreparaNovelaNueva(novelaNueva);
             //------------------------------------------
 
             //Preparaciones:
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            Comunicador.ReportaEspecial($"{MyNovela.Titulo} tiene {MiUltimoCapitulo} capitulos. Se empezará desde el link #{MyNovela.EmpezarEn}\n" +
-                                                $"Se realizarán {MyNovela.LinksDeCapitulos.Count - MyNovela.EmpezarEn} iteraciones."
+            Comunicador.ReportaEspecial($"{MyNovela.Titulo} tiene {MiUltimoCapitulo} capitulos. Se empezará desde el link #{ComienzaEn}\n" +
+                                                $"Se realizarán {MyNovela.LinksDeCapitulos.Count - ComienzaEn} iteraciones."
                                                 , this);
             //------------------------------------------------------------------------------------------------------------------------------
 
+            //Actualiza novela en DB cada vez que se consigue 1 batch.
 
             //Scraping:
             int tamañoBatch = GetNovelsConfig.TamañoBatch; 
-            int cantidadDeLinksAUtilizar = MyNovela.CantidadLinks - MyNovela.EmpezarEn;            
+            int cantidadDeLinksAUtilizar = MyNovela.CantidadLinks - ComienzaEn;            
             int iteraciones = DivideYRedondeaUp(cantidadDeLinksAUtilizar, tamañoBatch);
 
             Comunicador.Reporta("Comenzando Scrap\n", this);
@@ -122,7 +119,7 @@ namespace GetNovelsApp.Core
             for (int i = 0; i < iteraciones; i++)
             {                
                 int factor = (i * tamañoBatch);
-                int xi = MyNovela.EmpezarEn + factor;
+                int xi = ComienzaEn + factor;
                 int xf = xi + tamañoBatch - 1;
 
                 Comunicador.Reporta($"Batch {(i + 1)}/{iteraciones + 1}...", this);
@@ -146,12 +143,13 @@ namespace GetNovelsApp.Core
                 }
             }
 
-            Comunicador.ReportaExito("\nFinalizados todos los batchs. Revisando si quedan capitulos...", this);            
-
+            Comunicador.ReportaExito("\nFinalizados todos los batchs.", this);            
+            
             //Reportando:            
             stopwatch.Stop();
             Comunicador.ReportaExito($"Se han finalizado todas las iteraciones. Tiempo tomado: {stopwatch.ElapsedMilliseconds / (60 * 1000)}min.", this);
-            RecolectaInformacion();            
+            RecolectaInformacion();
+            return novelaNueva;
         }
 
 
@@ -216,12 +214,25 @@ namespace GetNovelsApp.Core
         /// Crea scraper y empaquetador para la novela nueva.
         /// </summary>
         /// <param name="novelaNueva"></param>
-        private void PreparaNovelaNueva(Novela novelaNueva, TiposDocumentos tipoDoc)
+        private void PreparaNovelaNueva(Novela novelaNueva)
         {
             MyNovela = novelaNueva;
 
             MyScraper = new Scraper();
-            MyEmpaquetador = new EmpaquetadorNovelas();
+            MyEmpaquetador = new EmpaquetadorNovelas(Archivador);
+        }
+
+
+        /// <summary>
+        /// Obteniendo informacion de las iteraciones anteriores.
+        /// </summary>
+        private void RecolectaInformacion()
+        {
+            if (MyEmpaquetador == null | MyScraper == null) return;
+            DocumentosCreados += MyEmpaquetador.DocumentosCreados;
+            EntradasIgnoradas += MyScraper.EntradasIgnoradas;
+            CaracteresVistos += MyScraper.CaracteresVistos;
+            CapitulosEncontrados += MyScraper.CapitulosEncontrados;
         }
 
         #endregion

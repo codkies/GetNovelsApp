@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 
 using GetNovelsApp.Core.Modelos;
-using GetNovelsApp.Core.Configuracion;
 using GetNovelsApp.Core.Reportaje;
 using GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores;
 using GetNovelsApp.Core.GetNovelsApp.Empaquetador.BaseDatos;
+using GetNovelsApp.Core.GetNovelsApp;
+using GetNovelsApp.Core.Empaquetador;
 
 namespace GetNovelsApp.Core.Empaquetadores
 {
@@ -24,28 +25,28 @@ namespace GetNovelsApp.Core.Empaquetadores
 
         #region Constructores & setup
 
-        public EmpaquetadorNovelas()
+        public EmpaquetadorNovelas(Archivador archivador)
         {
             EventsManager.ImprimeNovela += ImprimeNovela;
-            Archivador = new Archivador();
+            Archivador = archivador;
         }
 
 
-        /// <summary>
-        /// Asigna un constructor dependiendo del tipo de archivo que se desee.
-        /// </summary>
-        /// <param name="tipo"></param>
-        /// <returns></returns>
-        private IConstructor AsignaConstructor(Novela novela, TiposDocumentos tipo, int capsPorPDF, string direccion, string titulo)
-        {
-            switch (tipo)
-            {
-                case TiposDocumentos.PDF:
-                    return new ConstructorPDF(novela, capsPorPDF, direccion, titulo, CapituloImpreso, DocumentoCreado);
-                default:
-                    throw new NotImplementedException("No se han creado constructores para otros tipos de archivos que no sean PDF.");
-            }
-        }
+        ///// <summary>
+        ///// Asigna un constructor dependiendo del tipo de archivo que se desee.
+        ///// </summary>
+        ///// <param name="tipo"></param>
+        ///// <returns></returns>
+        //private IConstructor AsignaConstructor(Novela novela, TiposDocumentos tipo, int capsPorPDF, string direccion, string titulo)
+        //{
+        //    switch (tipo)
+        //    {
+        //        case TiposDocumentos.PDF:
+        //            return new ConstructorPDF(novela, capsPorPDF, direccion, titulo, CapituloImpreso, DocumentoCreado);
+        //        default:
+        //            throw new NotImplementedException("No se han creado constructores para otros tipos de archivos que no sean PDF.");
+        //    }
+        //}
 
 
         #endregion
@@ -65,12 +66,6 @@ namespace GetNovelsApp.Core.Empaquetadores
         #region Fields
 
 
-        /// <summary>
-        /// Constructor que se está usando para crear los documentos.
-        /// </summary>
-        private IConstructor Constructor;
-
-
         private readonly Archivador Archivador;
 
         #endregion
@@ -79,7 +74,7 @@ namespace GetNovelsApp.Core.Empaquetadores
 
 
         #region Metodos Publicos
-
+         
 
         public void AgregaCapitulo(Capitulo CapituloNuevo, Novela novela)
         {
@@ -88,20 +83,22 @@ namespace GetNovelsApp.Core.Empaquetadores
                 throw new Exception("Este capitulo ya fue descargado");
             }
 
-            novela.AgregaCapitulo(CapituloNuevo);
-            Archivador.CapituloObtenido(CapituloNuevo, novela);
+            novela.CapituloFueDescargado(CapituloNuevo);
+            Archivador.GuardaCapituloDB(CapituloNuevo, novela.ID);
         }
 
         
         #endregion
 
 
-        #region Core
+        #region Imprimiendo novelas.
 
         private void ImprimeNovela(Novela novela, TiposDocumentos tipo)
         {
-            Constructor = AsignaConstructor(novela, tipo, GetNovelsConfig.CapitulosPorPdf, novela.CarpetaPath, novela.Titulo);
-            List<Capitulo> CapitulosAImprimir = new List<Capitulo>(novela.CapitulosSinImprimir);
+            string Path = LocalPathManager.DefinePathNovela(novela);
+            IConstructor Constructor = Factory.AsignaConstructor(novela, tipo, GetNovelsConfig.CapitulosPorPdf, Path, novela.Titulo, CapituloImpreso, DocumentoCreado);
+
+            List<Capitulo> CapitulosAImprimir = new List<Capitulo>(novela.CapitulosDescargados);
 
             Constructor.ConstruyeDocumento(CapitulosAImprimir);
         }

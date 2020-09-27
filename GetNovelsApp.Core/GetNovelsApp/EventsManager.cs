@@ -10,7 +10,10 @@ namespace GetNovelsApp.Core
 {
     public static class EventsManager
     {
-        private static void DestruyeReferencias()
+        /// <summary>
+        /// Limpia los eventos.
+        /// </summary>
+        public static void DestruyeReferencias()
         {
             ImprimeNovela = null;
         }
@@ -18,7 +21,11 @@ namespace GetNovelsApp.Core
 
         public static event Action<Novela, TiposDocumentos> ImprimeNovela;
 
-
+        /// <summary>
+        /// Llamado cuando se desea que se imprima una novela.
+        /// </summary>
+        /// <param name="novela"></param>
+        /// <param name="tipo"></param>
         public static void Invoke_ImprimeNovela(Novela novela, TiposDocumentos tipo)
         {
             ImprimeNovela?.Invoke(novela, tipo);

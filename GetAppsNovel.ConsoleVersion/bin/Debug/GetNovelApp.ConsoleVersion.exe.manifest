@@ -78,26 +78,38 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="GetNovelApp.ConsoleVersion.exe" size="16856">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Dapper.dll" size="192512">
+      <assemblyIdentity name="Dapper" version="2.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>G4pmLQvEFCHhjO1JKQdgogtE4rWT8bSVWLwxhTLQ0gg=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="GetNovelApp.ConsoleVersion.exe" size="18904">
       <assemblyIdentity name="GetNovelApp.ConsoleVersion" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>z4lC4EpW8oZbzHwgDI44KH2o2NxfFf9jAvmcHJX4TLg=</dsig:DigestValue>
+        <dsig:DigestValue>OYF3v7SLZMUDEMEXuwfC0mb2wOyAIkv1TiGDTQQOH6k=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="GetNovelsApp.Core.dll" size="27648">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="GetNovelsApp.Core.dll" size="32768">
       <assemblyIdentity name="GetNovelsApp.Core" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>usp2J7ibsgL2p6FUcbGYvymz5jKqq5V+FmbQFWaJuls=</dsig:DigestValue>
+        <dsig:DigestValue>tSCuxtQ1lFX0/xyBRXOyg8BOLw6XQzEfUVoek5ePvyk=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -149,13 +161,25 @@
       </hash>
     </dependentAssembly>
   </dependency>
-  <file name="GetNovelApp.ConsoleVersion.exe.config" size="189">
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="System.Data.SQLite.dll" size="356352">
+      <assemblyIdentity name="System.Data.SQLite" version="1.0.113.0" publicKeyToken="DB937BC2D44FF139" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>ek3elItXO1qSyx9joiAQBuYeokEH2WaKNu+jeOjUjwg=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <file name="GetNovelApp.ConsoleVersion.exe.config" size="622">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>R+Wg8QGvQVHX8T0ta/qbhH1bXkqY0fRnS3wBV3J0bN8=</dsig:DigestValue>
+      <dsig:DigestValue>87CDYFRG0LRfakZI1u4KOn+vs4gwkdEGTVTCyZfJE9s=</dsig:DigestValue>
     </hash>
   </file>
 </asmv1:assembly>

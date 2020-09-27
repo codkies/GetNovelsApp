@@ -6,13 +6,11 @@ namespace GetNovelsApp.Core.Modelos
 {
     public struct InformacionNovela
     {
-        public InformacionNovela(string titulo, Uri linkPaginaPrincipal, List<Uri> linksDeCapitulos, float primerCapitulo, float ultimoCapitulo)
+        public InformacionNovela(string titulo, Uri linkPaginaPrincipal, List<Uri> linksDeCapitulos)
         {
             Titulo = titulo;
-            LinkPaginaPrincipal = linkPaginaPrincipal;
+            LinkPrincipal = linkPaginaPrincipal;
             LinksDeCapitulos = linksDeCapitulos;
-            PrimerCapitulo = primerCapitulo;
-            UltimoCapitulo = ultimoCapitulo;
         }
 
 
@@ -24,33 +22,12 @@ namespace GetNovelsApp.Core.Modelos
         /// <summary>
         /// Link a su pagina principal de la novela
         /// </summary>
-        public Uri LinkPaginaPrincipal;
+        public Uri LinkPrincipal;
 
 
         /// <summary>
         /// Lista de todos los links de los capitulos
         /// </summary>
         public List<Uri> LinksDeCapitulos;
-
-
-        /// <summary>
-        /// Link de su primer capitulo
-        /// </summary>
-        public Uri PrimerLink => LinksDeCapitulos.First();
-
-        /// <summary>
-        /// Link de su ultimo capitulo
-        /// </summary>
-        public Uri UltimoLink => LinksDeCapitulos.Last();
-
-        /// <summary>
-        /// Numero de su primer capitulo
-        /// </summary>
-        public float PrimerCapitulo;
-
-        /// <summary>
-        /// Numero de su ultimo capitulo
-        /// </summary>
-        public float UltimoCapitulo;        
     }
 }

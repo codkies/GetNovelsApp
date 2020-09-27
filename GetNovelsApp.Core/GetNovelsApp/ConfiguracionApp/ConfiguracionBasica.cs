@@ -15,9 +15,13 @@ namespace GetNovelsApp.Core.ConfiguracionApp
 
         protected abstract int tamañoBatch { get; }
 
+        protected abstract string direccionDiscoDuro { get; }
+
         protected abstract IPath xPaths { get; }
 
         protected abstract IComunicador comunicador { get; }
+
+       
 
 
         #endregion
@@ -38,6 +42,8 @@ namespace GetNovelsApp.Core.ConfiguracionApp
         public List<string> xPathsLinks => xPaths.xPathsLinks;
 
         public IComunicador Comunicador => comunicador;
+
+        public string FolderPath => direccionDiscoDuro;
 
         #endregion
     }

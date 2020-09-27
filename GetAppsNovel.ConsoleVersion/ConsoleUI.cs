@@ -3,13 +3,26 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using GetNovelsApp.Core;
 using GetNovelsApp.Core.Reportaje;
-using GetNovelsApp.Core.Configuracion;
 using GetNovelsApp.Core.Modelos;
+using GetNovelsApp.Core.Conexiones;
+using System.Data.SqlTypes;
+using System.IO;
+using GetNovelsApp.Core.Empaquetador;
 
 namespace GetAppsNovel.ConsoleVersion
 {
+    /// <summary>
+    /// UI de consola.
+    /// </summary>
     public class ConsoleUI : IComunicador, IReportero
     {
+        public ConsoleUI()
+        {
+           
+        }
+
+        public readonly ConfiguracionConsoleUI Configuracion;
+
         public string Nombre => "Programa";
 
         #region Interfaz Comunicador
@@ -63,7 +76,6 @@ namespace GetAppsNovel.ConsoleVersion
             EscribeEnunciado(enunciado);
         }
 
-
         public void ReportaCambioEstado(string enunciado, IReportero reportero)
         {
             EscribeReportero(reportero);
@@ -99,10 +111,58 @@ namespace GetAppsNovel.ConsoleVersion
             Console.ForegroundColor = ColorExito;
             EscribeEnunciado(enunciado);
         }
+
         #endregion
 
-
         #region Reportero (Llamado desde programa.cs)
+
+        /// <summary>
+        /// Le pregunta al usuario por campos a llenar referente a la manera en que la app funcionará.
+        /// </summary>
+        /// <returns></returns>
+        internal ConfiguracionConsoleUI PideConfiguracion()
+        {
+            string Direccion = string.Empty;
+            int BatchSize = 25;
+            string _CapsPorDoc = string.Empty;
+
+            //Obteniendo dir
+            while (Direccion == string.Empty)
+            {
+                string dir = PideInput("Directorio donde se guardaran las novelas:", this);
+                Reporta($"Has escrito {dir}", this);
+                string decision = PideInput("Escribe (Y) para confirmar.", this).ToLower();
+                if (decision.Equals("y") | decision.Equals("yes"))
+                {
+                    dir = dir.Replace(@"\\", @"\\\\");
+                    Direccion = dir;
+                }
+            }
+
+            //Obteniendo tamaño cap
+
+            while (_CapsPorDoc == string.Empty)
+            {
+                string caps = PideInput("¿Cuantos capitulos quieres que hayan por documento?", this);
+                Reporta($"Has escrito {caps}", this);
+
+                if(!int.TryParse(caps, out _))
+                {
+                    ReportaError("Tiene que ser numero.", this);
+                    continue;
+                }
+
+                string decision = PideInput("Escribe (Y) para confirmar.", this).ToLower();
+                if (decision.Equals("yes") | decision.Equals("y"))
+                {
+                    _CapsPorDoc = caps;
+                }
+            }
+
+
+            return new ConfiguracionConsoleUI(this, Direccion, BatchSize, int.Parse(_CapsPorDoc));
+        }
+
 
         public string PreguntaSiSeImprime(Novela novela)
         {
@@ -114,20 +174,16 @@ namespace GetAppsNovel.ConsoleVersion
         /// </summary>
         /// <param name="xPaths"></param>
         /// <param name="Novelas"></param>
-        public List<Novela> PideInformacionUsuario()
+        public Dictionary<InformacionNovela, int> PideInformacionUsuario(string FolderPathDefined)
         {
             //Preps:
-            List<Novela> Novelas = new List<Novela>();
+            Dictionary<InformacionNovela, int> InfoDescarga = new Dictionary<InformacionNovela, int>();
             bool InputFinalizado = false;
-            int numeroDeNovelas = 1;
-
-            //Pidiendo info de la carpeta:
-            string Path = PideInput("Carpeta: (Se creará una subcarpeta, con el titulo de cada novela, dentro de la dirección que introduzcas).", this);
-
+            ReportaEspecial("\nInformacion de novelas:", this);
             while (!InputFinalizado)
             {
-                //Campos de input:   
-                string LinkNovela = PideInput("Link de la página principal de la novelas:", this);                
+                //Validando link:
+                string LinkNovela = PideInput("Link de la página principal de la novela:", this);                
                 bool linkValido = ValidaLink(LinkNovela, out Uri UriNovela);
 
                 while (linkValido == false)
@@ -138,6 +194,7 @@ namespace GetAppsNovel.ConsoleVersion
                     UriNovela = u;
                 }
 
+                //Valindando comienzo:
                 string _comienzo = PideInput("Desde qué capitulo se comenzará? (0 -> Inicio)", this);
                 //hay que parsear el input asi que se va con un try:
                 int comienzo = -1;
@@ -154,25 +211,24 @@ namespace GetAppsNovel.ConsoleVersion
                     }
                 }
 
+                //Obteniendo información de novela:
                 Reporta("\nObteniendo información de novela...\n", this);
-                Path = Path.Replace(@"\\", @"\\\\");
-
-
-                Novela novela = new Novela(UriNovela, Path, comienzo);
+                InformacionNovela infoNov = ManipuladorDeLinks.EncuentraInformacionNovela(UriNovela);
 
                 ///Confirmando con el usuario:
-                ConfirmaUsuario(ref Novelas, ref numeroDeNovelas, LinkNovela, comienzo, novela);
+                ConfirmaInfoNovelaConUsuario(ref InfoDescarga, infoNov, comienzo, FolderPathDefined);
 
                 //Pregunta por otra novela:
                 InputFinalizado = PreguntaPorOtraNovela(InputFinalizado);
 
                 if (!InputFinalizado) continue;
-
-                TerminaInput(Novelas);
+                List<InformacionNovela> InfoTodasNovelas = new List<InformacionNovela>(InfoDescarga.Keys);
+                TerminaInput(InfoTodasNovelas);
             }
 
-            return Novelas;
+            return InfoDescarga;
         }
+
 
         private static bool ValidaLink(string LinkNovela, out Uri Uri)
         {
@@ -180,6 +236,7 @@ namespace GetAppsNovel.ConsoleVersion
             Uri = uriSalida;
             return x;
         }
+
 
         public void MustraResultado(GetNovels ejecutor, Stopwatch stopwatch)
         {
@@ -196,18 +253,21 @@ namespace GetAppsNovel.ConsoleVersion
             FinalizaApp();
         }
 
+
         private void FinalizaApp()
         {
             ReportaExito("Press (Enter) to exit.", this);
+            EventsManager.DestruyeReferencias();
             Console.ReadLine();
         }
 
-        private void TerminaInput(List<Novela> Novelas)
+
+        private void TerminaInput(List<InformacionNovela> InfoNovelas)
         {
-            string mensaje = $"\nSe obtendrán {Novelas.Count} novelas:";
-            for (int i = 0; i < Novelas.Count; i++)
+            string mensaje = $"\nSe obtendrán {InfoNovelas.Count} novelas:";
+            for (int i = 0; i < InfoNovelas.Count; i++)
             {
-                Novela _ = Novelas[i];
+                InformacionNovela _ = InfoNovelas[i];
                 mensaje += $"\n    #{i + 1} {_.Titulo}";
             }
             mensaje += "\nPresiona cualquier tecla para comenzar.";
@@ -236,14 +296,14 @@ namespace GetAppsNovel.ConsoleVersion
         }
 
 
-        private void ConfirmaUsuario(ref List<Novela> Novelas, ref int numeroDeNovelas, string LinkNovela, int comienzo, Novela novela)
+        private void ConfirmaInfoNovelaConUsuario(ref Dictionary<InformacionNovela, int> InfoDescarga, InformacionNovela infoNov, int comienzo, string PathCarpeta)
         {
-            Reporta($"Titulo: {novela.Titulo}\n" +
-                                                        $"Link: {LinkNovela}\n" +
-                                                        $"Se comenzará desde el capitulo: {novela.LinksDeCapitulos[comienzo]}\n" +
-                                                        $"Cantidad de capitulos: {novela.LinksDeCapitulos.Count - comienzo}\n" +
+            Reporta($"Titulo: {infoNov.Titulo}\n" +
+                                                        $"Link: {infoNov.LinkPrincipal}\n" +
+                                                        $"Se comenzará desde el capitulo: {infoNov.LinksDeCapitulos[comienzo]}\n" +
+                                                        $"Cantidad de capitulos: {infoNov.LinksDeCapitulos.Count - comienzo}\n" +
                                                         $"CapitulosPorPdf: {GetNovelsConfig.CapitulosPorPdf}\n" +
-                                                        $"Carpeta: {novela.CarpetaPath}",
+                                                        $"Carpeta: {PathCarpeta}",
                                                         this);
 
 
@@ -251,13 +311,12 @@ namespace GetAppsNovel.ConsoleVersion
 
             if (respuesta.Equals("y") | respuesta.Equals("yes"))
             {
-                Novelas.Add(novela);
-                numeroDeNovelas++;
-                Reporta($"Confirmada {novela.Titulo}", this);
+                InfoDescarga.Add(infoNov, comienzo);
+                Reporta($"Confirmada {infoNov.Titulo}", this);
             }
             else
             {
-                ReportaError($"Descartada {novela.Titulo}", this);
+                ReportaError($"Descartada {infoNov.Titulo}", this);
             }
         }
 

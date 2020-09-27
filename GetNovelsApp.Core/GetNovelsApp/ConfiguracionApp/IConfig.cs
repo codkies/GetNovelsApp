@@ -8,6 +8,11 @@ namespace GetNovelsApp.Core.ConfiguracionApp
     /// </summary>
     public interface IConfig
     {
+        /// <summary>
+        /// Direccion en el disco duro donde se guardarán las novelas.
+        /// </summary>
+        string FolderPath { get; }
+
         IComunicador Comunicador { get; }
 
         /// <summary>

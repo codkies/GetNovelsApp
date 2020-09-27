@@ -1,66 +1,87 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 using GetNovelsApp.Core;
+using GetNovelsApp.Core.Empaquetador;
 using GetNovelsApp.Core.Empaquetadores;
+using GetNovelsApp.Core.GetNovelsApp.Empaquetador.BaseDatos;
 using GetNovelsApp.Core.Modelos;
 
 namespace GetAppsNovel.ConsoleVersion
 {
-    class Program
-    {        
-        static readonly ConfiguracionConsoleUI configuracion = new ConfiguracionConsoleUI();
-        static readonly GetNovels getNovels = new GetNovels(configuracion);        
+    class Program 
+    {
+        static ConfiguracionConsoleUI configuracion;
+        static GetNovels getNovels;       
+        static ConsoleUI ConsoleUI = new ConsoleUI();
 
-        //Fix entry point stuff.
+        private static void SetupApp()
+        {
+            string ver = "v0.14.0";
+            string message = "DB Sucks.\n" +
+                                "   - Program funciona con info de novela, no con novelas completas.";
+            ConsoleUI.ReportaEspecial($"GetNovelsApp {ver}:\n{message}", ConsoleUI);
+            configuracion = ConsoleUI.PideConfiguracion();
+            getNovels = new GetNovels(configuracion);
+        }
+
+
         static async Task Main(string[] args)
         {
-            //Ver control.            
-            string ver = "v0.13.0";
-            string message = "Interfaces everywhere & DB.";
-            configuracion.ConsoleUI.ReportaEspecial($"    GetNovelsApp {ver}: {message}", configuracion.ConsoleUI);
+            var x = DataBaseAccess.GetConnectionString();
+            var y = DataBaseAccess.GetConnection();
 
-            //Pidiendo info al usuario:
-            List<Novela> Novelas = configuracion.ConsoleUI.PideInformacionUsuario();
+            //Ver control.            
+            SetupApp();
+
+            Dictionary<InformacionNovela, int> InfoNovelas = ConsoleUI.PideInformacionUsuario(configuracion.FolderPath);
 
             //Diagnostics:
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            //Core:
-            await PasaNovelasEjecutadorAsync(Novelas);
+            //Core:            
+            await RunProgram(InfoNovelas);
 
             //Diagnostics:
             stopwatch.Stop();
-            configuracion.ConsoleUI.MustraResultado(getNovels, stopwatch);            
+            ConsoleUI.MustraResultado(getNovels, stopwatch);
         }
 
-        private static async Task PasaNovelasEjecutadorAsync(List<Novela> Novelas)
+        /// <summary>
+        /// Core de este script
+        /// </summary>
+        /// <param name="InfoNovelas"></param>
+        /// <returns></returns>
+        private static async Task RunProgram(Dictionary<InformacionNovela, int> InfoDescargas)
         {
-            foreach (Novela novela in Novelas)
+            foreach (KeyValuePair<InformacionNovela, int> item in InfoDescargas)
             {
-                configuracion.ConsoleUI.ReportaEspecial($"Comenzando novela \"{novela.Titulo}\"", configuracion.ConsoleUI);
-                System.IO.Directory.CreateDirectory(novela.CarpetaPath);
+                InformacionNovela infoNovela = item.Key;
+                int ComienzaEn = item.Value;
 
-                await getNovels.EjecutaAsync(novela, TiposDocumentos.PDF); //Hardcoeando aqui el pdf.
-                configuracion.ConsoleUI.ReportaEspecial($"Terminando novela \"{novela.Titulo}\"", configuracion.ConsoleUI);
+                ConsoleUI.ReportaEspecial($"Comenzando novela \"{infoNovela.Titulo}\"", ConsoleUI);
+
+                Novela novela = await getNovels.GetNovelAsync(infoNovela, ComienzaEn); //Hardcoeando aqui el pdf.
+
+                ConsoleUI.ReportaEspecial($"Terminando novela \"{novela.Titulo}\"", ConsoleUI);
                 
                 //Preguntando al usuario si quiere imprimir la novela.
                 bool decisionTomada = false;
                 while (decisionTomada == false)
                 {
-                    string decision = configuracion.ConsoleUI.PreguntaSiSeImprime(novela);
+                    string decision = ConsoleUI.PreguntaSiSeImprime(novela);
                     if (decision.Equals("y") | decision.Equals("yes"))
                     {
-                        EventsManager.Invoke_ImprimeNovela(novela, TiposDocumentos.PDF);
+                        string Path = LocalPathManager.DefinePathNovela(novela);
+                        System.IO.Directory.CreateDirectory(Path);
+                        EventsManager.Invoke_ImprimeNovela(novela, TiposDocumentos.PDF); //Harcodeando el tipo de doc.
                         decisionTomada = true;
                     }
                     else if (decision.Equals("n") | decision.Equals("no"))
                     {
-                        configuracion.ConsoleUI.ReportaEspecial($"La novela \"{novela.Titulo}\"se ha guardado en la base de datos.",
-                            configuracion.ConsoleUI);
+                        ConsoleUI.ReportaEspecial($"La novela \"{novela.Titulo}\"se ha guardado en la base de datos.", ConsoleUI);
                         decisionTomada = true;
                     }
                 }

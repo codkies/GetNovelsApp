@@ -84,3 +84,9 @@ C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp_Console\GetNovelsApp.C
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp_Console\GetNovelsApp.Core\obj\Debug\GetNovelsApp.Core.csproj.CopyComplete
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp_Console\GetNovelsApp.Core\obj\Debug\GetNovelsApp.Core.dll
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp_Console\GetNovelsApp.Core\obj\Debug\GetNovelsApp.Core.pdb
+C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp_Console\GetNovelsApp.Core\bin\Debug\Dapper.dll
+C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp_Console\GetNovelsApp.Core\bin\Debug\System.Data.SQLite.dll
+C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp_Console\GetNovelsApp.Core\bin\Debug\Dapper.xml
+C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp_Console\GetNovelsApp.Core\bin\Debug\System.Data.SQLite.xml
+C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp_Console\GetNovelsApp.Core\bin\Debug\System.Data.SQLite.dll.config
+C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp_Console\GetNovelsApp.Core\bin\Debug\NovelsDB.db

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
 using GetNovelsApp.Core.Conexiones;
 
@@ -9,85 +10,71 @@ namespace GetNovelsApp.Core.Modelos
 {
     public class Novela
     {
-        public Novela(Uri link, string FolderPath, int EmpezarEn)
+        public Novela(InformacionNovela info, int ID)
         {
-            this.EmpezarEn = EmpezarEn;
-            CarpetaPath = FolderPath;
-            InformacionNovela info = ManipuladorDeLinks.EncuentraInformacionNovela(link);
+            MiInfo = info;
+            this.ID = ID;
+        }       
 
-            Titulo = info.Titulo;
-            CarpetaPath += $"\\{Titulo}\\";
-            // CarpetaPath = FolderPath +  $"\\{Titulo}\\";
-            LinkPaginaPrincipal = info.LinkPaginaPrincipal;
-
-            LinksDeCapitulos = info.LinksDeCapitulos;
-            PrimerLink = info.PrimerLink;
-            UltimoLink = info.UltimoLink;
-
-            UltimoNumeroCapitulo = info.UltimoCapitulo;
-            PrimerNumeroCapitulo = info.PrimerCapitulo;
+        public Novela(InformacionNovela info, int ID, List<Capitulo> Capitulos)
+        {
+            _CapitulosDescargados = new List<Capitulo>(Capitulos);
+            MiInfo = info;
+            this.ID = ID;
         }
 
 
         #region Fields
 
-        private List<Capitulo> _CapitulosSinImprimir = new List<Capitulo>();
+        private List<Capitulo> _CapitulosDescargados = new List<Capitulo>();
 
         private List<Capitulo> _CapitulosImpresos = new List<Capitulo>();
 
+        InformacionNovela MiInfo;
+
+        /// <summary>
+        /// ID en DB.
+        /// </summary>
+        public int ID { get; private set; }
 
         /// <summary>
         /// Titulo de la novela
         /// </summary>
-        public readonly string Titulo;
-
-
-        /// <summary>
-        /// Direccion a la carpeta donde se guardará la novela
-        /// </summary>
-        public readonly string CarpetaPath;
-
+        public string Titulo => MiInfo.Titulo;
 
         /// <summary>
         /// Link a su pagina principal de la novela
         /// </summary>
-        public readonly Uri LinkPaginaPrincipal;
+        public Uri LinkPrincipal => MiInfo.LinkPrincipal;
 
 
         /// <summary>
         /// Lista de todos los links de los capitulos
         /// </summary>
-        public readonly List<Uri> LinksDeCapitulos;
+        public List<Uri> LinksDeCapitulos => MiInfo.LinksDeCapitulos;
 
 
         /// <summary>
         /// Link del primer capitulo.
         /// </summary>
-        public readonly Uri PrimerLink;
+        public Uri PrimerLink => LinksDeCapitulos.First();
 
 
         /// <summary>
         /// Link del ultimo capitulo.
         /// </summary>
-        public readonly Uri UltimoLink;
-        
-
-        /// <summary>
-        /// Index de los links donde el usuario quiere comenzar.
-        /// </summary>
-        public readonly int EmpezarEn;
-
+        public Uri UltimoLink => LinksDeCapitulos.Last();
 
         /// <summary>
         /// Capitulo final de la novela. Encotrado segun el link Original.
         /// </summary>
-        public readonly float UltimoNumeroCapitulo;
+        public float UltimoNumeroCapitulo => ManipuladorDeLinks.EncuentraInformacionCapitulo(PrimerLink).NumeroCapitulo;
 
 
         /// <summary>
         /// Primer capitulo de la novela. Encotrado segun el link Original.
         /// </summary>
-        public readonly float PrimerNumeroCapitulo;
+        public float PrimerNumeroCapitulo => ManipuladorDeLinks.EncuentraInformacionCapitulo(UltimoLink).NumeroCapitulo;
 
         #endregion
 
@@ -97,12 +84,12 @@ namespace GetNovelsApp.Core.Modelos
         /// <summary>
         /// Define si esta novela tiene capitulos por imprimir
         /// </summary>
-        private bool TengoCapitulosPorImprimir => _CapitulosSinImprimir.Count > 0;
+        public bool TengoCapitulosPorImprimir => _CapitulosDescargados.Count > 0;
 
         /// <summary>
         /// Capitulos presentes en esta novela que no han sido metidos en el PDF
         /// </summary>
-        public ReadOnlyCollection<Capitulo> CapitulosSinImprimir => _CapitulosSinImprimir.AsReadOnly();
+        public ReadOnlyCollection<Capitulo> CapitulosDescargados => _CapitulosDescargados.AsReadOnly();
 
 
         /// <summary>
@@ -114,13 +101,27 @@ namespace GetNovelsApp.Core.Modelos
         /// <summary>
         /// Define la cantidad de capitulos que esta novela tiene que no se han impreso.
         /// </summary>
-        public int CantidadCapitulosPorImprimir => _CapitulosSinImprimir.Count;
+        public int CantidadCapitulosDescargados => _CapitulosDescargados.Count;
 
 
         /// <summary>
         /// Cantidad total de links que contiene esta novela.
         /// </summary>
         public int CantidadLinks => LinksDeCapitulos.Count;
+
+
+        /// <summary>
+        /// Todos los caps que esta novela tiene ref. (Caps, no links).
+        /// </summary>
+        public List<Capitulo> Capitulos
+        {
+            get
+            {
+                List<Capitulo> caps = new List<Capitulo>(_CapitulosDescargados);
+                caps.AddRange(_CapitulosImpresos);
+                return caps;
+            }
+        }
 
         #endregion
 
@@ -129,9 +130,9 @@ namespace GetNovelsApp.Core.Modelos
         /// Agrega un capitulo a la novela.
         /// </summary>
         /// <param name="capituloNuevo"></param>
-        public void AgregaCapitulo(Capitulo capituloNuevo)
+        public void CapituloFueDescargado(Capitulo capituloNuevo)
         {
-            _CapitulosSinImprimir.Add(capituloNuevo);
+            _CapitulosDescargados.Add(capituloNuevo);
         }
 
 
@@ -141,7 +142,7 @@ namespace GetNovelsApp.Core.Modelos
         /// <param name="capitulo"></param>
         public void CapituloFueImpreso(Capitulo capitulo)
         {
-            _CapitulosSinImprimir.Remove(capitulo);
+            _CapitulosDescargados.Remove(capitulo);
             _CapitulosImpresos.Add(capitulo);
         }
 

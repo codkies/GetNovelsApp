@@ -6,7 +6,6 @@ using GetNovelsApp.Core.Conexiones;
 using System.Linq;
 using System;
 using GetNovelsApp.Core.Reportaje;
-using GetNovelsApp.Core.Configuracion;
 
 namespace GetNovelsApp.Core
 {
