@@ -6,7 +6,7 @@ using System.Net;
 using GetNovelsApp.Core.Reportaje;
 using HtmlAgilityPack;
 
-namespace GetNovelsApp.Core.Conexiones
+namespace GetNovelsApp.Core.Conexiones.Internet
 {
     public class Conector : IReportero
     {
@@ -82,7 +82,7 @@ namespace GetNovelsApp.Core.Conexiones
 
             while (nodosOne == null | nodosTwo == null)
             {
-                if(nodosOne == null) nodosOne = ObtenNodes(website, xPathsOne); //Check for null.
+                if (nodosOne == null) nodosOne = ObtenNodes(website, xPathsOne); //Check for null.
                 if (nodosTwo == null) nodosTwo = ObtenNodes(website, xPathsTwo); //Check for null.
 
                 if (nodosOne == null | nodosTwo == null)
@@ -109,7 +109,7 @@ namespace GetNovelsApp.Core.Conexiones
         {
             HtmlDocument website = ObtenWebsite(direccion);
 
-            List<HtmlNodeCollection> AllHtmlNodes = null;            
+            List<HtmlNodeCollection> AllHtmlNodes = null;
 
             while (AllHtmlNodes == null)
             {
@@ -117,7 +117,7 @@ namespace GetNovelsApp.Core.Conexiones
                 {
                     HtmlNodeCollection posiblesNodos = ObtenNodes(website, xPaths);
 
-                    if(posiblesNodos == null) //Consiguelos todos o ninguno.
+                    if (posiblesNodos == null) //Consiguelos todos o ninguno.
                     {
                         AllHtmlNodes = null;
                         Debug.WriteLine("Error. \n" +
@@ -159,7 +159,7 @@ namespace GetNovelsApp.Core.Conexiones
             HtmlDocument website = null;
 
             while (website == null)
-            { 
+            {
                 try
                 {
                     website = Conexion.Load(direccion);
@@ -196,7 +196,7 @@ namespace GetNovelsApp.Core.Conexiones
 
             Stopwatch stopwatchTotal = new Stopwatch();
             stopwatchTotal.Start();
-            
+
             foreach (string xPath in xPaths)
             {
                 posibleColeccion = doc.DocumentNode.SelectNodes(xPath);

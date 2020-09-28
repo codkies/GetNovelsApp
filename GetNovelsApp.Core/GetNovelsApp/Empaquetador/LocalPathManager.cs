@@ -7,7 +7,7 @@ namespace GetNovelsApp.Core.Empaquetador
     /// </summary>
     public static class LocalPathManager
     {
-        public static string DefinePathNovela(Novela novela)
+        public static string DefinePathNovela(NovelaRuntimeModel novela)
         {
             return $"{GetNovelsConfig.HardDrivePath}\\{novela.Titulo}\\";
         }

@@ -2,10 +2,10 @@
 using System.Web;
 using HtmlAgilityPack;
 using GetNovelsApp.Core.Modelos;
-using GetNovelsApp.Core.Conexiones;
 using System.Linq;
 using System;
 using GetNovelsApp.Core.Reportaje;
+using GetNovelsApp.Core.Conexiones.Internet;
 
 namespace GetNovelsApp.Core
 {
@@ -49,11 +49,14 @@ namespace GetNovelsApp.Core
 
         #region Scraping Capitulo
 
-        public Capitulo ObtenCapitulo(Uri direccion)
+        public Capitulo CompletaCapitulo(Capitulo capitulo)
         {
+            Uri direccion = capitulo.Link;
+
             List<string> textosRaw = ObtenTextoRaw(direccion);
             string Texto = OrdenaTextoRaw(textosRaw);
-            Capitulo capitulo = new Capitulo(Texto, direccion);
+
+            capitulo.UpdateTexto(Texto);
 
             CapitulosEncontrados++;
             CaracteresVistos += capitulo.Caracteres;

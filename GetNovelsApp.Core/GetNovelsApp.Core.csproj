@@ -104,8 +104,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GetNovelsApp\Empaquetador\BaseDatos\Archivador.cs" />
-    <Compile Include="GetNovelsApp\Conexiones\Conector.cs" />
+    <Compile Include="GetNovelsApp\Conexiones\BaseDatos\Archivador.cs" />
+    <Compile Include="GetNovelsApp\Conexiones\BaseDatos\DataBaseAccess.cs" />
+    <Compile Include="GetNovelsApp\Conexiones\BaseDatos\NovelaDBModel.cs" />
+    <Compile Include="GetNovelsApp\Conexiones\Internet\Conector.cs" />
     <Compile Include="GetNovelsApp\ConfiguracionApp\ConfiguracionBasica.cs" />
     <Compile Include="GetNovelsApp\ConfiguracionApp\IConfig.cs" />
     <Compile Include="GetNovelsApp\ConfiguracionApp\xPaths\Website.cs" />
@@ -123,10 +125,10 @@
     <Compile Include="GetNovelsApp\Reportaje\IReportero.cs" />
     <Compile Include="GetNovelsApp\Utilidades\ComparerOrdenadorCapitulos.cs" />
     <Compile Include="GetNovelsApp\Empaquetador\EmpaquetadorNovelas.cs" />
-    <Compile Include="GetNovelsApp\Modelos\Novela.cs" />
-    <Compile Include="GetNovelsApp\Modelos\InformacionCapitulo.cs" />
-    <Compile Include="GetNovelsApp\Modelos\InformacionNovela.cs" />
-    <Compile Include="GetNovelsApp\Conexiones\ManipuladorDeLinks.cs" />
+    <Compile Include="GetNovelsApp\Modelos\NovelaRuntimeModel.cs" />
+    <Compile Include="GetNovelsApp\Conexiones\Internet\CapituloWebModel.cs" />
+    <Compile Include="GetNovelsApp\Conexiones\Internet\NovelaWebModel.cs" />
+    <Compile Include="GetNovelsApp\Conexiones\Internet\ManipuladorDeLinks.cs" />
     <Compile Include="GetNovelsApp\Reportaje\Comunicador.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GetNovelsApp\Scraping\Scraper.cs" />

@@ -19,14 +19,14 @@ namespace GetNovelsApp.Core
         }
 
 
-        public static event Action<Novela, TiposDocumentos> ImprimeNovela;
+        public static event Action<NovelaRuntimeModel, TiposDocumentos> ImprimeNovela;
 
         /// <summary>
         /// Llamado cuando se desea que se imprima una novela.
         /// </summary>
         /// <param name="novela"></param>
         /// <param name="tipo"></param>
-        public static void Invoke_ImprimeNovela(Novela novela, TiposDocumentos tipo)
+        public static void Invoke_ImprimeNovela(NovelaRuntimeModel novela, TiposDocumentos tipo)
         {
             ImprimeNovela?.Invoke(novela, tipo);
         }

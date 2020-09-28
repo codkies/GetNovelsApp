@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using GetNovelsApp.Core.Conexiones.Internet;
 using GetNovelsApp.Core.Modelos;
 
 namespace GetNovelsApp.Core.Utilidades
@@ -18,5 +19,5 @@ namespace GetNovelsApp.Core.Utilidades
             else
                 throw new NotSupportedException("Ambos capitulos tienen el mismo numero");
         }
-    }
+    }      
 }

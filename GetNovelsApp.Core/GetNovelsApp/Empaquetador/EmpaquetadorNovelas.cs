@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using GetNovelsApp.Core.Modelos;
 using GetNovelsApp.Core.Reportaje;
 using GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores;
-using GetNovelsApp.Core.GetNovelsApp.Empaquetador.BaseDatos;
 using GetNovelsApp.Core.GetNovelsApp;
 using GetNovelsApp.Core.Empaquetador;
+using GetNovelsApp.Core.Conexiones.DB;
 
 namespace GetNovelsApp.Core.Empaquetadores
 {
@@ -30,24 +30,6 @@ namespace GetNovelsApp.Core.Empaquetadores
             EventsManager.ImprimeNovela += ImprimeNovela;
             Archivador = archivador;
         }
-
-
-        ///// <summary>
-        ///// Asigna un constructor dependiendo del tipo de archivo que se desee.
-        ///// </summary>
-        ///// <param name="tipo"></param>
-        ///// <returns></returns>
-        //private IConstructor AsignaConstructor(Novela novela, TiposDocumentos tipo, int capsPorPDF, string direccion, string titulo)
-        //{
-        //    switch (tipo)
-        //    {
-        //        case TiposDocumentos.PDF:
-        //            return new ConstructorPDF(novela, capsPorPDF, direccion, titulo, CapituloImpreso, DocumentoCreado);
-        //        default:
-        //            throw new NotImplementedException("No se han creado constructores para otros tipos de archivos que no sean PDF.");
-        //    }
-        //}
-
 
         #endregion
 
@@ -76,15 +58,14 @@ namespace GetNovelsApp.Core.Empaquetadores
         #region Metodos Publicos
          
 
-        public void AgregaCapitulo(Capitulo CapituloNuevo, Novela novela)
-        {
-            if (novela.CapitulosImpresos.Contains(CapituloNuevo))
+        public void EmpaquetaCapitulo(List<Capitulo> CapitulosDescargados, NovelaRuntimeModel novela)
+        {          
+            foreach (Capitulo c in CapitulosDescargados)
             {
-                throw new Exception("Este capitulo ya fue descargado");
+                novela.CapituloFueDescargado(c);                
             }
 
-            novela.CapituloFueDescargado(CapituloNuevo);
-            Archivador.GuardaCapituloDB(CapituloNuevo, novela.ID);
+            List<Capitulo> _ = Archivador.GuardaCapitulos(CapitulosDescargados, novela.ID);
         }
 
         
@@ -93,7 +74,7 @@ namespace GetNovelsApp.Core.Empaquetadores
 
         #region Imprimiendo novelas.
 
-        private void ImprimeNovela(Novela novela, TiposDocumentos tipo)
+        private void ImprimeNovela(NovelaRuntimeModel novela, TiposDocumentos tipo)
         {
             string Path = LocalPathManager.DefinePathNovela(novela);
             IConstructor Constructor = Factory.AsignaConstructor(novela, tipo, GetNovelsConfig.CapitulosPorPdf, Path, novela.Titulo, CapituloImpreso, DocumentoCreado);
@@ -112,7 +93,7 @@ namespace GetNovelsApp.Core.Empaquetadores
         /// El constructor llama este metodo para notificar que un capitulo fue colocado en el documento.
         /// </summary>
         /// <param name="capitulo"></param>
-        private void CapituloImpreso(Capitulo capitulo, Novela novela)
+        private void CapituloImpreso(Capitulo capitulo, NovelaRuntimeModel novela)
         {
             novela.CapituloFueImpreso(capitulo);
         }

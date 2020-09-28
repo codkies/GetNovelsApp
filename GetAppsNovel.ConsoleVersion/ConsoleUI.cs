@@ -8,6 +8,7 @@ using GetNovelsApp.Core.Conexiones;
 using System.Data.SqlTypes;
 using System.IO;
 using GetNovelsApp.Core.Empaquetador;
+using GetNovelsApp.Core.Conexiones.DB;
 
 namespace GetAppsNovel.ConsoleVersion
 {
@@ -20,6 +21,7 @@ namespace GetAppsNovel.ConsoleVersion
         {
            
         }
+
 
         public readonly ConfiguracionConsoleUI Configuracion;
 
@@ -114,7 +116,11 @@ namespace GetAppsNovel.ConsoleVersion
 
         #endregion
 
+
+
         #region Reportero (Llamado desde programa.cs)
+
+        #region Interno
 
         /// <summary>
         /// Le pregunta al usuario por campos a llenar referente a la manera en que la app funcionará.
@@ -146,7 +152,7 @@ namespace GetAppsNovel.ConsoleVersion
                 string caps = PideInput("¿Cuantos capitulos quieres que hayan por documento?", this);
                 Reporta($"Has escrito {caps}", this);
 
-                if(!int.TryParse(caps, out _))
+                if (!int.TryParse(caps, out _))
                 {
                     ReportaError("Tiene que ser numero.", this);
                     continue;
@@ -164,26 +170,23 @@ namespace GetAppsNovel.ConsoleVersion
         }
 
 
-        public string PreguntaSiSeImprime(Novela novela)
-        {
-            return PideInput($"Imprimir \"{novela.Titulo}\"? (Y/N)", this);
-        }
-
         /// <summary>
         /// Crea un formulario para que el usuario meta la informacion a buscar.
         /// </summary>
         /// <param name="xPaths"></param>
         /// <param name="Novelas"></param>
-        public Dictionary<InformacionNovela, int> PideInformacionUsuario(string FolderPathDefined)
+        internal Dictionary<NovelaRuntimeModel, int> PideInformacionUsuario(string FolderPathDefined)
         {
             //Preps:
-            Dictionary<InformacionNovela, int> InfoDescarga = new Dictionary<InformacionNovela, int>();
+            Dictionary<NovelaRuntimeModel, int> InfoDescarga = new Dictionary<NovelaRuntimeModel, int>();
             bool InputFinalizado = false;
+            Archivador archivador = new Archivador();
             ReportaEspecial("\nInformacion de novelas:", this);
+
             while (!InputFinalizado)
             {
                 //Validando link:
-                string LinkNovela = PideInput("Link de la página principal de la novela:", this);                
+                string LinkNovela = PideInput("Link de la página principal de la novela:", this);
                 bool linkValido = ValidaLink(LinkNovela, out Uri UriNovela);
 
                 while (linkValido == false)
@@ -194,51 +197,34 @@ namespace GetAppsNovel.ConsoleVersion
                     UriNovela = u;
                 }
 
-                //Valindando comienzo:
-                string _comienzo = PideInput("Desde qué capitulo se comenzará? (0 -> Inicio)", this);
-                //hay que parsear el input asi que se va con un try:
-                int comienzo = -1;
-                while (comienzo < 0)
-                {
-                    try
-                    {
-                        comienzo = int.Parse(_comienzo);
-                    }
-                    catch (FormatException)
-                    {
-                        ReportaError("Debes escribir un número", this);
-                        _comienzo = PideInput("Desde qué capitulo se comenzará? (0 -> Inicio)", this);
-                    }
-                }
-
                 //Obteniendo información de novela:
                 Reporta("\nObteniendo información de novela...\n", this);
-                InformacionNovela infoNov = ManipuladorDeLinks.EncuentraInformacionNovela(UriNovela);
+
+                //1) Pidela a la DB:                
+                NovelaRuntimeModel novela = archivador.BuscaNovelaEnDB(UriNovela);
 
                 ///Confirmando con el usuario:
-                ConfirmaInfoNovelaConUsuario(ref InfoDescarga, infoNov, comienzo, FolderPathDefined);
+                ConfirmaInfoNovelaConUsuario(ref InfoDescarga, novela, FolderPathDefined);
 
                 //Pregunta por otra novela:
                 InputFinalizado = PreguntaPorOtraNovela(InputFinalizado);
 
                 if (!InputFinalizado) continue;
-                List<InformacionNovela> InfoTodasNovelas = new List<InformacionNovela>(InfoDescarga.Keys);
-                TerminaInput(InfoTodasNovelas);
+                List<NovelaRuntimeModel> TodasLasNovelasAObtener = new List<NovelaRuntimeModel>(InfoDescarga.Keys);
+                TerminaInput(TodasLasNovelasAObtener);
             }
 
             return InfoDescarga;
         }
 
 
-        private static bool ValidaLink(string LinkNovela, out Uri Uri)
+        internal string PreguntaSiSeImprime(NovelaRuntimeModel novela)
         {
-            bool x = Uri.TryCreate(LinkNovela, UriKind.Absolute, out Uri uriSalida) && (uriSalida.Scheme == Uri.UriSchemeHttp || uriSalida.Scheme == Uri.UriSchemeHttps);
-            Uri = uriSalida;
-            return x;
+            return PideInput($"Imprimir \"{novela.Titulo}\"? (Y/N)", this);
         }
 
 
-        public void MustraResultado(GetNovels ejecutor, Stopwatch stopwatch)
+        internal void MustraResultado(GetNovels ejecutor, Stopwatch stopwatch)
         {
             TimeSpan ts = stopwatch.Elapsed;
             string report = ts.ToString("hh\\:mm\\:ss\\.ff");
@@ -253,6 +239,20 @@ namespace GetAppsNovel.ConsoleVersion
             FinalizaApp();
         }
 
+        #endregion
+
+
+
+        #region Privado
+
+
+        private static bool ValidaLink(string LinkNovela, out Uri Uri)
+        {
+            bool x = Uri.TryCreate(LinkNovela, UriKind.Absolute, out Uri uriSalida) && (uriSalida.Scheme == Uri.UriSchemeHttp || uriSalida.Scheme == Uri.UriSchemeHttps);
+            Uri = uriSalida;
+            return x;
+        }
+
 
         private void FinalizaApp()
         {
@@ -262,13 +262,12 @@ namespace GetAppsNovel.ConsoleVersion
         }
 
 
-        private void TerminaInput(List<InformacionNovela> InfoNovelas)
+        private void TerminaInput(List<NovelaRuntimeModel> novelasRT)
         {
-            string mensaje = $"\nSe obtendrán {InfoNovelas.Count} novelas:";
-            for (int i = 0; i < InfoNovelas.Count; i++)
+            string mensaje = $"\nSe obtendrán {novelasRT.Count} novelas:";
+            for (int i = 0; i < novelasRT.Count; i++)
             {
-                InformacionNovela _ = InfoNovelas[i];
-                mensaje += $"\n    #{i + 1} {_.Titulo}";
+                mensaje += $"\n    #{i + 1} {novelasRT[i].Titulo}";
             }
             mensaje += "\nPresiona cualquier tecla para comenzar.";
             PideInput(mensaje, this);
@@ -296,29 +295,65 @@ namespace GetAppsNovel.ConsoleVersion
         }
 
 
-        private void ConfirmaInfoNovelaConUsuario(ref Dictionary<InformacionNovela, int> InfoDescarga, InformacionNovela infoNov, int comienzo, string PathCarpeta)
+        private void ConfirmaInfoNovelaConUsuario(ref Dictionary<NovelaRuntimeModel, int> InfoDescarga, NovelaRuntimeModel nov, string PathCarpeta)
         {
-            Reporta($"Titulo: {infoNov.Titulo}\n" +
-                                                        $"Link: {infoNov.LinkPrincipal}\n" +
-                                                        $"Se comenzará desde el capitulo: {infoNov.LinksDeCapitulos[comienzo]}\n" +
-                                                        $"Cantidad de capitulos: {infoNov.LinksDeCapitulos.Count - comienzo}\n" +
-                                                        $"CapitulosPorPdf: {GetNovelsConfig.CapitulosPorPdf}\n" +
+            Reporta($"Titulo: {nov.Titulo}\n" +     
+                                                        $"Link: {nov.LinkPrincipal}\n" +
+                                                        $"Tiene {nov.CantidadLinks} links.\n" +
+                                                        $"Existen {nov.CantidadCapitulosDescargados} capitulos en la base de datos.\n" +
+                                                        $"Se tienen que descargar {nov.CapitulosPorDescargar.Count} capitulos.\n" +
                                                         $"Carpeta: {PathCarpeta}",
                                                         this);
-
+            int comienzo = -1;
+            if (nov.CapitulosPorDescargar.Count > 0)
+            {
+                comienzo = PidePorElComienzo();
+            }
 
             string respuesta = PideInput("\nConfirmar (Y/N)", this);
 
             if (respuesta.Equals("y") | respuesta.Equals("yes"))
             {
-                InfoDescarga.Add(infoNov, comienzo);
-                Reporta($"Confirmada {infoNov.Titulo}", this);
+                InfoDescarga.Add(nov, comienzo);
+                Reporta($"Confirmada {nov.Titulo}", this);
             }
             else
             {
-                ReportaError($"Descartada {infoNov.Titulo}", this);
+                ReportaError($"Descartada {nov.Titulo}", this);
             }
+
+
         }
+
+
+        /// <summary>
+        /// Le pide al usuario por el primer cap a descargar.
+        /// </summary>
+        /// <returns></returns>
+        private int PidePorElComienzo()
+        {
+            //Valindando comienzo:
+            string _comienzo = PideInput("De los capitulos que se tienen que descargar, de qué capitulo se comenzará? (0 es el primero.)", this);
+            //hay que parsear el input asi que se va con un try:
+            int comienzo = -1;
+            while (comienzo < 0)
+            {
+                try
+                {
+                    comienzo = int.Parse(_comienzo);
+                }
+                catch (FormatException)
+                {
+                    ReportaError("Debes escribir un número", this);
+                    _comienzo = PideInput("Desde qué capitulo se comenzará? (0 -> Inicio)", this);
+                }
+            }
+
+            return comienzo;
+        }
+
+
+        #endregion
 
 
         #endregion

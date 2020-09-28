@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
-namespace GetNovelsApp.Core.Modelos
+namespace GetNovelsApp.Core.Conexiones.Internet
 {
-    public struct InformacionNovela
+    /// <summary>
+    /// Modelo que utiliza la DB para obtener info acerca de una novela online.
+    /// </summary>
+    public struct NovelaWebModel
     {
-        public InformacionNovela(string titulo, Uri linkPaginaPrincipal, List<Uri> linksDeCapitulos)
+        public NovelaWebModel(string titulo, Uri linkPaginaPrincipal, List<Uri> linksDeCapitulos)
         {
             Titulo = titulo;
             LinkPrincipal = linkPaginaPrincipal;
@@ -18,6 +20,7 @@ namespace GetNovelsApp.Core.Modelos
         /// Titulo de la novela
         /// </summary>
         public string Titulo;
+
 
         /// <summary>
         /// Link a su pagina principal de la novela

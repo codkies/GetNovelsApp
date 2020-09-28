@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using GetNovelsApp.Core.Modelos;
 using GetNovelsApp.Core.Reportaje;
 using HtmlAgilityPack;
 
-namespace GetNovelsApp.Core.Conexiones
+namespace GetNovelsApp.Core.Conexiones.Internet
 {
 
     public static class ManipuladorDeLinks
@@ -23,13 +22,13 @@ namespace GetNovelsApp.Core.Conexiones
         private readonly static LinkScraper MiReportero = new LinkScraper();
 
         #endregion
-         
+
         /// <summary>
         /// Encuentra el numero del capitulo según el link.
         /// </summary>
         /// <param name="LinkCapitulo"></param>
         /// <returns></returns>
-        public static InformacionCapitulo EncuentraInformacionCapitulo(Uri _LinkCapitulo)
+        public static CapituloWebModel EncuentraInformacionCapitulo(Uri _LinkCapitulo)
         {
             string numCapEscrito = string.Empty; //Para llevar record de numeros en formato de string. Luego se convierte a float.
             string TituloCapitulo = string.Empty; //Titulo del cap.
@@ -128,13 +127,13 @@ namespace GetNovelsApp.Core.Conexiones
                 TituloCapitulo = $"Chapter {TituloCapitulo}";
             }
 
-            InformacionCapitulo infoDelCapituloSegunElLink = new InformacionCapitulo(TituloCapitulo, Valor, NumeroCapitulo);
+            CapituloWebModel infoDelCapituloSegunElLink = new CapituloWebModel(TituloCapitulo, Valor, NumeroCapitulo);
 
             return infoDelCapituloSegunElLink;
         }
 
 
-        public static InformacionNovela EncuentraInformacionNovela(Uri LinkPaginaPrincipal)
+        public static NovelaWebModel EncuentraInformacionNovela(Uri LinkPaginaPrincipal)
         {
             //Conexiones:
             Conector conector = new Conector(60 * 2); //2 minutos.
@@ -147,7 +146,7 @@ namespace GetNovelsApp.Core.Conexiones
             List<Uri> LinksDeCapitulos = ObtenLinks(nodosLinksCapitulos, OrdenLinks.Descendiente);
 
             //Ordeanando la información:
-            InformacionNovela info = new InformacionNovela(Titulo, LinkPaginaPrincipal, LinksDeCapitulos);
+            NovelaWebModel info = new NovelaWebModel(Titulo, LinkPaginaPrincipal, LinksDeCapitulos);
 
             return info;
         }

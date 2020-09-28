@@ -4,33 +4,56 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
-using GetNovelsApp.Core.Conexiones;
+using GetNovelsApp.Core.Conexiones.DB;
+using GetNovelsApp.Core.Conexiones.Internet;
+using GetNovelsApp.Core.Utilidades;
+using iText.Layout.Properties;
 
 namespace GetNovelsApp.Core.Modelos
 {
-    public class Novela
+    /// <summary>
+    /// Modelo que utiliza la app para conseguir capitulos y ordenarlos.
+    /// </summary>
+    public class NovelaRuntimeModel
     {
-        public Novela(InformacionNovela info, int ID)
+        public NovelaRuntimeModel(List<Capitulo> capitulos, NovelaDBModel dbInfo)
         {
-            MiInfo = info;
-            this.ID = ID;
-        }       
+            foreach (Capitulo c in capitulos)
+            {
+                _LinksDeCapitulos.Add(c.Link);
 
-        public Novela(InformacionNovela info, int ID, List<Capitulo> Capitulos)
+                if (string.IsNullOrEmpty(c.Texto) == false)
+                {
+                    _CapitulosDescargados.Add(c);
+                }
+                else
+                {
+                    _CapitulosPorDescargar.Add(c);
+                }
+            }
+            OrdenaListas();
+            this.dbInfo = dbInfo;
+            ID = dbInfo.ID;
+        }
+
+        private void OrdenaListas()
         {
-            _CapitulosDescargados = new List<Capitulo>(Capitulos);
-            MiInfo = info;
-            this.ID = ID;
+            _CapitulosDescargados.Sort(new ComparerOrdenadorCapitulos());
+            _CapitulosPorDescargar.Sort(new ComparerOrdenadorCapitulos());
         }
 
 
         #region Fields
 
+        private List<Capitulo> _CapitulosPorDescargar = new List<Capitulo>();
+
         private List<Capitulo> _CapitulosDescargados = new List<Capitulo>();
 
         private List<Capitulo> _CapitulosImpresos = new List<Capitulo>();
 
-        InformacionNovela MiInfo;
+        private List<Uri> _LinksDeCapitulos = new List<Uri>();
+
+        NovelaDBModel dbInfo;
 
         /// <summary>
         /// ID en DB.
@@ -40,41 +63,13 @@ namespace GetNovelsApp.Core.Modelos
         /// <summary>
         /// Titulo de la novela
         /// </summary>
-        public string Titulo => MiInfo.Titulo;
+        public string Titulo => dbInfo.Titulo;
 
         /// <summary>
         /// Link a su pagina principal de la novela
         /// </summary>
-        public Uri LinkPrincipal => MiInfo.LinkPrincipal;
-
-
-        /// <summary>
-        /// Lista de todos los links de los capitulos
-        /// </summary>
-        public List<Uri> LinksDeCapitulos => MiInfo.LinksDeCapitulos;
-
-
-        /// <summary>
-        /// Link del primer capitulo.
-        /// </summary>
-        public Uri PrimerLink => LinksDeCapitulos.First();
-
-
-        /// <summary>
-        /// Link del ultimo capitulo.
-        /// </summary>
-        public Uri UltimoLink => LinksDeCapitulos.Last();
-
-        /// <summary>
-        /// Capitulo final de la novela. Encotrado segun el link Original.
-        /// </summary>
-        public float UltimoNumeroCapitulo => ManipuladorDeLinks.EncuentraInformacionCapitulo(PrimerLink).NumeroCapitulo;
-
-
-        /// <summary>
-        /// Primer capitulo de la novela. Encotrado segun el link Original.
-        /// </summary>
-        public float PrimerNumeroCapitulo => ManipuladorDeLinks.EncuentraInformacionCapitulo(UltimoLink).NumeroCapitulo;
+        public Uri LinkPrincipal => new Uri(dbInfo.LinkPrincipal);
+     
 
         #endregion
 
@@ -87,6 +82,11 @@ namespace GetNovelsApp.Core.Modelos
         public bool TengoCapitulosPorImprimir => _CapitulosDescargados.Count > 0;
 
         /// <summary>
+        /// Lista de todos los links de los capitulos
+        /// </summary>
+        public List<Uri> LinksDeCapitulos => _LinksDeCapitulos;
+
+        /// <summary>
         /// Capitulos presentes en esta novela que no han sido metidos en el PDF
         /// </summary>
         public ReadOnlyCollection<Capitulo> CapitulosDescargados => _CapitulosDescargados.AsReadOnly();
@@ -95,7 +95,11 @@ namespace GetNovelsApp.Core.Modelos
         /// <summary>
         /// Capitulos presentes en esta novela que ya han sido metidos en el PDF
         /// </summary>
-        public ReadOnlyCollection<Capitulo> CapitulosImpresos => _CapitulosImpresos.AsReadOnly();        
+        public ReadOnlyCollection<Capitulo> CapitulosImpresos => _CapitulosImpresos.AsReadOnly();   
+        
+
+
+        public ReadOnlyCollection<Capitulo> CapitulosPorDescargar => _CapitulosPorDescargar.AsReadOnly();        
 
 
         /// <summary>
@@ -119,9 +123,28 @@ namespace GetNovelsApp.Core.Modelos
             {
                 List<Capitulo> caps = new List<Capitulo>(_CapitulosDescargados);
                 caps.AddRange(_CapitulosImpresos);
+                caps.AddRange(_CapitulosPorDescargar);
+                caps.Sort(new ComparerOrdenadorCapitulos());
                 return caps;
             }
         }
+
+
+        /// <summary>
+        /// Define si esta novela está 100% descargada.
+        /// </summary>
+        public bool EstoyCompleta
+        {
+            get
+            {
+                return CantidadCapitulosDescargados == LinksDeCapitulos.Count;
+            }
+        }
+
+        /// <summary>
+        /// Define el % de descarga de la novela.
+        /// </summary>
+        public int PorcentajeDescarga => CapitulosDescargados.Count * 100 / CantidadLinks;
 
         #endregion
 
@@ -132,6 +155,7 @@ namespace GetNovelsApp.Core.Modelos
         /// <param name="capituloNuevo"></param>
         public void CapituloFueDescargado(Capitulo capituloNuevo)
         {
+            _CapitulosPorDescargar.Remove(capituloNuevo);
             _CapitulosDescargados.Add(capituloNuevo);
         }
 
