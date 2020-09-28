@@ -52,6 +52,7 @@ namespace GetNovelsApp.Core.Modelos
             TituloCapitulo = info.TituloCapitulo;
             NumeroCapitulo = info.NumeroCapitulo;
             Valor = info.Valor;
+            Link = info.Link;
         }
 
         public void UpdateTexto(string texto)

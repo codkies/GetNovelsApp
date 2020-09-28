@@ -101,9 +101,6 @@ namespace GetNovelsApp.Core.Conexiones.DB
                     string qry_MeteCapEnDB = InsertCapitulo_Query(novelaID, c);
                     cnn.Execute(qry_MeteCapEnDB);
                 }
-
-
-                
             }
 
 

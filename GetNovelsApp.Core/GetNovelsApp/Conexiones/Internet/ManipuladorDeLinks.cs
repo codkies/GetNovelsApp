@@ -127,7 +127,7 @@ namespace GetNovelsApp.Core.Conexiones.Internet
                 TituloCapitulo = $"Chapter {TituloCapitulo}";
             }
 
-            CapituloWebModel infoDelCapituloSegunElLink = new CapituloWebModel(TituloCapitulo, Valor, NumeroCapitulo);
+            CapituloWebModel infoDelCapituloSegunElLink = new CapituloWebModel(_LinkCapitulo, TituloCapitulo, Valor, NumeroCapitulo);
 
             return infoDelCapituloSegunElLink;
         }

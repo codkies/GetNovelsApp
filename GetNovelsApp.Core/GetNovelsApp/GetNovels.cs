@@ -157,7 +157,7 @@ namespace GetNovelsApp.Core
 
                 MyEmpaquetador.EmpaquetaCapitulo(capitulosCompletos, MyNovela);
 
-                Comunicador.Reporta($"... {((i + 1) * 100) / (iteraciones + 1)}% completado...", this);
+                Comunicador.Reporta($"... {((i + 1) * 100) / (iteraciones + 1)}% de las iteraciones completadas...", this);
 
                 if (i != iteraciones - 1) //Solo espera si no eres el ultimo.
                 {

@@ -17,7 +17,7 @@ namespace GetNovelsApp.Core.Utilidades
             else if (x.NumeroCapitulo < y.NumeroCapitulo)
                 return -1;
             else
-                throw new NotSupportedException("Ambos capitulos tienen el mismo numero");
+                return 0;
         }
     }      
 }

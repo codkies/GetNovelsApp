@@ -16,8 +16,32 @@ namespace GetAppsNovel.ConsoleVersion
     {
         static async Task Main(string[] args)
         { 
-            await NormalRun();
+            await TXTrun();
         }
+
+        #region TXT run
+
+        private static async Task TXTrun()
+        {
+            //Ver control.            
+            SetupApp();
+
+            Dictionary<NovelaRuntimeModel, int> InfoNovelas = ConsoleUI.PidePathTXTusuario(configuracion.FolderPath);
+
+            //Diagnostics:
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            //Core:            
+            await RunProgram(InfoNovelas);
+
+            //Diagnostics:
+            stopwatch.Stop();
+            ConsoleUI.MustraResultado(getNovels, stopwatch);
+        }
+
+
+        #endregion
 
         #region Normal run
 
@@ -30,7 +54,7 @@ namespace GetAppsNovel.ConsoleVersion
             //Ver control.            
             SetupApp();
 
-            Dictionary<NovelaRuntimeModel, int> InfoNovelas = ConsoleUI.PideInformacionUsuario(configuracion.FolderPath);
+            Dictionary<NovelaRuntimeModel, int> InfoNovelas = ConsoleUI.PideInfoUsuario(configuracion.FolderPath);
 
             //Diagnostics:
             var stopwatch = new Stopwatch();
@@ -46,8 +70,8 @@ namespace GetAppsNovel.ConsoleVersion
 
         private static void SetupApp()
         {
-            string ver = "v0.15.0";
-            string message = "DB Works.\n";
+            string ver = "v0.15.1";
+            string message = "Lee txt option\n";
             ConsoleUI.ReportaEspecial($"GetNovelsApp {ver}:\n{message}", ConsoleUI);
             configuracion = ConsoleUI.PideConfiguracion();
             getNovels = new GetNovels(configuracion);

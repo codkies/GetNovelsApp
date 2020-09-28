@@ -4,11 +4,10 @@ using System.Diagnostics;
 using GetNovelsApp.Core;
 using GetNovelsApp.Core.Reportaje;
 using GetNovelsApp.Core.Modelos;
-using GetNovelsApp.Core.Conexiones;
-using System.Data.SqlTypes;
-using System.IO;
-using GetNovelsApp.Core.Empaquetador;
 using GetNovelsApp.Core.Conexiones.DB;
+using System.IO;
+using System.Runtime.InteropServices;
+using GetNovelsApp.Core.Conexiones.Internet;
 
 namespace GetAppsNovel.ConsoleVersion
 {
@@ -27,8 +26,51 @@ namespace GetAppsNovel.ConsoleVersion
 
         public string Nombre => "Programa";
 
+        internal Dictionary<NovelaRuntimeModel, int> PidePathTXTusuario(string folderPath)
+        {
+            Dictionary<NovelaRuntimeModel, int> InfoDescarga = new Dictionary<NovelaRuntimeModel, int>();
+
+            //string path = PideInput($"Introduce path del txt file", this);
+            //path = path.Replace(@"\\", @"\\\\");
+            //path += ".txt";
+
+            string path = @"C:\Users\Juan\Desktop\LINKS.txt";
+
+            var lineas = File.ReadAllLines(path);
+            List<Uri> Links = new List<Uri>();
+
+            foreach (string linea in lineas)
+            {
+                bool linkValido = ValidaLink(linea, out Uri UriNovela);
+
+                while (linkValido == false)
+                {
+                    ReportaError($"Link: ({linea}) no valido.", this);
+                    string reemplazo = PideInput("Ingrese el link:", this);
+                    linkValido = ValidaLink(reemplazo, out Uri u);
+                    UriNovela = u;
+                }
+
+                Links.Add(UriNovela);
+            }
+            
+             Archivador archivador = new Archivador();
+
+            //1) Pidela a la DB:                
+            foreach (Uri uri in Links)
+            {
+                Reporta($"\nObteniendo información de ({uri})...", this);
+                NovelaRuntimeModel novela = archivador.BuscaNovelaEnDB(uri);
+                ///Confirmando con el usuario:
+                ConfirmaInfoNovelaConUsuario(ref InfoDescarga, novela, folderPath);
+               
+            }
+            TerminaInput(new List<NovelaRuntimeModel>(InfoDescarga.Keys));
+            return InfoDescarga;
+        }
+
         #region Interfaz Comunicador
-        
+
         #region Colores
 
         private const ConsoleColor ColorError = ConsoleColor.Red;
@@ -175,7 +217,7 @@ namespace GetAppsNovel.ConsoleVersion
         /// </summary>
         /// <param name="xPaths"></param>
         /// <param name="Novelas"></param>
-        internal Dictionary<NovelaRuntimeModel, int> PideInformacionUsuario(string FolderPathDefined)
+        internal Dictionary<NovelaRuntimeModel, int> PideInfoUsuario(string FolderPathDefined)
         {
             //Preps:
             Dictionary<NovelaRuntimeModel, int> InfoDescarga = new Dictionary<NovelaRuntimeModel, int>();

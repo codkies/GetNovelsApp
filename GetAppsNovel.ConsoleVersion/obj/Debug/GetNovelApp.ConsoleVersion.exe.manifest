@@ -90,14 +90,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="GetNovelApp.ConsoleVersion.exe" size="19416">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="GetNovelApp.ConsoleVersion.exe" size="20952">
       <assemblyIdentity name="GetNovelApp.ConsoleVersion" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>EQvkWnsoPq6KAhhVaNlXw0k3whggxkvvKLvibwislUU=</dsig:DigestValue>
+        <dsig:DigestValue>oFPWpZ8Ndge+bjYPRmSbQuiaghegumhhil9Icv8x+HI=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -109,7 +109,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>1zNUa9o6KugoeFZg8ZHphiEpRzzuzWDw+t2Pv75PMSs=</dsig:DigestValue>
+        <dsig:DigestValue>tIT52w0bTEkknz0ewprC1+yK00RKsBM9ltzOqbwMQXI=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

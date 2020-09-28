@@ -169,6 +169,14 @@ namespace GetNovelsApp.Core.Conexiones.Internet
                     Comunicador.ReportaError("System.ObjectDisposedException", this);
                     Conexion = new HtmlWeb();
                     website = null;
+                    System.Threading.Thread.Sleep(tiempoDeEspera); //Wait for 5seconds    
+                }
+                catch(System.IO.IOException)
+                {
+                    Comunicador.ReportaError("System.IO.IOException", this);
+                    Conexion = new HtmlWeb();
+                    website = null;
+                    System.Threading.Thread.Sleep(tiempoDeEspera); //Wait for 5seconds    
                 }
                 catch (TimeoutException)
                 {

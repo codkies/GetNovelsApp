@@ -71,18 +71,18 @@ namespace GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores
 
             for (int i = 0; i < CapitulosAImprimir.Count; i++)
             {
-                if (capitulosEnPdf >= CapitulosPorDoc)
-                {
-                    document.Close();
+                //if (capitulosEnPdf >= CapitulosPorDoc)
+                //{
+                //    document.Close();
 
-                    TituloPDF = $"{Path}{TituloNovela} - {i + 1}-{i + CapitulosPorDoc}.pdf";
-                    writer = new PdfWriter(TituloPDF);
-                    pdf = new PdfDocument(writer);
-                    document = new Document(pdf);
-                    DocumentoCreado?.Invoke(TituloPDF);
+                //    TituloPDF = $"{Path}{TituloNovela} - {i + 1}-{i + CapitulosPorDoc}.pdf";
+                //    writer = new PdfWriter(TituloPDF);
+                //    pdf = new PdfDocument(writer);
+                //    document = new Document(pdf);
+                //    DocumentoCreado?.Invoke(TituloPDF);
 
-                    capitulosEnPdf = 0;
-                }
+                //    capitulosEnPdf = 0;
+                //}
 
                 Capitulo capitulo = CapitulosAImprimir[i];
 

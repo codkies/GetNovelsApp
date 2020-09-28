@@ -53,8 +53,7 @@ namespace GetAppsNovel.ConsoleVersion
             titulo = new List<string>()
             {
                 "//div[@class='post-title']/*",
-                "//h3",
-                "//h1"
+                "//h3"                
             };
 
             wuxiaworld_site = new Website(dominio, links, nextBtn, textos, titulo);
