@@ -1,0 +1,32 @@
+﻿<Application x:Class="GetNovelsApp.WPF.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:GetNovelsApp.WPF"
+             xmlns:v="clr-namespace:GetNovelsApp.WPF.Views"
+             xmlns:vm="clr-namespace:GetNovelsApp.WPF.ViewModels"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <DataTemplate DataType="{x:Type vm:BibliotecaViewModel}">
+            <v:BibliotecaView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ConfiguracionViewModel}">
+            <v:ConfiguracionView/>
+        </DataTemplate>
+
+        <SolidColorBrush x:Key="Color1" Color="#F2C4DE"/>
+        <SolidColorBrush x:Key="Color2" Color="#03588C"/>
+        <SolidColorBrush x:Key="Color3" Color="#EFF28D"/>
+        <SolidColorBrush x:Key="Color4" Color="#F29F05"/>
+        <SolidColorBrush x:Key="Color5" Color="#F24405"/>
+
+        
+        
+        <!--Templates-->
+        <Style x:Key="BotonNavMenu" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource Color2}"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+    </Application.Resources>
+</Application>

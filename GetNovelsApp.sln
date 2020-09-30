@@ -7,10 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetNovelApp.ConsoleVersion"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetNovelsApp.Core", "GetNovelsApp.Core\GetNovelsApp.Core.csproj", "{002573F4-5120-4F5F-86DA-C93DAD0B86BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetNovelsApp.WPF", "..\..\GetNovelsApp.WPF\GetNovelsApp.WPF.csproj", "{CEFCC592-7FC6-4574-937C-77D8D5C4B6FC}"
-	ProjectSection(ProjectDependencies) = postProject
-		{002573F4-5120-4F5F-86DA-C93DAD0B86BA} = {002573F4-5120-4F5F-86DA-C93DAD0B86BA}
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetNovelsApp.WPF", "GetNovelsApp.WPF\GetNovelsApp.WPF.csproj", "{CEFCC592-7FC6-4574-937C-77D8D5C4B6FC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
