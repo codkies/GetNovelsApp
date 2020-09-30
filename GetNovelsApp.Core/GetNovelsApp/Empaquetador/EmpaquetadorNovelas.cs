@@ -63,7 +63,7 @@ namespace GetNovelsApp.Core.Empaquetadores
         }
          
 
-        public void EmpaquetaCapitulo(List<Capitulo> CapitulosDescargados, NovelaRuntimeModel novela)
+        public void EmpaquetaCapitulo(List<Capitulo> CapitulosDescargados, INovela novela)
         {          
             foreach (Capitulo c in CapitulosDescargados)
             {
@@ -79,7 +79,7 @@ namespace GetNovelsApp.Core.Empaquetadores
 
         #region Imprimiendo novelas.
 
-        private void ImprimeNovela(NovelaRuntimeModel novela, TiposDocumentos tipo)
+        private void ImprimeNovela(INovela novela, TiposDocumentos tipo)
         {
             string Path = LocalPathManager.DefinePathNovela(novela);
             IConstructor Constructor = Factory.AsignaConstructor(novela, tipo, GetNovelsConfig.CapitulosPorPdf, Path, novela.Titulo, CapituloImpreso, DocumentoCreado);
@@ -98,7 +98,7 @@ namespace GetNovelsApp.Core.Empaquetadores
         /// El constructor llama este metodo para notificar que un capitulo fue colocado en el documento.
         /// </summary>
         /// <param name="capitulo"></param>
-        private void CapituloImpreso(Capitulo capitulo, NovelaRuntimeModel novela)
+        private void CapituloImpreso(Capitulo capitulo, INovela novela)
         {
             novela.CapituloFueImpreso(capitulo);
         }

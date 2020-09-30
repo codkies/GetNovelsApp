@@ -32,7 +32,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
         /// </summary>
         /// <param name="infoNov"></param>
         /// <returns></returns>
-        public NovelaRuntimeModel BuscaNovelaEnDB(Uri LinkNovela)
+        public INovela BuscaNovelaEnDB(Uri LinkNovela)
         {
             using IDbConnection cnn = DataBaseAccess.GetConnection();
             string obtenIDnovela = GetIDNovel_Query(LinkNovela);
@@ -49,7 +49,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
                 GuardaCapitulos(CapitulosNovela, novDBInfo.ID); //Itera los caps y encuentra su info.
 
                 //Regresando una novela para runtime:
-                NovelaRuntimeModel nov = new NovelaRuntimeModel(CapitulosNovela, novDBInfo);
+                INovela nov = new NovelaRuntimeModel(CapitulosNovela, novDBInfo);
                 cnn.Dispose();
                 return nov;
             }
@@ -100,7 +100,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
 
        
 
-        private NovelaRuntimeModel SacaNovelaDB(Uri LinkNovela) //Debe ir privada.
+        private INovela SacaNovelaDB(Uri LinkNovela) //Debe ir privada.
         {
             using IDbConnection cnn = DataBaseAccess.GetConnection();
 
@@ -112,7 +112,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
             string qryCapitlos = $"select Link, TextoCapitulo, Titulo, Numero, Valor from {TablaCapitulos} where NovelaID = '{infoDBNovela.ID}'";
             List<Capitulo> Capitulos = cnn.Query<Capitulo>(qryCapitlos).ToList();
 
-            NovelaRuntimeModel novela = new NovelaRuntimeModel(Capitulos, infoDBNovela);
+            INovela novela = new NovelaRuntimeModel(Capitulos, infoDBNovela);
 
             cnn.Dispose();
             return novela;

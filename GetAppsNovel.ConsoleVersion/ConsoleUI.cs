@@ -171,9 +171,9 @@ namespace GetAppsNovel.ConsoleVersion
         }
 
 
-        internal Dictionary<NovelaRuntimeModel, int> PidePathTXTusuario(string folderPath)
+        internal Dictionary<INovela, int> PidePathTXTusuario(string folderPath)
         {
-            Dictionary<NovelaRuntimeModel, int> InfoDescarga = new Dictionary<NovelaRuntimeModel, int>();
+            Dictionary<INovela, int> InfoDescarga = new Dictionary<INovela, int>();
 
             //string path = PideInput($"Introduce path del txt file", this);
             //path = path.Replace(@"\\", @"\\\\");
@@ -210,7 +210,7 @@ namespace GetAppsNovel.ConsoleVersion
                 ConfirmaInfoNovelaConUsuario(ref InfoDescarga, novela, folderPath);
                
             }
-            TerminaInput(new List<NovelaRuntimeModel>(InfoDescarga.Keys));
+            TerminaInput(new List<INovela>(InfoDescarga.Keys));
             return InfoDescarga;
         }
 
@@ -221,10 +221,10 @@ namespace GetAppsNovel.ConsoleVersion
         /// </summary>
         /// <param name="xPaths"></param>
         /// <param name="Novelas"></param>
-        internal Dictionary<NovelaRuntimeModel, int> PideInfoUsuario(string FolderPathDefined)
+        internal Dictionary<INovela, int> PideInfoUsuario(string FolderPathDefined)
         {
             //Preps:
-            Dictionary<NovelaRuntimeModel, int> InfoDescarga = new Dictionary<NovelaRuntimeModel, int>();
+            Dictionary<INovela, int> InfoDescarga = new Dictionary<INovela, int>();
             bool InputFinalizado = false;
             Archivador archivador = new Archivador();
             ReportaEspecial("\nInformacion de novelas:", this);
@@ -247,7 +247,7 @@ namespace GetAppsNovel.ConsoleVersion
                 Reporta("\nObteniendo información de novela...\n", this);
 
                 //1) Pidela a la DB:                
-                NovelaRuntimeModel novela = archivador.BuscaNovelaEnDB(UriNovela);
+                INovela novela = archivador.BuscaNovelaEnDB(UriNovela);
 
                 ///Confirmando con el usuario:
                 ConfirmaInfoNovelaConUsuario(ref InfoDescarga, novela, FolderPathDefined);
@@ -256,7 +256,7 @@ namespace GetAppsNovel.ConsoleVersion
                 InputFinalizado = PreguntaPorOtraNovela(InputFinalizado);
 
                 if (!InputFinalizado) continue;
-                List<NovelaRuntimeModel> TodasLasNovelasAObtener = new List<NovelaRuntimeModel>(InfoDescarga.Keys);
+                List<INovela> TodasLasNovelasAObtener = new List<INovela>(InfoDescarga.Keys);
                 TerminaInput(TodasLasNovelasAObtener);
             }
 
@@ -308,7 +308,7 @@ namespace GetAppsNovel.ConsoleVersion
         }
 
 
-        private void TerminaInput(List<NovelaRuntimeModel> novelasRT)
+        private void TerminaInput(List<INovela> novelasRT)
         {
             string mensaje = $"\nSe obtendrán {novelasRT.Count} novelas:";
             for (int i = 0; i < novelasRT.Count; i++)
@@ -341,7 +341,7 @@ namespace GetAppsNovel.ConsoleVersion
         }
 
 
-        private void ConfirmaInfoNovelaConUsuario(ref Dictionary<NovelaRuntimeModel, int> InfoDescarga, NovelaRuntimeModel nov, string PathCarpeta)
+        private void ConfirmaInfoNovelaConUsuario(ref Dictionary<INovela, int> InfoDescarga, INovela nov, string PathCarpeta)
         {
             Reporta($"Titulo: {nov.Titulo}\n" +     
                                                         $"Link: {nov.LinkPrincipal}\n" +

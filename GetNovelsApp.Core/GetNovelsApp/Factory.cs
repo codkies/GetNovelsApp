@@ -16,7 +16,7 @@ namespace GetNovelsApp.Core.GetNovelsApp
         /// </summary>
         /// <param name="tipo"></param>
         /// <returns></returns>
-        public static IConstructor AsignaConstructor(NovelaRuntimeModel novela, TiposDocumentos tipo, int capsPorPDF, string direccion, string titulo, NotificaCapituloImpreso notCapImpreso, NotificaDocumentoCreado notDocCreado)
+        public static IConstructor AsignaConstructor(INovela novela, TiposDocumentos tipo, int capsPorPDF, string direccion, string titulo, NotificaCapituloImpreso notCapImpreso, NotificaDocumentoCreado notDocCreado)
         {
             switch (tipo)
             {

@@ -1,25 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace GetNovelsApp.Core.Modelos
 {
     public interface INovela
     {
+        //Main
+        string Titulo { get; }
         int CantidadCapitulosDescargados { get; }
-        int CantidadLinks { get; }
-        List<Capitulo> Capitulos { get; }
-        ReadOnlyCollection<Capitulo> CapitulosDescargados { get; }
-        ReadOnlyCollection<Capitulo> CapitulosImpresos { get; }
-        ReadOnlyCollection<Capitulo> CapitulosPorDescargar { get; }
-        bool EstoyCompleta { get; }
         int ID { get; }
+        List<Capitulo> Capitulos { get; }
+        List<Capitulo> CapitulosDescargados { get; }
+        List<Capitulo> CapitulosImpresos { get; }
+        List<Capitulo> CapitulosPorDescargar { get; }
+
+        //Estado de la clase
+        bool EstoyCompleta { get; }        
         Uri LinkPrincipal { get; }
         List<Uri> LinksDeCapitulos { get; }
         int PorcentajeDescarga { get; }
         bool TengoCapitulosPorImprimir { get; }
-        string Titulo { get; }
+        int CantidadLinks { get; }
 
+        //Metodos
         void CapituloFueDescargado(Capitulo capituloNuevo);
         void CapituloFueImpreso(Capitulo capitulo);
     }

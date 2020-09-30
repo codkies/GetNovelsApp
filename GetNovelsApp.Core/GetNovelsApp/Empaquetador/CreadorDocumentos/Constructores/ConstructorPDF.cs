@@ -14,7 +14,7 @@ namespace GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores
     public class ConstructorPDF : ConstructorBasico
     {
         #region Constructor & Setup
-        public ConstructorPDF(NovelaRuntimeModel novela, int capitulosPorPDF, string direccionGuardarPDF, string tituloHeader, NotificaCapituloImpreso capituloImpreso, NotificaDocumentoCreado documentoCreado)
+        public ConstructorPDF(INovela novela, int capitulosPorPDF, string direccionGuardarPDF, string tituloHeader, NotificaCapituloImpreso capituloImpreso, NotificaDocumentoCreado documentoCreado)
         {
             this.Novela = novela;
             this.capitulosPorPDF = capitulosPorPDF;
@@ -24,7 +24,7 @@ namespace GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores
             this.documentoCreado = documentoCreado;
         }
 
-        readonly NovelaRuntimeModel Novela;
+        readonly INovela Novela;
         readonly int capitulosPorPDF;
         readonly string direccionGuardarPDF;
         readonly string tituloHeader;

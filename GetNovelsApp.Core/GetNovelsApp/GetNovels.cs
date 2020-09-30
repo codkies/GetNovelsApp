@@ -62,7 +62,7 @@ namespace GetNovelsApp.Core
         /// <summary>
         /// Novela que esta instancia del GetNovels está obteniendo.
         /// </summary>
-        private NovelaRuntimeModel MyNovela;
+        private INovela MyNovela;
 
 
 
@@ -94,7 +94,7 @@ namespace GetNovelsApp.Core
         /// <summary>
         /// Obtiene capitulos de una novela en el formato establecido y los coloca en la carpeta de la configuracion.
         /// </summary>
-        public async Task<NovelaRuntimeModel> GetNovelAsync(NovelaRuntimeModel novelaNueva, int ComienzaEn)
+        public async Task<INovela> GetNovelAsync(INovela novelaNueva, int ComienzaEn)
         {
             int PorcentajeDeDescarga = novelaNueva.PorcentajeDescarga;
             
@@ -230,7 +230,7 @@ namespace GetNovelsApp.Core
         /// Organiza los capitulos que se deben descargar y toma referencias necesarias.
         /// </summary>
         /// <param name="novelaNueva"></param>
-        private void PreparaNovelaNueva(NovelaRuntimeModel novelaNueva)
+        private void PreparaNovelaNueva(INovela novelaNueva)
         {
             MyNovela = novelaNueva;
 
@@ -246,7 +246,7 @@ namespace GetNovelsApp.Core
         /// <summary>
         /// Obteniendo informacion de las iteraciones anteriores.
         /// </summary>
-        private void RecolectaInformacion(NovelaRuntimeModel novela, TiposDocumentos tipo)
+        private void RecolectaInformacion(INovela novela, TiposDocumentos tipo)
         {
             if (MyEmpaquetador == null | MyScraper == null) return;
             DocumentosCreados += MyEmpaquetador.DocumentosCreados;
