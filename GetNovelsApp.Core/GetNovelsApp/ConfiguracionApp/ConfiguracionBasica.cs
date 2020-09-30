@@ -47,6 +47,11 @@ namespace GetNovelsApp.Core.ConfiguracionApp
 
         public IFabrica Fabrica => fabrica;
 
+        public List<string> xPathsSipnosis => xPaths.xPathsSipnosis;
+
+        public List<string> xPathsImagen => xPaths.xPathsImagen;
+
+        public List<string> xPathsTags => xPaths.xPathsTags;
         #endregion
     }
 }

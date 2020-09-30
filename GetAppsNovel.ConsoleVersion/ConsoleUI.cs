@@ -145,7 +145,6 @@ namespace GetAppsNovel.ConsoleVersion
             }
 
             //Obteniendo tamaño cap
-
             while (_CapsPorDoc == string.Empty)
             {
                 string caps = PideInput("¿Cuantos capitulos quieres que hayan por documento?", this);

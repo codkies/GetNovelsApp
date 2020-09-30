@@ -103,40 +103,39 @@ namespace GetNovelsApp.Core.Conexiones.Internet
         /// Regresa una Lista de HtmlNodeCollection. El index de cada xPath corresponde al index de sus nodos en la lista.
         /// </summary>
         /// <param name="direccion">Link al website.</param>
-        /// <param name="ListOfxPaths">Lista de xPaths a conseguir en el website.</param>
+        /// <param name="xPathsDeNodosDeseados">Lista de xPaths a conseguir en el website.</param>
         /// <returns></returns>
-        public List<HtmlNodeCollection> IntenaVariosNodos(Uri direccion, List<List<string>> ListOfxPaths)
+        public List<HtmlNodeCollection> IntenaVariosNodos(Uri direccion, List<List<string>> xPathsDeNodosDeseados)
         {
             HtmlDocument website = ObtenWebsite(direccion);
 
-            List<HtmlNodeCollection> AllHtmlNodes = null;
+            List<HtmlNodeCollection> NodosEncontrados = new List<HtmlNodeCollection>();
 
-            while (AllHtmlNodes == null)
+            while (NodosEncontrados.Count < xPathsDeNodosDeseados.Count)
             {
-                foreach (List<string> xPaths in ListOfxPaths)
+                foreach (List<string> xPaths in xPathsDeNodosDeseados)
                 {
                     HtmlNodeCollection posiblesNodos = ObtenNodes(website, xPaths);
 
                     if (posiblesNodos == null) //Consiguelos todos o ninguno.
-                    {
-                        AllHtmlNodes = null;
+                    {                        
                         Debug.WriteLine("Error. \n" +
                                         $"Direccion: {direccion} \n" +
                                         $"xPaths: {xPaths}", this);
-                        break;
+                        continue;
                     }
 
-                    AllHtmlNodes.Add(posiblesNodos);
+                    NodosEncontrados.Add(posiblesNodos);
                 }
 
-                if (AllHtmlNodes == null)
+                if (NodosEncontrados == null)
                 {
                     GetNovelsComunicador.ReportaError("No se consiguieron los nodos segun los xPaths. Reintentando...", this);
                     website = ObtenWebsite(direccion);
                 }
             }
 
-            return AllHtmlNodes;
+            return NodosEncontrados;
         }
 
 
@@ -193,6 +192,7 @@ namespace GetNovelsApp.Core.Conexiones.Internet
             }
             return website;
         }
+
 
 
         private HtmlNodeCollection ObtenNodes(HtmlDocument doc, List<string> xPaths)

@@ -67,6 +67,14 @@ namespace GetNovelsApp.Core
         /// </summary>
         public static List<string> xPathsLinks => ConfiguracionActual.xPathsLinks;
 
+
+        public static List<string> xPathsSipnosis => ConfiguracionActual.xPathsSipnosis;
+
+        public static List<string> xPathsImagen => ConfiguracionActual.xPathsImagen;
+
+        public static List<string> xPathsTags => ConfiguracionActual.xPathsTags;
+
+
         #endregion
 
     }

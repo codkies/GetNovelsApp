@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using GetNovelsApp.Core.ConfiguracionApp;
 using GetNovelsApp.Core.ConfiguracionApp.xPaths;
 using GetNovelsApp.Core.GetNovelsApp;
@@ -17,21 +18,20 @@ namespace GetAppsNovel.ConsoleVersion
     {
         public ConfiguracionConsoleUI(ConsoleUI UI, IFabrica fabrica, string DireccionDiscoDuro, int BatchSize, int CapitulosPorDoc)
         {
+            InicializaConfiguracion();
+
             _fabrica = fabrica;
             _tamañoBatch = BatchSize;
             _direccionDiscoDuro = DireccionDiscoDuro;
             _capsPorDocumento = CapitulosPorDoc;
-
             ConsoleUI = UI;
-
-            InicializaConfiguracion();
         }
 
 
         private void InicializaConfiguracion()
         {
             /*El orden es importante*/
-            textos = new List<string>()
+            List<string> textos = new List<string>()
             {
                 "//div[@class = 'cha-words']/p",
                 "//div[@class = 'text-left']/p",
@@ -43,25 +43,40 @@ namespace GetAppsNovel.ConsoleVersion
                 "//*[@class = 'desc']/p"
             };
 
-            nextBtn = new List<string>()
+            List<string> nextBtn = new List<string>()
             {
                 "//div[@class='nav-next']/a", //Wuxiaworldsite
                 "//li/a[@class='next next-link']", //readlightnovels
             };
 
-            links = new List<string>()
+            List<string> links = new List<string>()
             {
                 "//ul[@class= 'main version-chap active']/li/a",
                 "//li[@class= 'wp-manga-chapter  ']/a"
             };
 
-            titulo = new List<string>()
+            List<string> titulos = new List<string>()
             {
                 "//div[@class='post-title']/*",
-                "//h3"                
+                "//h3"
             };
 
-            wuxiaworld_site = new Website(dominio, links, nextBtn, textos, titulo);
+            List<string> sipnosis = new List<string>()
+            {
+                "//div[@id='editdescription']/p"
+            };
+
+            List<string> imagen = new List<string>()
+            {
+                "//div[@class='seriesimg']/img"
+            };
+
+            List<string> tags = new List<string>()
+            {
+                "//div[@id='showtags']/a"
+            };
+
+            wuxiaworld_site = new Website(dominio, links, nextBtn, textos, titulos, sipnosis, imagen, tags);
         }
 
 
@@ -72,12 +87,7 @@ namespace GetAppsNovel.ConsoleVersion
         /// </summary>
         public readonly ConsoleUI ConsoleUI;
 
-        Uri dominio = new Uri("https://wuxiaworld.site/");
-
-        public List<string> textos;
-        public List<string> nextBtn;
-        public List<string> titulo;
-        public List<string> links;
+        Uri dominio = new Uri("https://wuxiaworld.site/");      
 
         public int _tamañoBatch;
         public int _capsPorDocumento;

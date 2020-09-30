@@ -1,5 +1,7 @@
-﻿using GetNovelsApp.Core;
+﻿using System;
+using GetNovelsApp.Core;
 using GetNovelsApp.Core.Conexiones.DB;
+using GetNovelsApp.Core.Conexiones.Internet;
 using GetNovelsApp.Core.Modelos;
 using GetNovelsApp.WPF.Models;
 using GetNovelsApp.WPF.Utilidades;
@@ -14,6 +16,8 @@ namespace GetNovelsApp.WPF
         public AppViewModel()
         {
             InicializaApp();
+            Archivador ar = new Archivador();
+            ar.CreateNovel(new Uri("https://wuxiaworld.site/novel/super-gene-novel/"), out _);
             InicializaViewModels();
         }
 

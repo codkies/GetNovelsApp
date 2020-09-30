@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Permissions;
 
 namespace GetNovelsApp.Core.Conexiones.Internet
 {
@@ -8,14 +10,6 @@ namespace GetNovelsApp.Core.Conexiones.Internet
     /// </summary>
     public struct InformacionNovelaOnline
     {
-        public InformacionNovelaOnline(string titulo, Uri linkPaginaPrincipal, List<Uri> linksDeCapitulos)
-        {
-            Titulo = titulo;
-            LinkPrincipal = linkPaginaPrincipal;
-            LinksDeCapitulos = linksDeCapitulos;
-        }
-
-
         /// <summary>
         /// Titulo de la novela
         /// </summary>
@@ -33,8 +27,24 @@ namespace GetNovelsApp.Core.Conexiones.Internet
         /// </summary>
         public List<Uri> LinksDeCapitulos;
 
-        //Imagen
-        //Tags
-        //Sipnosis
+
+        public Uri Imagen;
+
+
+        public string Sipnosis;
+
+
+        public List<string> Tags;
+
+
+        public InformacionNovelaOnline(string titulo, Uri linkPrincipal, List<Uri> linksDeCapitulos, Uri imagen, string sipnosis, List<string> tags)
+        {
+            Titulo = titulo;
+            LinkPrincipal = linkPrincipal;
+            LinksDeCapitulos = linksDeCapitulos;
+            Imagen = imagen;
+            Sipnosis = sipnosis;
+            Tags = tags;            
+        }
     }
 }

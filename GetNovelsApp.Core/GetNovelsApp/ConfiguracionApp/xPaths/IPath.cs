@@ -15,6 +15,11 @@ namespace GetNovelsApp.Core.ConfiguracionApp.xPaths
 
         List<string> xPathsTitulo { get; }
 
+        List<string> xPathsSipnosis { get; }
+        List<string> xPathsImagen { get; }
+        List<string> xPathsTags { get; }
+
+
 
     }
 }

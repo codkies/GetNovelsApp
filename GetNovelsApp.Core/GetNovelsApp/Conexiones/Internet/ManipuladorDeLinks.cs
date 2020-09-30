@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using GetNovelsApp.Core.Reportaje;
 using HtmlAgilityPack;
+using iText.Kernel.Pdf.Tagutils;
 
 namespace GetNovelsApp.Core.Conexiones.Internet
 {
@@ -122,7 +125,7 @@ namespace GetNovelsApp.Core.Conexiones.Internet
             }
             else
             {
-                NumeroCapitulo = Math.Abs(float.Parse(numCapEscrito));
+                NumeroCapitulo = Math.Abs(float.Parse(numCapEscrito)); 
                 Valor = gruposDeNumeros;
                 TituloCapitulo = $"Chapter {TituloCapitulo}";
             }
@@ -139,20 +142,102 @@ namespace GetNovelsApp.Core.Conexiones.Internet
             Conector conector = new Conector(60 * 2); //2 minutos.
             HtmlNodeCollection[] htmlNodes = conector.IntenaVariosNodos(LinkPaginaPrincipal, GetNovelsConfig.xPathsTitulo, GetNovelsConfig.xPathsLinks);
 
-            //Referencias:
+            //Titulo:
             HtmlNodeCollection nodosTitulo = htmlNodes[0];
-            HtmlNodeCollection nodosLinksCapitulos = htmlNodes[1];
             string Titulo = ObtenInnerText(nodosTitulo);
+
+            //Buscando info en NovelUpdates
+            BuscaNovelaEnNovelUpdates(Titulo, conector, out string Sipnosis, out List<string> Tags, out Uri LinkImagen);
+
+            //Links:
+            HtmlNodeCollection nodosLinksCapitulos = htmlNodes[1];
             List<Uri> LinksDeCapitulos = ObtenLinks(nodosLinksCapitulos, OrdenLinks.Descendiente);
 
+
             //Ordeanando la información:
-            InformacionNovelaOnline info = new InformacionNovelaOnline(Titulo, LinkPaginaPrincipal, LinksDeCapitulos);
+            InformacionNovelaOnline info = new InformacionNovelaOnline(Titulo, LinkPaginaPrincipal, LinksDeCapitulos, LinkImagen, Sipnosis, Tags);
 
             return info;
         }
 
 
+
         #region Private
+
+        /// <summary>
+        /// Busca el titulo de una novela en NU y obtiene la sipnosis, tags e imagen.
+        /// </summary>
+        /// <param name="Titulo"></param>
+        /// <param name="conector"></param>
+        /// <param name="Sipnosis"></param>
+        /// <param name="Tags"></param>
+        /// <param name="LinkImagen"></param>
+        private static void BuscaNovelaEnNovelUpdates(string Titulo, Conector conector, out string Sipnosis, out List<string> Tags, out Uri LinkImagen)
+        {
+            //Conexion
+            Uri DirNovelUpdates = ObtenNovelUpdatesWebpage(Titulo);
+
+            List<List<string>> xPaths = new List<List<string>>()
+            {
+                GetNovelsConfig.xPathsSipnosis,
+                GetNovelsConfig.xPathsImagen,
+                GetNovelsConfig.xPathsTags
+            };
+            List<HtmlNodeCollection> infoEnNU = conector.IntenaVariosNodos(DirNovelUpdates, xPaths);
+
+            //Ordenando resultados
+            HtmlNodeCollection nodosSipnosis = infoEnNU[0];
+            HtmlNode nodoImagen = infoEnNU[1].First();
+            HtmlNodeCollection nodosTags = infoEnNU[2];
+
+            //Fitlrando sipnosis
+            Sipnosis = string.Empty;
+            foreach (HtmlNode nodo in nodosSipnosis)
+            {
+                Sipnosis += ObtenInnerText(nodo);
+            }
+
+            //Filtrando imagen
+            LinkImagen = new Uri(nodoImagen.Attributes["src"].Value);
+
+            //Tags
+            Tags = new List<string>();
+            foreach (HtmlNode node in nodosTags)
+            {
+                string _ = node.InnerText;
+                Tags.Add(_);
+            }
+
+        }
+
+
+        /// <summary>
+        /// Obtiene la direccion de una novela en NovelUpdates
+        /// </summary>
+        /// <param name="Titulo"></param>
+        /// <returns></returns>
+        private static Uri ObtenNovelUpdatesWebpage(string Titulo)
+        {
+            var tituloSeparado = Titulo.Split();
+            string direccionEnNU = "https://www.novelupdates.com/series/";
+
+            for (int i = 0; i < tituloSeparado.Length; i++)
+            {
+                string p = tituloSeparado[i];
+                if (i == tituloSeparado.Length - 1)
+                {
+                    direccionEnNU += $"{p}/";
+                }
+                else
+                {
+                    direccionEnNU += $"{p}-";
+                }
+            }
+
+            return new Uri(direccionEnNU);
+        }
+
+
 
         /// <summary>
         /// Ayuda a definir la manera que se enlistan los links.
@@ -202,6 +287,14 @@ namespace GetNovelsApp.Core.Conexiones.Internet
             //Tomando información:
             string Titulo = HttpUtility.HtmlDecode(nodosTitulo.FirstOrDefault().InnerText);
             Titulo = Titulo.Replace("\n", "").Replace("\t", "").Trim();
+            return Titulo;
+        }
+
+        private static string ObtenInnerText(HtmlNode nodo)
+        {
+            //Tomando información:
+            string Titulo = HttpUtility.HtmlDecode(nodo.InnerText);
+            Titulo = $" {Titulo.Replace("\n", "").Replace("\t", "").Trim()}"; //Agg un espacio
             return Titulo;
         }
 

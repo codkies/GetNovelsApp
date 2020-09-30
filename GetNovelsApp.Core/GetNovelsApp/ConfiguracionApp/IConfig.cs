@@ -52,5 +52,9 @@ namespace GetNovelsApp.Core.ConfiguracionApp
         /// </summary>
         List<string> xPathsLinks { get; }
 
+        List<string> xPathsSipnosis { get; }
+        List<string> xPathsImagen { get; }
+        List<string> xPathsTags { get; }
+
     }
 }

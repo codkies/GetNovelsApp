@@ -14,9 +14,12 @@ namespace GetAppsNovel.ConsoleVersion
 {
     class Program 
     {
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
-            await NormalRun();
+            SetupApp();
+            Archivador ar = new Archivador();
+            ar.CreateNovel(new Uri("https://wuxiaworld.site/novel/archean-eon-art/"), out _);
+            //await NormalRun();
             //await TXTrun();
         }
 

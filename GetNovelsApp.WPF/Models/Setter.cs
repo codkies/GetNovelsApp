@@ -64,7 +64,22 @@ namespace GetNovelsApp.WPF.Models
                 "//h3"
             };
 
-            return new Website(dominio, links, nextBtn, textos, titulo);
+            List<string> sipnosis = new List<string>()
+            {
+                "//div[@id='editdescription']/p"
+            };
+
+            List<string> imagen = new List<string>()
+            {
+                "//div[@class='seriesimg']/img"
+            };
+
+            List<string> tags = new List<string>()
+            {
+                "//div[@id='showtags']/a"
+            };
+
+            return new Website(dominio, links, nextBtn, textos, titulo, sipnosis, imagen, tags);
         }
 
     }

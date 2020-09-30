@@ -6,6 +6,8 @@ namespace GetNovelsApp.Core.Conexiones.DB
 {
     internal class DataBaseAccess
     {
+        static SQLiteConnection LastConecction;
+
         private static string GetConnectionString(string id = "Default")
         {
             return ConfigurationManager.ConnectionStrings[id].ConnectionString;
@@ -13,7 +15,13 @@ namespace GetNovelsApp.Core.Conexiones.DB
 
         internal static IDbConnection GetConnection()
         {
-            return new SQLiteConnection(GetConnectionString(), true);
+            LastConecction =  new SQLiteConnection(GetConnectionString(), true);
+            return LastConecction;
         }
+
+        /// <summary>
+        /// Ultimo ID insertado. Cuidado de en el momento adecuado.
+        /// </summary>
+        internal static long LastID => LastConecction.LastInsertRowId;
     }
 }

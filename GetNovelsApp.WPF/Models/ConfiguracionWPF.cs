@@ -45,5 +45,11 @@ namespace GetNovelsApp.WPF.Models
         public List<string> xPathsTitulo => Paths.xPathsTitulo;
 
         public List<string> xPathsLinks => Paths.xPathsLinks;
+
+        public List<string> xPathsSipnosis => Paths.xPathsSipnosis;
+
+        public List<string> xPathsImagen => Paths.xPathsImagen;
+
+        public List<string> xPathsTags => Paths.xPathsTags;
     }
 }
