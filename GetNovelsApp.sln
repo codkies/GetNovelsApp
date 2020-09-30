@@ -7,6 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetNovelApp.ConsoleVersion"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetNovelsApp.Core", "GetNovelsApp.Core\GetNovelsApp.Core.csproj", "{002573F4-5120-4F5F-86DA-C93DAD0B86BA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetNovelsApp.WPF", "..\..\GetNovelsApp.WPF\GetNovelsApp.WPF.csproj", "{CEFCC592-7FC6-4574-937C-77D8D5C4B6FC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{002573F4-5120-4F5F-86DA-C93DAD0B86BA} = {002573F4-5120-4F5F-86DA-C93DAD0B86BA}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +26,10 @@ Global
 		{002573F4-5120-4F5F-86DA-C93DAD0B86BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{002573F4-5120-4F5F-86DA-C93DAD0B86BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{002573F4-5120-4F5F-86DA-C93DAD0B86BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEFCC592-7FC6-4574-937C-77D8D5C4B6FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEFCC592-7FC6-4574-937C-77D8D5C4B6FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEFCC592-7FC6-4574-937C-77D8D5C4B6FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEFCC592-7FC6-4574-937C-77D8D5C4B6FC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

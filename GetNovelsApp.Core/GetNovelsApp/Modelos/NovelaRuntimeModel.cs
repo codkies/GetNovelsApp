@@ -14,7 +14,7 @@ namespace GetNovelsApp.Core.Modelos
     /// <summary>
     /// Modelo que utiliza la app para conseguir capitulos y ordenarlos.
     /// </summary>
-    public class NovelaRuntimeModel
+    public class NovelaRuntimeModel : INovela
     {
         public NovelaRuntimeModel(List<Capitulo> capitulos, NovelaDBModel dbInfo)
         {
@@ -69,7 +69,7 @@ namespace GetNovelsApp.Core.Modelos
         /// Link a su pagina principal de la novela
         /// </summary>
         public Uri LinkPrincipal => new Uri(dbInfo.LinkPrincipal);
-     
+
 
         #endregion
 
@@ -95,11 +95,11 @@ namespace GetNovelsApp.Core.Modelos
         /// <summary>
         /// Capitulos presentes en esta novela que ya han sido metidos en el PDF
         /// </summary>
-        public ReadOnlyCollection<Capitulo> CapitulosImpresos => _CapitulosImpresos.AsReadOnly();   
-        
+        public ReadOnlyCollection<Capitulo> CapitulosImpresos => _CapitulosImpresos.AsReadOnly();
 
 
-        public ReadOnlyCollection<Capitulo> CapitulosPorDescargar => _CapitulosPorDescargar.AsReadOnly();        
+
+        public ReadOnlyCollection<Capitulo> CapitulosPorDescargar => _CapitulosPorDescargar.AsReadOnly();
 
 
         /// <summary>

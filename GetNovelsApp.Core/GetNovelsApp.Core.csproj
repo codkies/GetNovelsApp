@@ -121,6 +121,7 @@
     <Compile Include="GetNovelsApp\Modelos\Capitulo.cs" />
     <Compile Include="GetNovelsApp\GetNovelsConfig.cs" />
     <Compile Include="GetNovelsApp\ConfiguracionApp\xPaths\IPath.cs" />
+    <Compile Include="GetNovelsApp\Modelos\INovela.cs" />
     <Compile Include="GetNovelsApp\Reportaje\IComunicador.cs" />
     <Compile Include="GetNovelsApp\Reportaje\IReportero.cs" />
     <Compile Include="GetNovelsApp\Utilidades\ComparerOrdenadorCapitulos.cs" />
