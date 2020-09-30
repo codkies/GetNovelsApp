@@ -1,22 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Runtime.InteropServices;
+using System.Drawing;
 using GetNovelsApp.Core.Conexiones.DB;
-using GetNovelsApp.Core.Conexiones.Internet;
+using GetNovelsApp.Core.Modelos;
 using GetNovelsApp.Core.Utilidades;
-using iText.Layout.Properties;
+using GetNovelsApp.WPF.Utilidades;
 
-namespace GetNovelsApp.Core.Modelos
+namespace GetNovelsApp.WPF.Models
 {
     /// <summary>
-    /// Modelo que utiliza la app para conseguir capitulos y ordenarlos.
+    /// Novela version WPF
     /// </summary>
-    public class NovelaRuntimeModel : INovela
+    public class NovelaWPF : ObservableObject, INovela
     {
-        public NovelaRuntimeModel(List<Capitulo> capitulos, NovelaDBModel dbInfo)
+        public NovelaWPF(List<Capitulo> capitulos, InformacionNovelaDB dbInfo)
         {
             foreach (Capitulo c in capitulos)
             {
@@ -46,48 +43,74 @@ namespace GetNovelsApp.Core.Modelos
         }
 
 
-        #region Fields
+        #region Identificadores y fields clave
+
+        private string titulo;
+        private List<Capitulo> capitulosDescargados;
+        private List<Capitulo> capitulosImpresos;
+        private List<Capitulo> capitulosPorDescargar;
+        private Uri linkPrincipal;
+        private List<Uri> linksDeCapitulos;
+        private string sipnosis;
+        private Image imagen;
+
+        public Image Imagen
+        {
+            get => imagen;
+            set => OnPropertyChanged(ref imagen, value);
+        }
+
+        public string Sipnosis
+        {
+            get => sipnosis;
+            set => OnPropertyChanged(ref sipnosis, value);
+        }
+
+        public string Titulo
+        {
+            get => titulo;
+            set => OnPropertyChanged(ref titulo, value);
+        }
 
 
-        /// <summary>
-        /// ID en DB.
-        /// </summary> 
         public int ID { get; private set; }
 
-        /// <summary>
-        /// Titulo de la novela
-        /// </summary>
-        public string Titulo { get; private set; }
+        public List<Capitulo> CapitulosDescargados
+        {
+            get => capitulosDescargados;
+            set => OnPropertyChanged(ref capitulosDescargados, value);
+        }
 
-        /// <summary>
-        /// Link a su pagina principal de la novela
-        /// </summary>
-        public Uri LinkPrincipal { get; private set; }
+        public List<Capitulo> CapitulosImpresos
+        {
+            get => capitulosImpresos;
+            set => OnPropertyChanged(ref capitulosImpresos, value);
+        }
 
-        /// <summary>
-        /// Lista de todos los links de los capitulos
-        /// </summary>
-        public List<Uri> LinksDeCapitulos { get; private set; }
+        public List<Capitulo> CapitulosPorDescargar
+        {
+            get => capitulosPorDescargar;
+            set => OnPropertyChanged(ref capitulosPorDescargar, value);
+        }
 
-        /// <summary>
-        /// Capitulos presentes en esta novela que no han sido metidos en el PDF
-        /// </summary>
-        public List<Capitulo> CapitulosDescargados { get; private set; }
+        public Uri LinkPrincipal
+        {
+            get => linkPrincipal;
+            set => OnPropertyChanged(ref linkPrincipal, value);
+        }
 
+        public List<Uri> LinksDeCapitulos
+        {
+            get => linksDeCapitulos;
+            set => OnPropertyChanged(ref linksDeCapitulos, value);
+        }
 
-        /// <summary>
-        /// Capitulos presentes en esta novela que ya han sido metidos en el PDF
-        /// </summary>
-        public List<Capitulo> CapitulosImpresos { get; private set; }
-
-
-
-        public List<Capitulo> CapitulosPorDescargar { get; private set; }
 
         #endregion
 
 
-        #region Propiedaes 
+        #region Externos (por implementar)
+
         /// <summary>
         /// Define si esta novela tiene capitulos por imprimir
         /// </summary>
@@ -137,11 +160,10 @@ namespace GetNovelsApp.Core.Modelos
         /// </summary>
         public int PorcentajeDescarga => CapitulosDescargados.Count * 100 / CantidadLinks;
 
-
         #endregion
 
 
-        #region Metodos
+        #region Cambio de estado (por implementar)
 
         /// <summary>
         /// Agrega un capitulo a la novela.
@@ -163,7 +185,6 @@ namespace GetNovelsApp.Core.Modelos
             CapitulosDescargados.Remove(capitulo);
             CapitulosImpresos.Add(capitulo);
         }
-
         #endregion
     }
 }

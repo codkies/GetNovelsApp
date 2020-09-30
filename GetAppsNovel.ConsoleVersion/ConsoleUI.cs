@@ -8,6 +8,7 @@ using GetNovelsApp.Core.Conexiones.DB;
 using System.IO;
 using System.Runtime.InteropServices;
 using GetNovelsApp.Core.Conexiones.Internet;
+using GetNovelsApp.Core.GetNovelsApp;
 
 namespace GetAppsNovel.ConsoleVersion
 {
@@ -20,9 +21,6 @@ namespace GetAppsNovel.ConsoleVersion
         {
            
         }
-
-
-        public readonly ConfiguracionConsoleUI Configuracion;
 
         public string Nombre => "Programa";
 
@@ -166,8 +164,8 @@ namespace GetAppsNovel.ConsoleVersion
                 }
             }
 
-
-            return new ConfiguracionConsoleUI(this, Direccion, BatchSize, int.Parse(_CapsPorDoc));
+            FabricaBasica fb = new FabricaBasica();
+            return new ConfiguracionConsoleUI(this, fb, Direccion, BatchSize, int.Parse(_CapsPorDoc));
         }
 
 
@@ -205,7 +203,7 @@ namespace GetAppsNovel.ConsoleVersion
             foreach (Uri uri in Links)
             {
                 Reporta($"\nObteniendo información de ({uri})...", this);
-                NovelaRuntimeModel novela = archivador.BuscaNovelaEnDB(uri);
+                INovela novela = archivador.BuscaNovelaEnDB(uri);
                 ///Confirmando con el usuario:
                 ConfirmaInfoNovelaConUsuario(ref InfoDescarga, novela, folderPath);
                
@@ -264,7 +262,7 @@ namespace GetAppsNovel.ConsoleVersion
         }
 
 
-        internal string PreguntaSiSeImprime(NovelaRuntimeModel novela)
+        internal string PreguntaSiSeImprime(INovela novela)
         {
             return PideInput($"Imprimir \"{novela.Titulo}\"? (Y/N)", this);
         }
@@ -303,7 +301,7 @@ namespace GetAppsNovel.ConsoleVersion
         private void FinalizaApp()
         {
             ReportaExito("Press (Enter) to exit.", this);
-            EventsManager.DestruyeReferencias();
+            GetNovelsEvents.DestruyeReferencias();
             Console.ReadLine();
         }
 

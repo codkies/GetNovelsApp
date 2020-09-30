@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using GetNovelsApp.Core.Conexiones.DB;
+using GetNovelsApp.Core.Reportaje;
 
-namespace GetNovelsApp.Core.Reportaje
+namespace GetNovelsApp.Core
 {
     /// <summary>
     /// Encargado de enviar mensajes al usuario
     /// </summary>
-    public static class Comunicador
+    public static class GetNovelsComunicador
     {
         public static void EstableceConfig(IComunicador mensajero)
         {

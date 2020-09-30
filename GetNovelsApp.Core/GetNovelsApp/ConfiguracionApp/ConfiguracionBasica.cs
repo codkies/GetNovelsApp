@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using GetNovelsApp.Core.ConfiguracionApp.xPaths;
+using GetNovelsApp.Core.GetNovelsApp;
 using GetNovelsApp.Core.Reportaje;
 
 namespace GetNovelsApp.Core.ConfiguracionApp
@@ -21,8 +22,7 @@ namespace GetNovelsApp.Core.ConfiguracionApp
 
         protected abstract IComunicador comunicador { get; }
 
-       
-
+        protected abstract IFabrica fabrica { get; }
 
         #endregion
 
@@ -44,6 +44,8 @@ namespace GetNovelsApp.Core.ConfiguracionApp
         public IComunicador Comunicador => comunicador;
 
         public string FolderPath => direccionDiscoDuro;
+
+        public IFabrica Fabrica => fabrica;
 
         #endregion
     }

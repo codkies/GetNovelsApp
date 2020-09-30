@@ -87,8 +87,8 @@ namespace GetNovelsApp.Core.Conexiones.Internet
             if (gruposDeNumeros < 1)
             {
                 //Esto romperá la app si varios mensajes (async) ocurren al mismo tiempo?...
-                Comunicador.ReportaError("No se pudo determinar el valor del capitulo.", MiReportero);
-                Comunicador.Reporta($"La dirección es: \n{LinkCapitulo}.", MiReportero);
+                GetNovelsComunicador.ReportaError("No se pudo determinar el valor del capitulo.", MiReportero);
+                GetNovelsComunicador.Reporta($"La dirección es: \n{LinkCapitulo}.", MiReportero);
 
                 string inputUserTitulo = string.Empty;
                 string inputUserNumCap = string.Empty;
@@ -97,17 +97,17 @@ namespace GetNovelsApp.Core.Conexiones.Internet
                 bool decisionTomada = false;
                 while (!decisionTomada)
                 {
-                    inputUserTitulo = Comunicador.PideInput($"\nEscribe el titulo del capitulo: (En general es 'Chapter - (numeroCapitulo)')", MiReportero);
-                    inputUserNumCap = Comunicador.PideInput($"Escribe el numero del capitulo: (puede tener decimales pero no acepta letras):", MiReportero);
-                    inputUserValorCap = Comunicador.PideInput($"Escribe por cuantos capitulos vale este: (si es un solo cap, el valor es 1. No acepta decimales ni letras):", MiReportero);
+                    inputUserTitulo = GetNovelsComunicador.PideInput($"\nEscribe el titulo del capitulo: (En general es 'Chapter - (numeroCapitulo)')", MiReportero);
+                    inputUserNumCap = GetNovelsComunicador.PideInput($"Escribe el numero del capitulo: (puede tener decimales pero no acepta letras):", MiReportero);
+                    inputUserValorCap = GetNovelsComunicador.PideInput($"Escribe por cuantos capitulos vale este: (si es un solo cap, el valor es 1. No acepta decimales ni letras):", MiReportero);
 
-                    Comunicador.Reporta("Has escrito:\n" +
+                    GetNovelsComunicador.Reporta("Has escrito:\n" +
                                                     $"Direccion: {LinkCapitulo}\n" +
                                                     $"Titulo cap: {inputUserTitulo}\n" +
                                                     $"Numero del capitulo: {inputUserNumCap}\n" +
                                                     $"Valor del capitulo: {inputUserValorCap}",
                                                     MiReportero);
-                    string decision = Comunicador.PideInput("Presiona (Y) para confirmar. Cualquier otra tecla para repetir.", MiReportero);
+                    string decision = GetNovelsComunicador.PideInput("Presiona (Y) para confirmar. Cualquier otra tecla para repetir.", MiReportero);
 
                     if (decision.Equals("y") | decision.Equals("yes"))
                     {
@@ -133,7 +133,7 @@ namespace GetNovelsApp.Core.Conexiones.Internet
         }
 
 
-        public static NovelaWebModel EncuentraInformacionNovela(Uri LinkPaginaPrincipal)
+        public static InformacionNovelaOnline EncuentraInformacionNovela(Uri LinkPaginaPrincipal)
         {
             //Conexiones:
             Conector conector = new Conector(60 * 2); //2 minutos.
@@ -146,7 +146,7 @@ namespace GetNovelsApp.Core.Conexiones.Internet
             List<Uri> LinksDeCapitulos = ObtenLinks(nodosLinksCapitulos, OrdenLinks.Descendiente);
 
             //Ordeanando la información:
-            NovelaWebModel info = new NovelaWebModel(Titulo, LinkPaginaPrincipal, LinksDeCapitulos);
+            InformacionNovelaOnline info = new InformacionNovelaOnline(Titulo, LinkPaginaPrincipal, LinksDeCapitulos);
 
             return info;
         }

@@ -7,20 +7,17 @@ using GetNovelsApp.Core;
 using GetNovelsApp.Core.Conexiones.DB;
 using GetNovelsApp.Core.Empaquetador;
 using GetNovelsApp.Core.Empaquetadores;
+using GetNovelsApp.Core.GetNovelsApp;
 using GetNovelsApp.Core.Modelos;
 
 namespace GetAppsNovel.ConsoleVersion
 {
     class Program 
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            //await NormalRun();
+            await NormalRun();
             //await TXTrun();
-            Archivador ar = new Archivador();
-            NovelaRuntimeModel n=  ar.BuscaNovelaEnDB(new System.Uri("https://wuxiaworld.site/novel/throne-of-magical-arcana/"));
-            Console.Write(n.Titulo);
-            Console.WriteLine(n.PorcentajeDescarga);
         }
 
         #region TXT run
@@ -31,7 +28,7 @@ namespace GetAppsNovel.ConsoleVersion
             //Ver control.            
             SetupApp();
 
-            Dictionary<NovelaRuntimeModel, int> InfoNovelas = ConsoleUI.PidePathTXTusuario(configuracion.FolderPath);
+            Dictionary<INovela, int> InfoNovelas = ConsoleUI.PidePathTXTusuario(configuracion.FolderPath);
 
             //Diagnostics:
             var stopwatch = new Stopwatch();
@@ -59,7 +56,7 @@ namespace GetAppsNovel.ConsoleVersion
             //Ver control.            
             SetupApp();
 
-            Dictionary<NovelaRuntimeModel, int> InfoNovelas = ConsoleUI.PideInfoUsuario(configuracion.FolderPath);
+            Dictionary<INovela, int> InfoNovelas = ConsoleUI.PideInfoUsuario(configuracion.FolderPath);
 
             //Diagnostics:
             var stopwatch = new Stopwatch();
@@ -78,7 +75,9 @@ namespace GetAppsNovel.ConsoleVersion
             string ver = "v0.16";
             string message = "Last before WPF\n";
             ConsoleUI.ReportaEspecial($"GetNovelsApp {ver}:\n{message}", ConsoleUI);
+
             configuracion = ConsoleUI.PideConfiguracion();
+
             getNovels = new GetNovels(configuracion);
         }
 
@@ -88,16 +87,16 @@ namespace GetAppsNovel.ConsoleVersion
         /// </summary>
         /// <param name="InfoNovelas"></param>
         /// <returns></returns>
-        private static async Task RunProgram(Dictionary<NovelaRuntimeModel, int> InfoDescargas)
+        private static async Task RunProgram(Dictionary<INovela, int> InfoDescargas)
         {
-            foreach (KeyValuePair<NovelaRuntimeModel, int> item in InfoDescargas)
+            foreach (KeyValuePair<INovela, int> item in InfoDescargas)
             {
-                NovelaRuntimeModel novelaRT = item.Key;
+                INovela novelaRT = item.Key;
                 int ComienzaEn = item.Value;
 
                 ConsoleUI.ReportaEspecial($"Buscando \"{novelaRT.Titulo}\"...", ConsoleUI);
 
-                NovelaRuntimeModel novela = await getNovels.GetNovelAsync(novelaRT, ComienzaEn); //Hardcoeando aqui el pdf.
+                INovela novela = await getNovels.GetNovelAsync(novelaRT, ComienzaEn); //Hardcoeando aqui el pdf.
 
                 ConsoleUI.ReportaEspecial($"Encontrada novela \"{novela.Titulo}\".", ConsoleUI);
 
@@ -110,7 +109,7 @@ namespace GetAppsNovel.ConsoleVersion
                     {
                         string Path = LocalPathManager.DefinePathNovela(novela);
                         System.IO.Directory.CreateDirectory(Path);
-                        EventsManager.Invoke_ImprimeNovela(novela, TiposDocumentos.PDF); //Harcodeando el tipo de doc.
+                        GetNovelsEvents.Invoke_ImprimeNovela(novela, TiposDocumentos.PDF); //Harcodeando el tipo de doc.
                         decisionTomada = true;
                     }
                     else if (decision.Equals("n") | decision.Equals("no"))

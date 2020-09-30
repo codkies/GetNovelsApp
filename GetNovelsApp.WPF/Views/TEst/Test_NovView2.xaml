@@ -1,0 +1,127 @@
+﻿<UserControl x:Class="GetNovelsApp.WPF.Views.Test_NovView2"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GetNovelsApp.WPF.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Background="{StaticResource Color2}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+
+        <!--Primer Col-->
+        <!--Info basica de novela-->
+        <Grid Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="3*"/>
+            </Grid.RowDefinitions>
+
+            <!--Primera Row, Info a primera vista & Imagen-->
+            <DockPanel Grid.Row="0">
+
+                <!--Img-->
+                <Image DockPanel.Dock="Left" Source="/GetNovelsApp.WPF;component/Resources/NovelHeroTest.jpg"/>
+
+                <!--Info a primera vista-->
+                <StackPanel DockPanel.Dock="Right">
+
+                    <!--Titulo-->
+                    <TextBlock  Text="Otherworldly Evil Monarch" 
+                                FontSize="20"
+                                HorizontalAlignment="Center"/>
+
+                    <!--Tags-->
+                    <StackPanel Orientation="Horizontal"
+                                Margin="10">
+                        <TextBlock Grid.Row="0" Grid.Column="0"
+                           Text="Accion"
+                           TextAlignment="Center"
+                           HorizontalAlignment="Center"
+                           Background="{StaticResource Color5}"
+                           Height="17"                          
+                           Padding="2 0"
+                           Margin="10 0"
+                           Foreground="White"/>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0"
+                           Text="Aventura"
+                           TextAlignment="Center"
+                           HorizontalAlignment="Center"
+                           Background="{StaticResource Color5}"
+                           Height="17"                          
+                           Padding="2 0"
+                           Margin="10 0"
+                           Foreground="White"/>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0"
+                           Text="Fantasia"
+                           TextAlignment="Center"
+                           HorizontalAlignment="Center"
+                           Background="{StaticResource Color5}"
+                           Height="17"                          
+                           Padding="2 0"
+                           Margin="10 0"
+                           Foreground="White"/>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0"
+                           Text="Drama"
+                           TextAlignment="Center"
+                           HorizontalAlignment="Center"
+                           Background="{StaticResource Color5}"
+                           Height="17"                          
+                           Padding="2 0"
+                           Margin="10 0"
+                           Foreground="White"/>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0"
+                           Text="Ecchi"
+                           TextAlignment="Center"
+                           HorizontalAlignment="Center"
+                           Background="{StaticResource Color5}"
+                           Height="17"                          
+                           Padding="2 0"
+                           Margin="10 0"
+                           Foreground="White"/>
+                    </StackPanel>
+
+
+                </StackPanel>
+
+            </DockPanel>
+
+
+            <!--Segunda Row, Sipnosis-->
+            <StackPanel Grid.Row="1"
+                        Margin="10 0">
+                <TextBlock Text="Sipnosis"/>
+                <!--Sipnosis-->
+                <TextBlock FontSize="12"
+                           Padding="0 0 5 0"
+                           TextWrapping="Wrap">
+                    Jun Xie was the number one assassin in modern earth. His skills and knowledge in the field of assassination were unparalleled, his accomplishments unprecedented, his reputation terrified the entire underworld. However, during a mission to retrieve a mystical treasure, a mishap occurred…
+                <LineBreak/><LineBreak/>
+                    He is now Jun Moxie, a sixteen year old super level debauchee, sole heir to the declining Jun family. A family of valiant heroes, left with an old grandpa, a crippled uncle and a debauchee as the sole heir! Accepting the world’s criticism and cold stares with a smile, his new journey begins! His life will be carved by his own will! Rise to the top! Evil Monarch Jun Xie!
+                    <LineBreak/><LineBreak/>
+                    “This cup I toast to those I’ve killed in my past life. Forgive me, for there is no chance for you to have revenge. Gulp!”
+                   <LineBreak/><LineBreak/>
+                    “This cup I toast to those whose life I will take in my new life. Forgive me, for you are fated to die by my hands. Cheers!”
+                </TextBlock>
+            </StackPanel>
+
+        </Grid>
+
+        <!--Segunda Row-->
+        <!--Tags-->
+        <DockPanel Grid.Column="2">
+            <TextBlock DockPanel.Dock="Top"
+                       Margin="20 0"
+                       Text="Capitulos:"/>
+            <DataGrid Grid.Row="2"
+                  Margin="20"/>
+        </DockPanel>
+    </Grid>
+</UserControl>

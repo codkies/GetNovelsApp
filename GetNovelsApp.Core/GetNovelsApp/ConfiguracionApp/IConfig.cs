@@ -1,13 +1,20 @@
 ﻿using System.Collections.Generic;
+using GetNovelsApp.Core.GetNovelsApp;
 using GetNovelsApp.Core.Reportaje;
 
 namespace GetNovelsApp.Core.ConfiguracionApp
 {
+
     /// <summary>
     /// Interfaz para la configuracion de la app.
     /// </summary>
     public interface IConfig
     {
+        /// <summary>
+        /// Fabrica que el Core utilizará.
+        /// </summary>
+        IFabrica Fabrica { get; }
+
         /// <summary>
         /// Direccion en el disco duro donde se guardarán las novelas.
         /// </summary>

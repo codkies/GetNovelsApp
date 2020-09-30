@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using GetNovelsApp.Core.ConfiguracionApp;
-using GetNovelsApp.Core.Reportaje;
+using GetNovelsApp.Core.GetNovelsApp;
 
 namespace GetNovelsApp.Core
 {
@@ -12,7 +12,8 @@ namespace GetNovelsApp.Core
         public static void EstableceConfig(IConfig configuracion)
         {
             ConfiguracionActual = configuracion;
-            Comunicador.EstableceConfig(configuracion.Comunicador);
+            GetNovelsComunicador.EstableceConfig(configuracion.Comunicador);
+            GetNovelsFactory.EstableceConfig(configuracion.Fabrica);
         }
 
         /// <summary>
@@ -22,6 +23,11 @@ namespace GetNovelsApp.Core
 
 
         #region Propiedades
+
+        /// <summary>
+        /// Tipo de UI que se está usando
+        /// </summary>
+        public static IFabrica Fabrica => ConfiguracionActual.Fabrica;
 
         /// <summary>
         /// Direccion en el disco duro de la carpeta donde el usuario quiere que se guarden las novelas.

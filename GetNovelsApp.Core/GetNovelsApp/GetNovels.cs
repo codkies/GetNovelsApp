@@ -34,8 +34,12 @@ namespace GetNovelsApp.Core
             Archivador = new Archivador();
             MyScraper = new Scraper();
             MyEmpaquetador = new EmpaquetadorNovelas(Archivador);
-            EventsManager.ImprimeNovela += RecolectaInformacion;
+            GetNovelsEvents.ImprimeNovela += RecolectaInformacion;
         }
+
+        
+
+
 
         #endregion
 
@@ -100,14 +104,14 @@ namespace GetNovelsApp.Core
             
             if (PorcentajeDeDescarga == 100)
             {
-                Comunicador.ReportaCambioEstado($"La novela {novelaNueva.Titulo} se encuentra en la base de datos.", this);
+                GetNovelsComunicador.ReportaCambioEstado($"La novela {novelaNueva.Titulo} se encuentra en la base de datos.", this);
                 return novelaNueva;
             }
 
             //Else, continua normalmente.
 
             PreparaNovelaNueva(novelaNueva);
-            Comunicador.ReportaCambioEstado($"La novela {MyNovela.Titulo} tiene un porcentaje de descarga de {MyNovela.PorcentajeDescarga}%.", this);
+            GetNovelsComunicador.ReportaCambioEstado($"La novela {MyNovela.Titulo} tiene un porcentaje de descarga de {MyNovela.PorcentajeDescarga}%.", this);
 
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -117,7 +121,7 @@ namespace GetNovelsApp.Core
             stopwatch.Stop();
 
             //Reportando:            
-            Comunicador.ReportaExito($"Se han finalizado todas las iteraciones. Tiempo tomado: {stopwatch.ElapsedMilliseconds / (60 * 1000)}min.", this);
+            GetNovelsComunicador.ReportaExito($"Se han finalizado todas las iteraciones. Tiempo tomado: {stopwatch.ElapsedMilliseconds / (60 * 1000)}min.", this);
             return MyNovela;
         }
 
@@ -135,13 +139,13 @@ namespace GetNovelsApp.Core
             int cantidadDeLinksAUtilizar = MyNovela.CapitulosPorDescargar.Count - ComienzaEn;
             int batches = DivideYRedondeaUp(cantidadDeLinksAUtilizar, tamañoBatch);
 
-            Comunicador.ReportaEspecial($"{MyNovela.Titulo} tiene {MyNovela.CapitulosPorDescargar.Count} capitulos por descargar. Se empezará desde: {MyNovela.CapitulosPorDescargar[ComienzaEn].TituloCapitulo}\n" +
+            GetNovelsComunicador.ReportaEspecial($"{MyNovela.Titulo} tiene {MyNovela.CapitulosPorDescargar.Count} capitulos por descargar. Se empezará desde: {MyNovela.CapitulosPorDescargar[ComienzaEn].TituloCapitulo}\n" +
                                                 $"Se realizarán {batches+1} iteraciones."
                                                 , this);
 
             //------------------------------------------------------------------------------------------------------------------------------
 
-            Comunicador.Reporta("Comenzando Scrap\n", this);
+            GetNovelsComunicador.Reporta("Comenzando Scrap\n", this);
 
             for (int i = 0; i < batches; i++)
             {
@@ -149,15 +153,15 @@ namespace GetNovelsApp.Core
                 int xi = ComienzaEn + factor;
                 int xf = xi + tamañoBatch - 1;
 
-                Comunicador.Reporta($"Batch {(i + 1)}/{batches + 1}...", this);
+                GetNovelsComunicador.Reporta($"Batch {(i + 1)}/{batches + 1}...", this);
 
                 var capitulosCompletos = await ScrapCapitulosAsync(xi, xf);
 
-                Comunicador.Reporta($"... Guardando capitulos...", this);
+                GetNovelsComunicador.Reporta($"... Guardando capitulos...", this);
 
                 Task.Run(() => MyEmpaquetador.EmpaquetaCapitulo(capitulosCompletos, MyNovela));
 
-                Comunicador.Reporta($"... {((i + 1) * 100) / (batches + 1)}% de las iteraciones completadas...", this);
+                GetNovelsComunicador.Reporta($"... {((i + 1) * 100) / (batches + 1)}% de las iteraciones completadas...", this);
 
                 //if (i != batches - 1) //Solo espera si no eres el ultimo.
                 //{
@@ -167,7 +171,7 @@ namespace GetNovelsApp.Core
                 //}
             }
 
-            Comunicador.ReportaExito("\nFinalizados todos los batchs.", this);
+            GetNovelsComunicador.ReportaExito("\nFinalizados todos los batchs.", this);
         }        
 
 

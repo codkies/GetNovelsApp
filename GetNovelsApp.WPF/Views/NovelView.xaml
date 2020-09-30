@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="GetNovelsApp.WPF.Views.NovelaView2"
+﻿<UserControl x:Class="GetNovelsApp.WPF.Views.NovelView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -22,18 +22,18 @@
 
             <!--Primera Row, Info a primera vista & Imagen-->
             <DockPanel Grid.Row="0">
-                
+
                 <!--Img-->
                 <Image DockPanel.Dock="Left" Source="/GetNovelsApp.WPF;component/Resources/NovelHeroTest.jpg"/>
 
                 <!--Info a primera vista-->
                 <StackPanel DockPanel.Dock="Right">
-                    
+
                     <!--Titulo-->
                     <TextBlock  Text="Otherworldly Evil Monarch" 
                                 FontSize="20"
                                 HorizontalAlignment="Center"/>
-                    
+
                     <!--Tags-->
                     <StackPanel Orientation="Horizontal"
                                 Margin="10">
@@ -87,13 +87,13 @@
                            Margin="10 0"
                            Foreground="White"/>
                     </StackPanel>
-                    
-                    
+
+
                 </StackPanel>
-                
+
             </DockPanel>
-            
-            
+
+
             <!--Segunda Row, Sipnosis-->
             <StackPanel Grid.Row="1"
                         Margin="10 0">
@@ -111,7 +111,7 @@
                     “This cup I toast to those whose life I will take in my new life. Forgive me, for you are fated to die by my hands. Cheers!”
                 </TextBlock>
             </StackPanel>
-            
+
         </Grid>
 
         <!--Segunda Row-->

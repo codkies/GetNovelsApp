@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace GetNovelsApp.WPF.Views
 {
     /// <summary>
-    /// Interaction logic for NovelaView.xaml
+    /// Interaction logic for NovelView.xaml
     /// </summary>
-    public partial class NovelaView : UserControl
+    public partial class NovelView : UserControl
     {
-        public NovelaView()
+        public NovelView()
         {
             InitializeComponent();
         }

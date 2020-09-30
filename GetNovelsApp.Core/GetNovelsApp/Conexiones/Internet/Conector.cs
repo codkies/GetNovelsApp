@@ -54,7 +54,7 @@ namespace GetNovelsApp.Core.Conexiones.Internet
                 nodos = ObtenNodes(website, xPaths); //Check for null.
                 if (nodos == null)
                 {
-                    Comunicador.ReportaError("No se consiguieron los nodos segun los xPaths. Reintentando...", this);
+                    GetNovelsComunicador.ReportaError("No se consiguieron los nodos segun los xPaths. Reintentando...", this);
                     website = null;
                     website = ObtenWebsite(direccion);
                 }
@@ -87,7 +87,7 @@ namespace GetNovelsApp.Core.Conexiones.Internet
 
                 if (nodosOne == null | nodosTwo == null)
                 {
-                    Comunicador.ReportaError("No se consiguieron los nodos segun los xPaths. Reintentando...", this);
+                    GetNovelsComunicador.ReportaError("No se consiguieron los nodos segun los xPaths. Reintentando...", this);
                     website = ObtenWebsite(direccion);
                 }
             }
@@ -131,7 +131,7 @@ namespace GetNovelsApp.Core.Conexiones.Internet
 
                 if (AllHtmlNodes == null)
                 {
-                    Comunicador.ReportaError("No se consiguieron los nodos segun los xPaths. Reintentando...", this);
+                    GetNovelsComunicador.ReportaError("No se consiguieron los nodos segun los xPaths. Reintentando...", this);
                     website = ObtenWebsite(direccion);
                 }
             }
@@ -166,27 +166,27 @@ namespace GetNovelsApp.Core.Conexiones.Internet
                 }
                 catch (ObjectDisposedException)
                 {
-                    Comunicador.ReportaError("System.ObjectDisposedException", this);
+                    GetNovelsComunicador.ReportaError("System.ObjectDisposedException", this);
                     Conexion = new HtmlWeb();
                     website = null;
                     System.Threading.Thread.Sleep(tiempoDeEspera); //Wait for 5seconds    
                 }
                 catch(System.IO.IOException)
                 {
-                    Comunicador.ReportaError("System.IO.IOException", this);
+                    GetNovelsComunicador.ReportaError("System.IO.IOException", this);
                     Conexion = new HtmlWeb();
                     website = null;
                     System.Threading.Thread.Sleep(tiempoDeEspera); //Wait for 5seconds    
                 }
                 catch (TimeoutException)
                 {
-                    Comunicador.Reporta("Timeout. Reintentando...", this);
+                    GetNovelsComunicador.Reporta("Timeout. Reintentando...", this);
                     website = null;
                     System.Threading.Thread.Sleep(tiempoDeEspera); //Wait for 5seconds                    
                 }
                 catch (WebException)
                 {
-                    Comunicador.ReportaError("Pareces no tener internet. Reintentando...", this);
+                    GetNovelsComunicador.ReportaError("Pareces no tener internet. Reintentando...", this);
                     website = null;
                     continue;
                 }

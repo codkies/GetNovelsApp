@@ -15,7 +15,7 @@ namespace GetNovelsApp.Core
 
         public Scraper()
         {
-            Comunicador.Reporta($"Creando conector.", this);
+            GetNovelsComunicador.Reporta($"Creando conector.", this);
             conector = new Conector(tiempoTopeEnSegundos: 300); //5 minutos de tiempo de espera
         }
 

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using GetNovelsApp.Core.Modelos;
 using GetNovelsApp.Core.Reportaje;
 using GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores;
-using GetNovelsApp.Core.GetNovelsApp;
 using GetNovelsApp.Core.Empaquetador;
 using GetNovelsApp.Core.Conexiones.DB;
 
@@ -27,7 +26,7 @@ namespace GetNovelsApp.Core.Empaquetadores
 
         public EmpaquetadorNovelas(Archivador archivador)
         {
-            EventsManager.ImprimeNovela += ImprimeNovela;
+            GetNovelsEvents.ImprimeNovela += ImprimeNovela;
             Archivador = archivador;
         }
 
@@ -57,7 +56,7 @@ namespace GetNovelsApp.Core.Empaquetadores
 
         #region Metodos Publicos
 
-        public void EscuchaNovela(NovelaRuntimeModel novela)
+        public void EscuchaNovela(NovelaRT novela)
         {
 
         }
@@ -82,7 +81,7 @@ namespace GetNovelsApp.Core.Empaquetadores
         private void ImprimeNovela(INovela novela, TiposDocumentos tipo)
         {
             string Path = LocalPathManager.DefinePathNovela(novela);
-            IConstructor Constructor = Factory.AsignaConstructor(novela, tipo, GetNovelsConfig.CapitulosPorPdf, Path, novela.Titulo, CapituloImpreso, DocumentoCreado);
+            IConstructor Constructor = GetNovelsFactory.AsignaConstructor(novela, tipo, GetNovelsConfig.CapitulosPorPdf, Path, novela.Titulo, CapituloImpreso, DocumentoCreado);
 
             List<Capitulo> CapitulosAImprimir = new List<Capitulo>(novela.CapitulosDescargados);
 
@@ -111,7 +110,7 @@ namespace GetNovelsApp.Core.Empaquetadores
         private void DocumentoCreado(string tituloDocumento)
         {
             DocumentosCreados++;
-            Comunicador.ReportaEspecial($"Creando {tituloDocumento}.", this);
+            GetNovelsComunicador.ReportaEspecial($"Creando {tituloDocumento}.", this);
         }
 
         #endregion

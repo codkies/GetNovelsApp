@@ -85,8 +85,6 @@ C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\D
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\Debug\MainWindow.g.cs
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\Debug\Views\BibliotecaView.g.cs
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\Debug\Views\ConfiguracionView.g.cs
-C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\Debug\Views\NovelaView.g.cs
-C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\Debug\Views\NovelaView2.g.cs
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\Debug\App.g.cs
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\Debug\GeneratedInternalTypeHelper.g.cs
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\Debug\GetNovelsApp.WPF_MarkupCompile.cache
@@ -95,8 +93,6 @@ C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\D
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\Debug\MainWindow.baml
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\Debug\Views\BibliotecaView.baml
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\Debug\Views\ConfiguracionView.baml
-C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\Debug\Views\NovelaView.baml
-C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\Debug\Views\NovelaView2.baml
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\Debug\GetNovelsApp.WPF.g.resources
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\Debug\GetNovelsApp.WPF.Properties.Resources.resources
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\Debug\GetNovelsApp.WPF.csproj.GenerateResource.cache
@@ -104,3 +100,9 @@ C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\D
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\Debug\GetNovelsApp.WPF.csproj.CopyComplete
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\Debug\GetNovelsApp.WPF.exe
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\Debug\GetNovelsApp.WPF.pdb
+C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\Debug\Views\TEst\Test_NovView1.g.cs
+C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\Debug\Views\TEst\Test_NovView2.g.cs
+C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\Debug\Views\NovelView.g.cs
+C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\Debug\Views\TEst\Test_NovView1.baml
+C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\Debug\Views\TEst\Test_NovView2.baml
+C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\Debug\Views\NovelView.baml

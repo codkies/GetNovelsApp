@@ -6,9 +6,9 @@ namespace GetNovelsApp.Core.Conexiones.Internet
     /// <summary>
     /// Modelo que utiliza la DB para obtener info acerca de una novela online.
     /// </summary>
-    public struct NovelaWebModel
+    public struct InformacionNovelaOnline
     {
-        public NovelaWebModel(string titulo, Uri linkPaginaPrincipal, List<Uri> linksDeCapitulos)
+        public InformacionNovelaOnline(string titulo, Uri linkPaginaPrincipal, List<Uri> linksDeCapitulos)
         {
             Titulo = titulo;
             LinkPrincipal = linkPaginaPrincipal;
@@ -32,5 +32,9 @@ namespace GetNovelsApp.Core.Conexiones.Internet
         /// Lista de todos los links de los capitulos
         /// </summary>
         public List<Uri> LinksDeCapitulos;
+
+        //Imagen
+        //Tags
+        //Sipnosis
     }
 }

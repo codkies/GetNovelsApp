@@ -22,7 +22,6 @@ namespace GetNovelsApp.WPF.Views
     {
         public NovelaView2()
         {
-            InitializeComponent();
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using GetNovelsApp.Core.ConfiguracionApp;
 using GetNovelsApp.Core.ConfiguracionApp.xPaths;
+using GetNovelsApp.Core.GetNovelsApp;
 using GetNovelsApp.Core.Reportaje;
 
 namespace GetAppsNovel.ConsoleVersion
@@ -14,8 +15,9 @@ namespace GetAppsNovel.ConsoleVersion
      */
     public class ConfiguracionConsoleUI : ConfiguracionBasica
     {
-        public ConfiguracionConsoleUI(ConsoleUI UI, string DireccionDiscoDuro, int BatchSize, int CapitulosPorDoc)
+        public ConfiguracionConsoleUI(ConsoleUI UI, IFabrica fabrica, string DireccionDiscoDuro, int BatchSize, int CapitulosPorDoc)
         {
+            _fabrica = fabrica;
             _tamañoBatch = BatchSize;
             _direccionDiscoDuro = DireccionDiscoDuro;
             _capsPorDocumento = CapitulosPorDoc;
@@ -83,6 +85,8 @@ namespace GetAppsNovel.ConsoleVersion
 
         public Website wuxiaworld_site;
 
+        IFabrica _fabrica;
+
 
         #endregion
 
@@ -99,6 +103,8 @@ namespace GetAppsNovel.ConsoleVersion
         protected override IComunicador comunicador => ConsoleUI;
 
         protected override string direccionDiscoDuro => _direccionDiscoDuro;
+
+        protected override IFabrica fabrica => _fabrica;
 
 
         #endregion

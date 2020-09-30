@@ -12,6 +12,9 @@
         <DataTemplate DataType="{x:Type vm:ConfiguracionViewModel}">
             <v:ConfiguracionView/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:NovelViewModel}">
+            <v:NovelView/>
+        </DataTemplate>
 
         <SolidColorBrush x:Key="Color1" Color="#F2C4DE"/>
         <SolidColorBrush x:Key="Color2" Color="#03588C"/>

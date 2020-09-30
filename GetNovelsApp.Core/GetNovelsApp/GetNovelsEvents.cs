@@ -8,7 +8,7 @@ using GetNovelsApp.Core.Modelos;
 
 namespace GetNovelsApp.Core
 {
-    public static class EventsManager
+    public static class GetNovelsEvents
     {
         /// <summary>
         /// Limpia los eventos.
@@ -19,14 +19,14 @@ namespace GetNovelsApp.Core
         }
 
 
-        public static event Action<NovelaRuntimeModel, TiposDocumentos> ImprimeNovela;
+        public static event Action<INovela, TiposDocumentos> ImprimeNovela;
 
         /// <summary>
         /// Llamado cuando se desea que se imprima una novela.
         /// </summary>
         /// <param name="novela"></param>
         /// <param name="tipo"></param>
-        public static void Invoke_ImprimeNovela(NovelaRuntimeModel novela, TiposDocumentos tipo)
+        public static void Invoke_ImprimeNovela(INovela novela, TiposDocumentos tipo)
         {
             ImprimeNovela?.Invoke(novela, tipo);
         }

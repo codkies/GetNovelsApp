@@ -57,21 +57,29 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AppViewModel.cs" />
-    <Compile Include="Models\NovelaWPFModel.cs" />
+    <Compile Include="Models\ComunicadorWPF.cs" />
+    <Compile Include="Models\ConfiguracionWPF.cs" />
+    <Compile Include="Models\FactoryWPF.cs" />
+    <Compile Include="Models\NovelaWPF.cs" />
+    <Compile Include="Models\Setter.cs" />
     <Compile Include="Utilidades\RelayCommand.cs" />
     <Compile Include="ViewModels\BibliotecaViewModel.cs" />
     <Compile Include="ViewModels\ConfiguracionViewModel.cs" />
+    <Compile Include="ViewModels\NovelViewModel.cs" />
     <Compile Include="Views\BibliotecaView.xaml.cs">
       <DependentUpon>BibliotecaView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ConfiguracionView.xaml.cs">
       <DependentUpon>ConfiguracionView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\NovelaView.xaml.cs">
-      <DependentUpon>NovelaView.xaml</DependentUpon>
+    <Compile Include="Views\TEst\Test_NovView1.xaml.cs">
+      <DependentUpon>Test_NovView1.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\NovelaView2.xaml.cs">
-      <DependentUpon>NovelaView2.xaml</DependentUpon>
+    <Compile Include="Views\TEst\Test_NovView2.xaml.cs">
+      <DependentUpon>Test_NovView2.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NovelView.xaml.cs">
+      <DependentUpon>NovelView.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -93,11 +101,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\NovelaView.xaml">
+    <Page Include="Views\TEst\Test_NovView1.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\NovelaView2.xaml">
+    <Page Include="Views\TEst\Test_NovView2.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\NovelView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
