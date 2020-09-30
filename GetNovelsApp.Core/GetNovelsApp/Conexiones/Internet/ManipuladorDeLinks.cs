@@ -41,7 +41,7 @@ namespace GetNovelsApp.Core.Conexiones.Internet
                 char letra = LinkCapitulo[i];
                 bool EsUnNumero = char.IsDigit(letra);
 
-                if (gruposDeNumeros == 1 & letra.Equals('-'))
+                if (gruposDeNumeros == 1 & (letra.Equals('-') | letra.Equals('_')) )
                 {
                     //Si hay un guión justo despues del primer grupo de numeros, conviertelo a un punto.
                     letra = '.';

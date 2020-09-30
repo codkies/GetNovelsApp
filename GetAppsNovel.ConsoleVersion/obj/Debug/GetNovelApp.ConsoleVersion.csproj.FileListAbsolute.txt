@@ -35,4 +35,3 @@ C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp_Console\GetAppsNovel.C
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp_Console\GetAppsNovel.ConsoleVersion\bin\Debug\System.Data.SQLite.xml
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp_Console\GetAppsNovel.ConsoleVersion\bin\Debug\System.Data.SQLite.dll.config
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp_Console\GetAppsNovel.ConsoleVersion\bin\Debug\Dapper.xml
-C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp_Console\GetAppsNovel.ConsoleVersion\bin\Debug\NovelsDB.db

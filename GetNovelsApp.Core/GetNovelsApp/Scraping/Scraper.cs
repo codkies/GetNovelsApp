@@ -54,6 +54,11 @@ namespace GetNovelsApp.Core
             Uri direccion = capitulo.Link;
 
             List<string> textosRaw = ObtenTextoRaw(direccion);
+            if(textosRaw == null)
+            {
+                Console.WriteLine(capitulo.Link + "Nulo");
+                Console.ReadLine();
+            }
             string Texto = OrdenaTextoRaw(textosRaw);
 
             capitulo.UpdateTexto(Texto);
@@ -98,6 +103,7 @@ namespace GetNovelsApp.Core
             foreach (string entrada in capituloDesordenado)
             {
                 var x = HttpUtility.HtmlDecode(entrada);
+                if (x.Equals(string.Empty)) continue;
                 capituloOrdenado += $"{x}\n\n";
             }
             return capituloOrdenado;

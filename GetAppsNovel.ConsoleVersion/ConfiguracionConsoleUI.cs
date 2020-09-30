@@ -33,6 +33,9 @@ namespace GetAppsNovel.ConsoleVersion
             {
                 "//div[@class = 'cha-words']/p",
                 "//div[@class = 'text-left']/p",
+                "//div[@class = 'text-content']/p",
+                "//div[@class='text-left']/div/p",
+                "//div[@class='cha-words']/div/div/p",
                 "//div[@class='entry-content content']/p",
                 "//div[@id='divReadContent']/p",
                 "//*[@class = 'desc']/p"

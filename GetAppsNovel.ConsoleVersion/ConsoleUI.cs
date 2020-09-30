@@ -26,48 +26,6 @@ namespace GetAppsNovel.ConsoleVersion
 
         public string Nombre => "Programa";
 
-        internal Dictionary<NovelaRuntimeModel, int> PidePathTXTusuario(string folderPath)
-        {
-            Dictionary<NovelaRuntimeModel, int> InfoDescarga = new Dictionary<NovelaRuntimeModel, int>();
-
-            //string path = PideInput($"Introduce path del txt file", this);
-            //path = path.Replace(@"\\", @"\\\\");
-            //path += ".txt";
-
-            string path = @"C:\Users\Juan\Desktop\LINKS.txt";
-
-            var lineas = File.ReadAllLines(path);
-            List<Uri> Links = new List<Uri>();
-
-            foreach (string linea in lineas)
-            {
-                bool linkValido = ValidaLink(linea, out Uri UriNovela);
-
-                while (linkValido == false)
-                {
-                    ReportaError($"Link: ({linea}) no valido.", this);
-                    string reemplazo = PideInput("Ingrese el link:", this);
-                    linkValido = ValidaLink(reemplazo, out Uri u);
-                    UriNovela = u;
-                }
-
-                Links.Add(UriNovela);
-            }
-            
-             Archivador archivador = new Archivador();
-
-            //1) Pidela a la DB:                
-            foreach (Uri uri in Links)
-            {
-                Reporta($"\nObteniendo información de ({uri})...", this);
-                NovelaRuntimeModel novela = archivador.BuscaNovelaEnDB(uri);
-                ///Confirmando con el usuario:
-                ConfirmaInfoNovelaConUsuario(ref InfoDescarga, novela, folderPath);
-               
-            }
-            TerminaInput(new List<NovelaRuntimeModel>(InfoDescarga.Keys));
-            return InfoDescarga;
-        }
 
         #region Interfaz Comunicador
 
@@ -164,6 +122,7 @@ namespace GetAppsNovel.ConsoleVersion
 
         #region Interno
 
+
         /// <summary>
         /// Le pregunta al usuario por campos a llenar referente a la manera en que la app funcionará.
         /// </summary>
@@ -210,6 +169,51 @@ namespace GetAppsNovel.ConsoleVersion
 
             return new ConfiguracionConsoleUI(this, Direccion, BatchSize, int.Parse(_CapsPorDoc));
         }
+
+
+        internal Dictionary<NovelaRuntimeModel, int> PidePathTXTusuario(string folderPath)
+        {
+            Dictionary<NovelaRuntimeModel, int> InfoDescarga = new Dictionary<NovelaRuntimeModel, int>();
+
+            //string path = PideInput($"Introduce path del txt file", this);
+            //path = path.Replace(@"\\", @"\\\\");
+            //path += ".txt";
+
+            string path = @"C:\Users\Juan\Desktop\LINKS.txt";
+
+            var lineas = File.ReadAllLines(path);
+            List<Uri> Links = new List<Uri>();
+
+            foreach (string linea in lineas)
+            {
+                bool linkValido = ValidaLink(linea, out Uri UriNovela);
+
+                while (linkValido == false)
+                {
+                    ReportaError($"Link: ({linea}) no valido.", this);
+                    string reemplazo = PideInput("Ingrese el link:", this);
+                    linkValido = ValidaLink(reemplazo, out Uri u);
+                    UriNovela = u;
+                }
+
+                Links.Add(UriNovela);
+            }
+            
+             Archivador archivador = new Archivador();
+
+            //1) Pidela a la DB:                
+            foreach (Uri uri in Links)
+            {
+                Reporta($"\nObteniendo información de ({uri})...", this);
+                NovelaRuntimeModel novela = archivador.BuscaNovelaEnDB(uri);
+                ///Confirmando con el usuario:
+                ConfirmaInfoNovelaConUsuario(ref InfoDescarga, novela, folderPath);
+               
+            }
+            TerminaInput(new List<NovelaRuntimeModel>(InfoDescarga.Keys));
+            return InfoDescarga;
+        }
+
 
 
         /// <summary>
@@ -346,7 +350,7 @@ namespace GetAppsNovel.ConsoleVersion
                                                         $"Se tienen que descargar {nov.CapitulosPorDescargar.Count} capitulos.\n" +
                                                         $"Carpeta: {PathCarpeta}",
                                                         this);
-            int comienzo = -1;
+            int comienzo = 0;
             if (nov.CapitulosPorDescargar.Count > 0)
             {
                 comienzo = PidePorElComienzo();

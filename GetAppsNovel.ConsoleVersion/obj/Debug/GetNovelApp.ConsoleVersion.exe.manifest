@@ -90,26 +90,26 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="GetNovelApp.ConsoleVersion.exe" size="20952">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="GetNovelApp.ConsoleVersion.exe" size="20440">
       <assemblyIdentity name="GetNovelApp.ConsoleVersion" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>oFPWpZ8Ndge+bjYPRmSbQuiaghegumhhil9Icv8x+HI=</dsig:DigestValue>
+        <dsig:DigestValue>PPzomPXl92OEAtzfsMGVeXRQ6HEcsO8/1F9POssTdC4=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="GetNovelsApp.Core.dll" size="35328">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="GetNovelsApp.Core.dll" size="36864">
       <assemblyIdentity name="GetNovelsApp.Core" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>tIT52w0bTEkknz0ewprC1+yK00RKsBM9ltzOqbwMQXI=</dsig:DigestValue>
+        <dsig:DigestValue>R/jlkCLv8b1757r4YGUC8wQ0SnbPDrki9YVNmV3wWnk=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -173,13 +173,13 @@
       </hash>
     </dependentAssembly>
   </dependency>
-  <file name="GetNovelApp.ConsoleVersion.exe.config" size="622">
+  <file name="GetNovelApp.ConsoleVersion.exe.config" size="804">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>87CDYFRG0LRfakZI1u4KOn+vs4gwkdEGTVTCyZfJE9s=</dsig:DigestValue>
+      <dsig:DigestValue>3pqWGqM/PtCz8HvgRpOkQxaD5P8lvBaUlbBm+Dsn5AU=</dsig:DigestValue>
     </hash>
   </file>
 </asmv1:assembly>

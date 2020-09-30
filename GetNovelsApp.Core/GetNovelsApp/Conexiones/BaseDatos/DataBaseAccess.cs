@@ -6,7 +6,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
 {
     internal class DataBaseAccess
     {
-        internal static string GetConnectionString(string id = "Default")
+        private static string GetConnectionString(string id = "Default")
         {
             return ConfigurationManager.ConnectionStrings[id].ConnectionString;
         }

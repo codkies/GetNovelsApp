@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 
 using GetNovelsApp.Core;
 using GetNovelsApp.Core.Conexiones.DB;
-using GetNovelsApp.Core.Conexiones.Internet;
 using GetNovelsApp.Core.Empaquetador;
 using GetNovelsApp.Core.Empaquetadores;
 using GetNovelsApp.Core.Modelos;
@@ -14,12 +13,18 @@ namespace GetAppsNovel.ConsoleVersion
 {
     class Program 
     {
-        static async Task Main(string[] args)
-        { 
-            await TXTrun();
+        static void Main(string[] args)
+        {
+            //await NormalRun();
+            //await TXTrun();
+            Archivador ar = new Archivador();
+            NovelaRuntimeModel n=  ar.BuscaNovelaEnDB(new System.Uri("https://wuxiaworld.site/novel/throne-of-magical-arcana/"));
+            Console.Write(n.Titulo);
+            Console.WriteLine(n.PorcentajeDescarga);
         }
 
         #region TXT run
+
 
         private static async Task TXTrun()
         {
@@ -70,8 +75,8 @@ namespace GetAppsNovel.ConsoleVersion
 
         private static void SetupApp()
         {
-            string ver = "v0.15.1";
-            string message = "Lee txt option\n";
+            string ver = "v0.16";
+            string message = "Last before WPF\n";
             ConsoleUI.ReportaEspecial($"GetNovelsApp {ver}:\n{message}", ConsoleUI);
             configuracion = ConsoleUI.PideConfiguracion();
             getNovels = new GetNovels(configuracion);
@@ -118,7 +123,7 @@ namespace GetAppsNovel.ConsoleVersion
         }
 
         #endregion
-
+        
     }
 }
 

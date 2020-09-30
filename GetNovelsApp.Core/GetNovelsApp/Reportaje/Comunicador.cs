@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using GetNovelsApp.Core.Conexiones.DB;
 
 namespace GetNovelsApp.Core.Reportaje
 {
@@ -80,7 +81,8 @@ namespace GetNovelsApp.Core.Reportaje
         public static void ReportaEspecial(string enunciado, IReportero reportero)
         {
             Mensajero.ReportaEspecial(enunciado, reportero);
-        } 
+        }
+
         #endregion
     }
 }

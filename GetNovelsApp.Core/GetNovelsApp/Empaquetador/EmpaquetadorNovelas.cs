@@ -56,6 +56,11 @@ namespace GetNovelsApp.Core.Empaquetadores
 
 
         #region Metodos Publicos
+
+        public void EscuchaNovela(NovelaRuntimeModel novela)
+        {
+
+        }
          
 
         public void EmpaquetaCapitulo(List<Capitulo> CapitulosDescargados, NovelaRuntimeModel novela)
@@ -65,7 +70,7 @@ namespace GetNovelsApp.Core.Empaquetadores
                 novela.CapituloFueDescargado(c);                
             }
 
-            List<Capitulo> _ = Archivador.GuardaCapitulos(CapitulosDescargados, novela.ID);
+            Archivador.GuardaCapitulos(CapitulosDescargados, novela.ID);
         }
 
         

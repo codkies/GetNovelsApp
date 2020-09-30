@@ -10,6 +10,8 @@ using GetNovelsApp.Core.Reportaje;
 using GetNovelsApp.Core.ConfiguracionApp;
 using GetNovelsApp.Core.Empaquetadores;
 using GetNovelsApp.Core.Conexiones.DB;
+using System.Data;
+using System.Net.Http;
 
 
 /* Ideas:       
@@ -87,8 +89,8 @@ namespace GetNovelsApp.Core
         private readonly Archivador Archivador;
 
         #endregion
-        
 
+     
         /// <summary>
         /// Obtiene capitulos de una novela en el formato establecido y los coloca en la carpeta de la configuracion.
         /// </summary>
@@ -123,48 +125,46 @@ namespace GetNovelsApp.Core
         #endregion
 
 
-
         #region Scraping:
 
 
         private async Task ScrapMyNovelaAsync(int ComienzaEn)
         {
             //Preparaciones:
-            Comunicador.ReportaEspecial($"{MyNovela.Titulo} tiene {MyNovela.CantidadLinks} links. Se empezará desde el link #{ComienzaEn}\n" +
-                                                $"Se realizarán {DescargaEstosCapitulos.Count - ComienzaEn} iteraciones."
+            int tamañoBatch = GetNovelsConfig.TamañoBatch;
+            int cantidadDeLinksAUtilizar = MyNovela.CapitulosPorDescargar.Count - ComienzaEn;
+            int batches = DivideYRedondeaUp(cantidadDeLinksAUtilizar, tamañoBatch);
+
+            Comunicador.ReportaEspecial($"{MyNovela.Titulo} tiene {MyNovela.CapitulosPorDescargar.Count} capitulos por descargar. Se empezará desde: {MyNovela.CapitulosPorDescargar[ComienzaEn].TituloCapitulo}\n" +
+                                                $"Se realizarán {batches+1} iteraciones."
                                                 , this);
 
             //------------------------------------------------------------------------------------------------------------------------------
 
-            //Scraping:
-            int tamañoBatch = GetNovelsConfig.TamañoBatch;
-            int cantidadDeLinksAUtilizar = MyNovela.CantidadLinks - ComienzaEn;
-            int iteraciones = DivideYRedondeaUp(cantidadDeLinksAUtilizar, tamañoBatch);
-
             Comunicador.Reporta("Comenzando Scrap\n", this);
 
-            for (int i = 0; i < iteraciones; i++)
+            for (int i = 0; i < batches; i++)
             {
                 int factor = (i * tamañoBatch);
                 int xi = ComienzaEn + factor;
                 int xf = xi + tamañoBatch - 1;
 
-                Comunicador.Reporta($"Batch {(i + 1)}/{iteraciones + 1}...", this);
+                Comunicador.Reporta($"Batch {(i + 1)}/{batches + 1}...", this);
 
                 var capitulosCompletos = await ScrapCapitulosAsync(xi, xf);
 
                 Comunicador.Reporta($"... Guardando capitulos...", this);
 
-                MyEmpaquetador.EmpaquetaCapitulo(capitulosCompletos, MyNovela);
+                Task.Run(() => MyEmpaquetador.EmpaquetaCapitulo(capitulosCompletos, MyNovela));
 
-                Comunicador.Reporta($"... {((i + 1) * 100) / (iteraciones + 1)}% de las iteraciones completadas...", this);
+                Comunicador.Reporta($"... {((i + 1) * 100) / (batches + 1)}% de las iteraciones completadas...", this);
 
-                if (i != iteraciones - 1) //Solo espera si no eres el ultimo.
-                {
-                    int segundos = 5;
-                    Comunicador.Reporta($"... Esperando {segundos}s\n", this);
-                    System.Threading.Thread.Sleep(segundos * 1000);
-                }
+                //if (i != batches - 1) //Solo espera si no eres el ultimo.
+                //{
+                //    int segundos = 5;
+                //    Comunicador.Reporta($"... Esperando {segundos}s\n", this);
+                //    System.Threading.Thread.Sleep(segundos * 1000);
+                //}
             }
 
             Comunicador.ReportaExito("\nFinalizados todos los batchs.", this);
