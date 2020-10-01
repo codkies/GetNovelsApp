@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GetNovelsApp.Core.Conexiones.DB;
+using GetNovelsApp.Core.Conexiones.Internet;
 using GetNovelsApp.Core.Empaquetadores;
 using GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores;
 using GetNovelsApp.Core.GetNovelsApp;
@@ -18,6 +20,29 @@ namespace GetNovelsApp.Core
         }
 
         private static IFabrica Fabrica;
+
+
+
+        /// <summary>
+        /// Toma una lista de Uri's y las convierte en capitulos (con la ayuda del Manipulador de Links).
+        /// </summary>
+        /// <param name="ListaDeLinks"></param>
+        /// <returns></returns>
+        public static List<Capitulo> CreaCapitulos(List<Uri> ListaDeLinks)
+        {
+            List<Capitulo> Capitulos = new List<Capitulo>();
+            foreach (Uri link in ListaDeLinks)
+            {
+                CapituloWebModel _ = ManipuladorDeLinks.EncuentraInformacionCapitulo(link);
+                Capitulo capitulo = new Capitulo(_);
+                Capitulos.Add(capitulo);
+            }
+            return Capitulos;
+        }
+
+
+
+        #region IFabrica metodos
 
 
         /// <summary>
@@ -44,7 +69,9 @@ namespace GetNovelsApp.Core
         public static INovela ObtenNovela(List<Capitulo> capitulos, InformacionNovelaDB info)
         {
             return Fabrica.FabricaNovela(capitulos, info);
-        }
+        } 
+
+        #endregion
     }
 
 }

@@ -8,6 +8,7 @@ using Dapper;
 using GetNovelsApp.Core.Conexiones.Internet;
 using GetNovelsApp.Core.Modelos;
 using GetNovelsApp.Core.Reportaje;
+using GetNovelsApp.Core.Utilidades;
 
 namespace GetNovelsApp.Core.Conexiones.DB
 {
@@ -19,7 +20,6 @@ namespace GetNovelsApp.Core.Conexiones.DB
         private const string TablaNovelas = "Novelas";
         private const string TablaCapitulos = "Capitulos";
         private const string TablaTags = "Tags";
-
 
         public string Nombre => "DB";
 
@@ -41,10 +41,10 @@ namespace GetNovelsApp.Core.Conexiones.DB
             if (NoExisteLaNovela)
             {
                 //Obteniendo toda la info de la web y metiendola en la DB:
-                InformacionNovelaDB novDBInfo = CreateNovel(LinkNovela, cnn, out InformacionNovelaOnline infoNov);
+                InformacionNovelaDB novDBInfo = InsertaNovelaEnDB(LinkNovela, cnn, out InformacionNovelaOnline infoNov);
 
                 //Capitulos:
-                List<Capitulo> CapitulosNovela = CreaCapitulos(infoNov.LinksDeCapitulos);
+                List<Capitulo> CapitulosNovela = GetNovelsFactory.CreaCapitulos(infoNov.LinksDeCapitulos);
                 GuardaCapitulos(CapitulosNovela, novDBInfo.ID); //Itera los caps y encuentra su info.
 
                 //Regresando una novela para runtime:
@@ -77,8 +77,9 @@ namespace GetNovelsApp.Core.Conexiones.DB
                     var updateQry = UpdateCapitulo_Query(novelaID, c);
                     cnn.Execute(updateQry);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    GetNovelsComunicador.ReportaError($"Error: {ex.Message}", this);
                     continue;
                 }
             }
@@ -97,27 +98,9 @@ namespace GetNovelsApp.Core.Conexiones.DB
             cnn.Dispose();
         }
 
-       
-
-        private INovela SacaNovelaDB(Uri LinkNovela) //Debe ir privada.
-        {
-            using IDbConnection cnn = DataBaseAccess.GetConnection();
-
-            //Encuentra la infobasica
-            string qryNovela = $"select * from {TablaNovelas} where LinkPrincipal = '{LinkNovela}'";
-            InformacionNovelaDB infoDBNovela = cnn.Query<InformacionNovelaDB>(qryNovela).First();
-
-            //Encuentra los capitulos
-            string qryCapitlos = $"select Link, TextoCapitulo, Titulo, Numero, Valor from {TablaCapitulos} where NovelaID = '{infoDBNovela.ID}'";
-            List<Capitulo> Capitulos = cnn.Query<Capitulo>(qryCapitlos).ToList();
-
-            INovela novela = GetNovelsFactory.ObtenNovela(Capitulos, infoDBNovela);
-
-            cnn.Dispose();
-            return novela;
-        }
 
         #endregion
+
 
 
         #region Queries
@@ -140,7 +123,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
         {
             return $"insert into {TablaTags} " +
                     $"(NovelaID, Tags) values" +
-                    $"('{ID}', '{TagsEnString(infoNov.Tags)}')";
+                    $"('{ID}', '{ManipuladorStrings.TagsEnString(infoNov.Tags)}')";
         }
 
         /// <summary>
@@ -167,10 +150,30 @@ namespace GetNovelsApp.Core.Conexiones.DB
         #region Helpers
 
 
+
+        private INovela SacaNovelaDB(Uri LinkNovela) //Debe ir privada.
+        {
+            using IDbConnection cnn = DataBaseAccess.GetConnection();
+
+            //Encuentra la infobasica
+            string qryNovela = $"select * from {TablaNovelas} where LinkPrincipal = '{LinkNovela}'";
+            InformacionNovelaDB infoDBNovela = cnn.Query<InformacionNovelaDB>(qryNovela).First();
+
+            //Encuentra los capitulos
+            string qryCapitlos = $"select Link, TextoCapitulo, Titulo, Numero, Valor from {TablaCapitulos} where NovelaID = '{infoDBNovela.ID}'";
+            List<Capitulo> Capitulos = cnn.Query<Capitulo>(qryCapitlos).ToList();
+
+            INovela novela = GetNovelsFactory.ObtenNovela(Capitulos, infoDBNovela);
+
+            cnn.Dispose();
+            return novela;
+        }
+
+
         /// <summary>
         /// Crea una novela en la DB. Regresa un NovelDBmodel y un out NovelaWebModel
         /// </summary>
-        private InformacionNovelaDB CreateNovel(Uri LinkNovela, IDbConnection cnn, out InformacionNovelaOnline infoNov)
+        private InformacionNovelaDB InsertaNovelaEnDB(Uri LinkNovela, IDbConnection cnn, out InformacionNovelaOnline infoNov)
         {
             //Encontrando informacion de la web.
             infoNov = ManipuladorDeLinks.EncuentraInformacionNovela(LinkNovela);
@@ -196,41 +199,6 @@ namespace GetNovelsApp.Core.Conexiones.DB
 
             
             return novDBInfo;
-        }
-
-
-        private List<Capitulo> CreaCapitulos(List<Uri> ListaDeLinks)
-        {
-            List<Capitulo> Capitulos = new List<Capitulo>();
-            foreach (Uri link in ListaDeLinks)
-            {
-                CapituloWebModel _ = ManipuladorDeLinks.EncuentraInformacionCapitulo(link);
-                Capitulo capitulo = new Capitulo(_);
-                Capitulos.Add(capitulo);
-            }
-            return Capitulos;
-        }
-
-
-        /// <summary>
-        /// Une las tags en una oracion con comas.
-        /// </summary>
-        /// <param name="ListaDeTags"></param>
-        /// <returns></returns>
-        private string TagsEnString(List<string> ListaDeTags)
-        {
-            return string.Join(", ", ListaDeTags);
-        }
-
-
-        /// <summary>
-        /// Separa una oracion de tags en una lista.
-        /// </summary>
-        /// <param name="Tags"></param>
-        /// <returns></returns>
-        private List<string> TagsEnLista(string Tags)
-        {
-            return Tags.Split(',').ToList();
         }
 
 

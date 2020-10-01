@@ -16,29 +16,21 @@ namespace GetNovelsApp.WPF.ViewModels
         public NovelViewModel(NovelaWPF novela)
         {
             novelaEnVista = novela;
-            Tags = ConvierteEnTags(novela);
         }
 
-        private List<string> ConvierteEnTags(NovelaWPF novela)
-        {
-            throw new NotImplementedException("Crear alguna función que los separe por comas");
-        }
-
+      
         private NovelaWPF novelaEnVista;
-        List<string> tags;
 
-        /// <summary>
-        /// Novela visible.
-        /// </summary>
+
         public NovelaWPF NovelaEnVista { get => novelaEnVista; set => OnPropertyChanged(ref novelaEnVista, value); }
 
         public string Sipnosis => novelaEnVista.Sipnosis;
 
-        public Image Imagen => novelaEnVista.Imagen;
+        public Uri Imagen => novelaEnVista.ImagenLink;
 
         public string Titulo => novelaEnVista.Titulo;
 
-        public List<string> Tags { get => tags; set => OnPropertyChanged(ref tags, value); }
+        public List<string> Tags => novelaEnVista.Tags;
 
     }
 }

@@ -133,6 +133,7 @@
     <Compile Include="GetNovelsApp\Conexiones\Internet\InformacionNovelaOnline.cs" />
     <Compile Include="GetNovelsApp\Conexiones\Internet\ManipuladorDeLinks.cs" />
     <Compile Include="GetNovelsApp\GetNovelsComunicador.cs" />
+    <Compile Include="GetNovelsApp\Utilidades\ManipuladorStrings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GetNovelsApp\Scraping\Scraper.cs" />
   </ItemGroup>

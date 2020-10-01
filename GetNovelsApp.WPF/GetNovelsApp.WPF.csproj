@@ -77,6 +77,9 @@
     <Compile Include="Views\ConfiguracionView.xaml.cs">
       <DependentUpon>ConfiguracionView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\TEst\TEST_AddNovel.xaml.cs">
+      <DependentUpon>TEST_AddNovel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\TEst\Test_NovView1.xaml.cs">
       <DependentUpon>Test_NovView1.xaml</DependentUpon>
     </Compile>
@@ -103,6 +106,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ConfiguracionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TEst\TEST_AddNovel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

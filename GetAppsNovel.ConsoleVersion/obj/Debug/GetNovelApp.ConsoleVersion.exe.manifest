@@ -97,19 +97,19 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>+ecbOB+OoKKkQZ8TlbV51k0fy8D8GPkWGHpsG+w7ghQ=</dsig:DigestValue>
+        <dsig:DigestValue>rkx4kte4xy7dJWsbNOnubvl5eidb9yPXbm7lNWiYXEI=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="GetNovelsApp.Core.dll" size="40960">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="GetNovelsApp.Core.dll" size="41984">
       <assemblyIdentity name="GetNovelsApp.Core" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>eeCuzFhsbl4Q1Q+u0Q7MRHv1iL8lWnfq3Y9/2SSFM+c=</dsig:DigestValue>
+        <dsig:DigestValue>0NYtZlrwn3xlTv/HRfzoEf3WvPxZzP82vquIn+F8oFE=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

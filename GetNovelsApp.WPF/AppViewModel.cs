@@ -16,8 +16,6 @@ namespace GetNovelsApp.WPF
         public AppViewModel()
         {
             InicializaApp();
-            Archivador ar = new Archivador();
-            ar.CreateNovel(new Uri("https://wuxiaworld.site/novel/super-gene-novel/"), out _);
             InicializaViewModels();
         }
 
@@ -39,8 +37,9 @@ namespace GetNovelsApp.WPF
             ConfiguracionViewModel = new ConfiguracionViewModel();
 
             Archivador ar = new Archivador();
-            INovela n = ar.BuscaNovelaEnDB(new System.Uri("https://wuxiaworld.site/novel/otherworldly-evil-monarch/"));
+            INovela n = ar.BuscaNovelaEnDB(new Uri("https://wuxiaworld.site/novel/otherworldly-evil-monarch/"));
             NovelaWPF novela = (NovelaWPF)n;
+
             NovelViewModel = new NovelViewModel(novela);
 
             CurrentView = NovelViewModel;

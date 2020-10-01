@@ -13,6 +13,10 @@ namespace GetNovelsApp.Core.Modelos
         List<Capitulo> CapitulosDescargados { get; }
         List<Capitulo> CapitulosImpresos { get; }
         List<Capitulo> CapitulosPorDescargar { get; }
+        public List<string> Tags { get; }
+        public string Sipnosis { get; }
+        public Uri ImagenLink { get; }
+
 
         //Estado de la clase
         bool EstoyCompleta { get; }        

@@ -26,6 +26,7 @@ namespace GetNovelsApp.Core.Conexiones.Internet
 
         #endregion
 
+
         /// <summary>
         /// Encuentra el numero del capitulo según el link.
         /// </summary>
@@ -289,6 +290,7 @@ namespace GetNovelsApp.Core.Conexiones.Internet
             Titulo = Titulo.Replace("\n", "").Replace("\t", "").Trim();
             return Titulo;
         }
+
 
         private static string ObtenInnerText(HtmlNode nodo)
         {

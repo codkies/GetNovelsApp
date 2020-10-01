@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using GetNovelsApp.Core.Conexiones.DB;
 using GetNovelsApp.Core.Modelos;
 using GetNovelsApp.Core.Utilidades;
@@ -13,7 +14,25 @@ namespace GetNovelsApp.WPF.Models
     /// </summary>
     public class NovelaWPF : ObservableObject, INovela
     {
+        #region Setup
+
         public NovelaWPF(List<Capitulo> capitulos, InformacionNovelaDB dbInfo)
+        {
+            OrganizaCapitulos(capitulos);
+
+            ID = dbInfo.ID;
+            Titulo = dbInfo.Titulo;
+            LinkPrincipal = new Uri(dbInfo.LinkPrincipal);
+            
+            if (dbInfo.Tags != null)
+                Tags = ManipuladorStrings.TagsEnLista(dbInfo.Tags);
+
+            Sipnosis = dbInfo.Sipnosis;
+            if (dbInfo.Imagen != null)
+                ImagenLink = new Uri(dbInfo.Imagen);
+        }
+
+        private void OrganizaCapitulos(List<Capitulo> capitulos)
         {
             foreach (Capitulo c in capitulos)
             {
@@ -28,12 +47,7 @@ namespace GetNovelsApp.WPF.Models
                     CapitulosPorDescargar.Add(c);
                 }
             }
-
             OrdenaListas();
-
-            ID = dbInfo.ID;
-            Titulo = dbInfo.Titulo;
-            LinkPrincipal = new Uri(dbInfo.LinkPrincipal);
         }
 
         private void OrdenaListas()
@@ -42,22 +56,43 @@ namespace GetNovelsApp.WPF.Models
             CapitulosPorDescargar.Sort(new ComparerOrdenadorCapitulos());
         }
 
+        #endregion
+
 
         #region Identificadores y fields clave
 
+        #region backing prop fields
+        //Info
         private string titulo;
-        private List<Capitulo> capitulosDescargados;
-        private List<Capitulo> capitulosImpresos;
-        private List<Capitulo> capitulosPorDescargar;
-        private Uri linkPrincipal;
-        private List<Uri> linksDeCapitulos;
         private string sipnosis;
-        private Image imagen;
+        private Uri linkPrincipal;
+        private List<string> tags = new List<string>(); 
+        private Uri imagenLink;
 
-        public Image Imagen
+        //Caps
+        private List<Uri> linksDeCapitulos = new List<Uri>();
+        private List<Capitulo> capitulosDescargados = new List<Capitulo>();
+        private List<Capitulo> capitulosImpresos = new List<Capitulo>();
+        private List<Capitulo> capitulosPorDescargar = new List<Capitulo>();
+        #endregion
+
+        //Info
+        public string Titulo
         {
-            get => imagen;
-            set => OnPropertyChanged(ref imagen, value);
+            get => titulo;
+            set => OnPropertyChanged(ref titulo, value);
+        }
+
+        public List<string> Tags
+        {
+            get => tags;
+            set => OnPropertyChanged(ref tags, value);
+        }
+
+        public Uri ImagenLink
+        {
+            get => imagenLink;
+            set => OnPropertyChanged(ref imagenLink, value);
         }
 
         public string Sipnosis
@@ -66,15 +101,16 @@ namespace GetNovelsApp.WPF.Models
             set => OnPropertyChanged(ref sipnosis, value);
         }
 
-        public string Titulo
+        public int ID { get; private set; }
+
+        public Uri LinkPrincipal
         {
-            get => titulo;
-            set => OnPropertyChanged(ref titulo, value);
+            get => linkPrincipal;
+            set => OnPropertyChanged(ref linkPrincipal, value);
         }
 
 
-        public int ID { get; private set; }
-
+        //Caps
         public List<Capitulo> CapitulosDescargados
         {
             get => capitulosDescargados;
@@ -93,12 +129,6 @@ namespace GetNovelsApp.WPF.Models
             set => OnPropertyChanged(ref capitulosPorDescargar, value);
         }
 
-        public Uri LinkPrincipal
-        {
-            get => linkPrincipal;
-            set => OnPropertyChanged(ref linkPrincipal, value);
-        }
-
         public List<Uri> LinksDeCapitulos
         {
             get => linksDeCapitulos;
@@ -109,7 +139,7 @@ namespace GetNovelsApp.WPF.Models
         #endregion
 
 
-        #region Externos (por implementar)
+        #region Externos
 
         /// <summary>
         /// Define si esta novela tiene capitulos por imprimir
@@ -163,7 +193,7 @@ namespace GetNovelsApp.WPF.Models
         #endregion
 
 
-        #region Cambio de estado (por implementar)
+        #region Cambio de estado
 
         /// <summary>
         /// Agrega un capitulo a la novela.

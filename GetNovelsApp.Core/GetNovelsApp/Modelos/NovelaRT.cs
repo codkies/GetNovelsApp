@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Web.WebSockets;
 using GetNovelsApp.Core.Conexiones.DB;
 using GetNovelsApp.Core.Utilidades;
+using iText.Layout.Borders;
+using iText.StyledXmlParser.Jsoup.Select;
+using Org.BouncyCastle.Asn1.Mozilla;
 
 namespace GetNovelsApp.Core.Modelos
 {
@@ -10,7 +14,22 @@ namespace GetNovelsApp.Core.Modelos
     /// </summary>
     public class NovelaRT : INovela
     {
+        #region Setup
+
         public NovelaRT(List<Capitulo> capitulos, InformacionNovelaDB dbInfo)
+        {
+            OrganizaCapitulos(capitulos);
+
+            ID = dbInfo.ID;
+            Titulo = dbInfo.Titulo;
+            LinkPrincipal = new Uri(dbInfo.LinkPrincipal);
+            Tags = ManipuladorStrings.TagsEnLista(dbInfo.Tags);
+            Sipnosis = dbInfo.Sipnosis;
+            ImagenLink = new Uri(dbInfo.Imagen);
+        }
+
+
+        private void OrganizaCapitulos(List<Capitulo> capitulos)
         {
             foreach (Capitulo c in capitulos)
             {
@@ -25,13 +44,9 @@ namespace GetNovelsApp.Core.Modelos
                     CapitulosPorDescargar.Add(c);
                 }
             }
-
             OrdenaListas();
-
-            ID = dbInfo.ID;
-            Titulo = dbInfo.Titulo;
-            LinkPrincipal = new Uri(dbInfo.LinkPrincipal);
         }
+
 
         private void OrdenaListas()
         {
@@ -40,8 +55,16 @@ namespace GetNovelsApp.Core.Modelos
         }
 
 
+        #endregion
+
+
+
         #region Fields
 
+        public List<string> Tags { get; private set; } = new List<string>();
+        public string Sipnosis { get; private set; }
+
+        public Uri ImagenLink { get; private set; }
 
         /// <summary>
         /// ID en DB.
@@ -61,22 +84,21 @@ namespace GetNovelsApp.Core.Modelos
         /// <summary>
         /// Lista de todos los links de los capitulos
         /// </summary>
-        public List<Uri> LinksDeCapitulos { get; private set; }
+        public List<Uri> LinksDeCapitulos { get; private set; } = new List<Uri>();
 
         /// <summary>
         /// Capitulos presentes en esta novela que no han sido metidos en el PDF
         /// </summary>
-        public List<Capitulo> CapitulosDescargados { get; private set; }
+        public List<Capitulo> CapitulosDescargados { get; private set; } = new List<Capitulo>();
 
 
         /// <summary>
         /// Capitulos presentes en esta novela que ya han sido metidos en el PDF
         /// </summary>
-        public List<Capitulo> CapitulosImpresos { get; private set; }
+        public List<Capitulo> CapitulosImpresos { get; private set; } = new List<Capitulo>();
 
 
-
-        public List<Capitulo> CapitulosPorDescargar { get; private set; }
+        public List<Capitulo> CapitulosPorDescargar { get; private set; } = new List<Capitulo>();
 
         #endregion
 

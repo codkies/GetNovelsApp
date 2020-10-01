@@ -6,30 +6,11 @@ using iText.Layout.Element;
 
 namespace GetNovelsApp.Core.Conexiones.DB
 {
+    /// <summary>
+    /// Modelo de la informacion de una novela en la DB de tablas Novelas y Tags. (Capitulos y sus links no incluidos).
+    /// </summary>
     public class InformacionNovelaDB
     {
-        //public InformacionNovelaDB(string titulo, string linkPrincipal, int iD, string sipnosis, string tags, string imagen)
-        //{
-        //    Titulo = titulo;
-        //    LinkPrincipal = linkPrincipal;
-        //    ID = iD;
-        //    Sipnosis = sipnosis;
-        //    Tags = tags;
-        //    Imagen = imagen;
-        //}
-
-        //public InformacionNovelaDB(string titulo, string linkPrincipal, int iD, string sipnosis, string tags, string imagen)
-        //{
-        //    Titulo = titulo;
-        //    LinkPrincipal = linkPrincipal;
-        //    ID = iD;
-        //    Sipnosis = sipnosis;
-        //    Tags = tags;
-        //    Imagen = imagen;
-        //}
-
-
-        //Basicos:
         public string Titulo { get; set; }
 
         public string LinkPrincipal { get; set; }
