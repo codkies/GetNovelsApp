@@ -19,7 +19,8 @@ namespace GetNovelsApp.WPF
         public AppViewModel()
         {
             InicializaApp();
-            InicializaViewModelsAsync(); 
+            InicializaViewModels();
+            //InicializaViewModelsAsync(); //Call last
         }
 
         /// <summary>
@@ -36,16 +37,9 @@ namespace GetNovelsApp.WPF
         /// </summary>
         private void InicializaViewModels()
         {
-            //Archivador ar = new Archivador();
+            ConfiguracionViewModel = new ConfiguracionViewModel();
 
-
-            //BibliotecaViewModel = new BibliotecaViewModel();
-            //ConfiguracionViewModel = new ConfiguracionViewModel();            
-
-
-            //NovelViewModel = new NovelViewModel(novela);
-
-            //CurrentView = BibliotecaViewModel;
+            CurrentView = ConfiguracionViewModel;
         }
 
         private async Task InicializaViewModelsAsync()
@@ -62,7 +56,7 @@ namespace GetNovelsApp.WPF
             BibliotecaViewModel = new BibliotecaViewModel(Novelas);
             ConfiguracionViewModel = new ConfiguracionViewModel();
 
-            CurrentView = BibliotecaViewModel;
+            CurrentView = ConfiguracionViewModel;
         }
 
         #endregion

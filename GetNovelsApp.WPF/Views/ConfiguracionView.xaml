@@ -5,8 +5,106 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GetNovelsApp.WPF.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
+             d:DesignHeight="700" d:DesignWidth="1000">
+    <Grid Background="{StaticResource Color2}"> 
+        
+    <!--Grid de configuraciones-->
+    <Grid Background="WhiteSmoke"
+          Margin="100">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!--CarpetaDescarga, Row 0-->
+        <TextBlock Text="Carpeta de descargas:"
+                   Grid.Row="0"
+                   Grid.Column="0"
+                   VerticalAlignment="Center"
+                   TextAlignment="Right"
+                   Margin="10 0"/>
+        <TextBox Text="C:\Users\Juan\Desktop\Novels"
+                 Background="Transparent"
+                 Grid.Row="0"
+                 Grid.Column="1"
+                 Height="20"
+                 TextAlignment="Left"
+                 VerticalContentAlignment="Center"
+                 Margin="10 0"/>
+
+        <!--Capitulos por Doc, Row 0-->
+        <TextBlock Text="Capitulos por Documento"
+                   Grid.Row="1"
+                   Grid.Column="0"
+                   VerticalAlignment="Center"
+                   TextAlignment="Right"
+                   Margin="10 0"/>
+        <TextBox Text="500"
+                 Background="Transparent"
+                 Grid.Row="1"
+                 Grid.Column="1"
+                 Height="20"
+                 TextAlignment="Left"
+                 VerticalContentAlignment="Center"
+                 Margin="10 0"/>
+
+        <!--Capitulos por Doc, Row 0-->
+        <TextBlock Text="Tipo de Documento"
+                   Grid.Row="2"
+                   Grid.Column="0"
+                   VerticalAlignment="Center"
+                   TextAlignment="Right"
+                   Margin="10 0"/>
+        <ComboBox Background="Transparent"
+                  Grid.Row="2"
+                  Grid.Column="1"
+                  Height="20"
+                  VerticalContentAlignment="Center"
+                  Margin="10 0"/>
+
+        <!--Website soportados-->
+            <TextBlock Text="Website soportados"
+               Grid.Row="3"
+               Grid.Column="0"
+               VerticalAlignment="Center"
+               TextAlignment="Right"
+               Margin="10 0"/>
+        
+            <Grid Grid.Row="3"
+                       Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <!--Viendo los que ya soporta-->
+                <ComboBox Background="Transparent"
+                          Grid.Column="0"
+                          Height="20"
+                          VerticalContentAlignment="Center"
+                          Margin="10 0"/>
+                <!--Agrega website-->
+                <Button DockPanel.Dock="Right"
+                        Grid.Column="1"
+                        Content="Agrega Nuevo"
+                        Height="30"
+                        Width="100"/>
+            </Grid>
+
+
+
+        </Grid>
+        
     </Grid>
+    
 </UserControl>
