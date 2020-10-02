@@ -12,6 +12,11 @@ namespace GetNovelsApp.WPF.ViewModels
     public class BibliotecaViewModel : ObservableObject
     {
 
+        public BibliotecaViewModel(List<NovelaWPF> NovelasEnBiblioteca)
+        {
+            NovelasVisibles = new ObservableCollection<NovelaWPF>(NovelasEnBiblioteca);
+        }
+
 
         #region Propiedades de la view
 

@@ -1,0 +1,86 @@
+﻿<UserControl x:Class="GetNovelsApp.WPF.Views.Partes.NovelaEnBibView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GetNovelsApp.WPF.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="136" d:DesignWidth="750">
+    <Grid Grid.Row="0" Grid.Column="0"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Left"                       
+                       Margin="10 5 0 0"
+                       Background="{StaticResource Color3}">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="5*"/>
+        </Grid.ColumnDefinitions>
+
+        <Image Grid.Column="0" 
+               Source="{Binding PathImagen, FallbackValue=/GetNovelsApp.WPF;component/Resources/NovelHeroTest.jpg,TargetNullValue=/GetNovelsApp.WPF;component/Resources/NovelHeroTest.jpg}"
+                Height="140"/>
+
+        <!--Text-->
+        <StackPanel Grid.Column="1">
+            <!--Titulo-->
+            <TextBlock Text="{Binding Titulo,FallbackValue=TituloNovela}"
+                           VerticalAlignment="Center"
+                           Margin="5 0 0 0"
+                           FontSize="17"/>
+
+            <!--Stats-->
+            <StackPanel Orientation="Horizontal"
+                                Margin="0 4 0 0">
+                <TextBlock Margin="5 0">
+                    <Run Text="{Binding Capitulos.Count, Mode=OneWay, FallbackValue=XX}"/>
+                    <Run Text="capitulos"/>
+                </TextBlock>
+                <TextBlock Margin="5 0">
+                    <Run Text="{Binding PorcentajeDescarga, Mode=OneWay, FallbackValue=YY}"/>
+                    <Run Text="% descargada"/>
+                </TextBlock>
+            </StackPanel>
+
+            <!--Tags-->
+            <StackPanel Orientation="Horizontal"
+                                Margin="0 4 0 0">
+                <TextBlock Text="Accion"
+                                   Foreground="White"
+                                   Margin="5 0"
+                                   Background="{StaticResource Color2}"
+                                   Padding="5 0 5 1"
+                                   />
+                <TextBlock Text="Comedia"
+                                   Foreground="White"
+                                   Margin="5 0"
+                                   Background="{StaticResource Color2}"
+                                   Padding="5 0 5 1"
+                                   />
+                <TextBlock Text="Aventura"
+                                   Foreground="White"
+                                   Margin="5 0"
+                                   Background="{StaticResource Color2}"
+                                   Padding="5 0 5 1"
+                                   />
+                <TextBlock Text="Fantasia"
+                                   Foreground="White"
+                                   Margin="5 0"
+                                   Background="{StaticResource Color2}"
+                                   Padding="5 0 5 1"
+                                   />
+            </StackPanel>
+
+            <!--Sipnosis-->
+            <TextBox TextWrapping="Wrap"
+                     Padding="5 2"
+                     Background="Transparent"
+                     Height="67"
+                     BorderThickness="0"
+                     IsReadOnly="True"
+                     Text="{Binding Sipnosis, FallbackValue='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque et mauris eget est suscipit pharetra. Donec et convallis lorem. Integer blandit lacus non rutrum convallis. Pellentesque et porta quam, id fringilla ex. Cras rutrum mi imperdiet ligula imperdiet pharetra. Nunc hendrerit diam vel ex maximus auctor. Pellentesque egestas in justo sed finibus. Phasellus vehicula neque turpis, eget hendrerit justo laoreet in. Cras felis lectus, pretium eget leo ac, vehicula hendrerit ipsum. Maecenas eleifend ultrices ex quis imperdiet.'}"/>
+
+        </StackPanel>
+
+    </Grid>
+</UserControl>

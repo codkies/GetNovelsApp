@@ -55,7 +55,7 @@ namespace GetNovelsApp.Core
             return Fabrica.FabricaConstructor(novela, tipo, capsPorPDF, direccion, titulo, notCapImpreso, notDocCreado);
         }
 
-        public static IConstructor ObtenNovela(IConstructor IConfig)
+        public static IConstructor AsignaConstructor(IConstructor IConfig)
         {
             return Fabrica.FabricaConstructor(IConfig);
         }
@@ -66,9 +66,10 @@ namespace GetNovelsApp.Core
             return Fabrica.FabricaNovela(INovela);
         }
 
-        public static INovela ObtenNovela(List<Capitulo> capitulos, InformacionNovelaDB info)
+        public static INovela ObtenNovela(IEnumerable<Capitulo> capitulos, InformacionNovelaDB info)
         {
-            return Fabrica.FabricaNovela(capitulos, info);
+            List<Capitulo> _ = new List<Capitulo>(capitulos);
+            return Fabrica.FabricaNovela(_, info);
         } 
 
         #endregion

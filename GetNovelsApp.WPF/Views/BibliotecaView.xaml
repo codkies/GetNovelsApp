@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GetNovelsApp.WPF.Views"
+             xmlns:p="clr-namespace:GetNovelsApp.WPF.Views.Partes"
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="1000">
     <!--Background-->
@@ -15,89 +16,17 @@
         </Grid.ColumnDefinitions>
         
         <!--Lista de novelas-->
-        <Grid Margin="5 10 10 10"
-              Background="{StaticResource Color1}">
+        <ListView Margin="5 10 10 10"
+                  Background="Transparent"
+                  ItemsSource="{Binding NovelasVisibles}">
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <p:NovelaEnBibView/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
 
-            <!--Demo de la Vista de novela en la lista-->
-            <DockPanel Grid.Row="0" Grid.Column="0"
-                       VerticalAlignment="Center"
-                       HorizontalAlignment="Left"                       
-                       Margin="10 5 0 0"
-                       >
-                
-                <Image DockPanel.Dock="Left"
-                    Source="/GetNovelsApp.WPF;component/Resources/NovelHeroTest.jpg"/>
-
-                <!--Text-->
-                <StackPanel>
-                    <!--Titulo-->
-                    <TextBlock Text="Otherworldly Evil Monarch"
-                           VerticalAlignment="Center"
-                           Margin="5 0 0 0"/>
-                    
-                    <!--Stats-->
-                    <StackPanel Orientation="Horizontal"
-                                Margin="0 4 0 0">
-                        <TextBlock Text="1277 capitulos"
-                                   Margin="5 0"/>
-                        <TextBlock Text="100% Descargada"
-                                   Margin="5 0"/>
-                        <TextBlock Text="Author: Fengling Tianxia"
-                                   Margin="5 0"/>
-                    </StackPanel>
-                    
-                    <!--Tags-->
-                    <StackPanel Orientation="Horizontal"
-                                Margin="0 4 0 0">
-                        <TextBlock Text="Accion"
-                                   Foreground="White"
-                                   Margin="5 0"
-                                   Background="{StaticResource Color2}"
-                                   Padding="5 0 5 1"
-                                   />
-                        <TextBlock Text="Comedia"
-                                   Foreground="White"
-                                   Margin="5 0"
-                                   Background="{StaticResource Color2}"
-                                   Padding="5 0 5 1"
-                                   />
-                        <TextBlock Text="Aventura"
-                                   Foreground="White"
-                                   Margin="5 0"
-                                   Background="{StaticResource Color2}"
-                                   Padding="5 0 5 1"
-                                   />
-                        <TextBlock Text="Fantasia"
-                                   Foreground="White"
-                                   Margin="5 0"
-                                   Background="{StaticResource Color2}"
-                                   Padding="5 0 5 1"
-                                   />
-                    </StackPanel>
-                    
-                    <!--Sipnosis-->
-                    <TextBlock TextWrapping="Wrap"
-                               Padding="5 2"
-                               >
-                        Jun Xie was the number one assassin in modern earth. His skills and knowledge in the field of assassination were unparalleled, his accomplishments unprecedented, his reputation terrified the entire underworld. However, during a mission to retrieve a mystical treasure, a mishap occurred…
-                    </TextBlock>
-
-                    <!--Loading bar-->
-                    <Image Height="30"
-                        Source="/GetNovelsApp.WPF;component/Resources/LoadingBarTest.png"/>
-                </StackPanel>
-                
-            </DockPanel>
-
-        </Grid>
+        </ListView>
 
         <!--Soportive bar-->
         <Grid Grid.Column="1"

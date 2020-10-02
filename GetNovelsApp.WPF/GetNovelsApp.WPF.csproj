@@ -83,6 +83,9 @@
     <Compile Include="Views\AddNovelView.xaml.cs">
       <DependentUpon>AddNovelView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Partes\NovelaEnBibView.xaml.cs">
+      <DependentUpon>NovelaEnBibView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\TEst\TEST_AddNovel.xaml.cs">
       <DependentUpon>TEST_AddNovel.xaml</DependentUpon>
     </Compile>
@@ -119,6 +122,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AddNovelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Partes\NovelaEnBibView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

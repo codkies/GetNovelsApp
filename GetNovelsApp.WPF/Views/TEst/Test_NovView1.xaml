@@ -6,101 +6,17 @@
              xmlns:local="clr-namespace:GetNovelsApp.WPF.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Background="{StaticResource Color3}">        
+    
+    <Grid Background="{StaticResource Color3}">
+        <Label Content="Finding a dynamic grid"></Label>
+
+
+        <UniformGrid Margin="50">
+            <Button Content="HEY" Width="50" Height="50"/>
+
+
+        </UniformGrid>
         
-        <!--Rows-->
-        <Grid.RowDefinitions>
-            <RowDefinition Height="4*"/>            
-            <RowDefinition Height="3*"/>
-        </Grid.RowDefinitions>
-
-        <!--Primer Row-->
-        <!--Info basica de novela-->
-        <Grid Margin="5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="3*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            
-            <!--Col 0, Imagen-->
-            <Image Grid.Column="0" Source="/GetNovelsApp.WPF;component/Resources/NovelHeroTest.jpg"/>
-
-            <!--Col 1, info-->
-            <StackPanel Grid.Column="1"
-                        Margin="10 0">
-                <!--Info-->
-                <TextBlock  Text="Otherworldly Evil Monarch" 
-                            FontSize="20"/>
-                <!--Sipnosis-->
-                <TextBlock FontSize="12"
-                           Padding="0 0 5 0"
-                           TextWrapping="Wrap">
-                    Jun Xie was the number one assassin in modern earth. His skills and knowledge in the field of assassination were unparalleled, his accomplishments unprecedented, his reputation terrified the entire underworld. However, during a mission to retrieve a mystical treasure, a mishap occurred…
-                <LineBreak/><LineBreak/>
-                    He is now Jun Moxie, a sixteen year old super level debauchee, sole heir to the declining Jun family. A family of valiant heroes, left with an old grandpa, a crippled uncle and a debauchee as the sole heir! Accepting the world’s criticism and cold stares with a smile, his new journey begins! His life will be carved by his own will! Rise to the top! Evil Monarch Jun Xie!
-                    <LineBreak/><LineBreak/>
-                    “This cup I toast to those I’ve killed in my past life. Forgive me, for there is no chance for you to have revenge. Gulp!”
-                   <LineBreak/><LineBreak/>
-                    “This cup I toast to those whose life I will take in my new life. Forgive me, for you are fated to die by my hands. Cheers!”
-                </TextBlock>
-            </StackPanel>
-            
-            <!--Col 2, Tags-->
-            <StackPanel Grid.Column="2">
-                <TextBlock Text="Hacer de esto un grid..." FontSize="5" TextAlignment="Center"/>
-                <TextBlock Text="Accion"
-                           TextAlignment="Center"
-                           HorizontalAlignment="Left"
-                           Background="{StaticResource Color5}"
-                           Height="17" 
-                           Width="50"                           
-                           Padding="2 0"
-                           Margin="0 5"
-                           Foreground="White"/>
-
-                <TextBlock Text="Comedia"
-                           TextAlignment="Center"
-                           HorizontalAlignment="Left"
-                           Background="{StaticResource Color5}"
-                           Height="17" 
-                           Width="50"                           
-                           Padding="2 0"
-                           Margin="0 5"
-                           Foreground="White"/>
-
-                <TextBlock Text="Aventura"
-                           TextAlignment="Center"
-                           HorizontalAlignment="Left"
-                           Background="{StaticResource Color5}"
-                           Height="17" 
-                           Width="50"                           
-                           Padding="2 0"
-                           Margin="0 5"
-                           Foreground="White"/>
-
-                <TextBlock Text="Drama"
-                           TextAlignment="Center"
-                           HorizontalAlignment="Left"
-                           Background="{StaticResource Color5}"
-                           Height="17" 
-                           Width="50"                           
-                           Padding="2 0"
-                           Margin="0 5"
-                           Foreground="White"/>
-            </StackPanel>
-
-        </Grid>
-        
-        <!--Segunda Row-->
-        <!--Tags-->
-        <DockPanel Grid.Row="2">
-            <TextBlock DockPanel.Dock="Top"
-                       Margin="20 0"
-                       Text="Capitulos:"/>
-            <DataGrid Grid.Row="2"
-                  Margin="20"/>
-        </DockPanel>
 
 
     </Grid>

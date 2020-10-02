@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using GetNovelsApp.Core;
 using GetNovelsApp.Core.Conexiones.DB;
 using GetNovelsApp.Core.Conexiones.Internet;
@@ -17,7 +19,7 @@ namespace GetNovelsApp.WPF
         public AppViewModel()
         {
             InicializaApp();
-            InicializaViewModels(); 
+            InicializaViewModelsAsync(); 
         }
 
         /// <summary>
@@ -34,16 +36,33 @@ namespace GetNovelsApp.WPF
         /// </summary>
         private void InicializaViewModels()
         {
-            BibliotecaViewModel = new BibliotecaViewModel();
+            //Archivador ar = new Archivador();
+
+
+            //BibliotecaViewModel = new BibliotecaViewModel();
+            //ConfiguracionViewModel = new ConfiguracionViewModel();            
+
+
+            //NovelViewModel = new NovelViewModel(novela);
+
+            //CurrentView = BibliotecaViewModel;
+        }
+
+        private async Task InicializaViewModelsAsync()
+        {
+            Archivador ar = new Archivador();
+            var output = await ar.ObtenTodasNovelasAsync();
+
+            List<NovelaWPF> Novelas = new List<NovelaWPF>();
+            foreach (INovela novela in output)
+            {                
+                Novelas.Add((NovelaWPF)novela);
+            }
+
+            BibliotecaViewModel = new BibliotecaViewModel(Novelas);
             ConfiguracionViewModel = new ConfiguracionViewModel();
 
-            Archivador ar = new Archivador();
-            INovela n = ar.MeteNovelaDB(new Uri("https://wuxiaworld.site/novel/lord-of-the-mysteries-novel/"), out _);
-            NovelaWPF novela = (NovelaWPF)n;
-
-            NovelViewModel = new NovelViewModel(novela);
-
-            CurrentView = NovelViewModel;
+            CurrentView = BibliotecaViewModel;
         }
 
         #endregion

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,11 +15,12 @@ namespace GetNovelsApp.WPF.Utilidades
         public static string DescargaImagen(string url)
         {
             string filePath = System.IO.Path.GetFileName(url);
-
-            System.Net.WebClient cln = new System.Net.WebClient();
             filePath = $@"C:\NovelApp\{filePath}";
-
-            cln.DownloadFile(url, filePath);
+            if (!File.Exists(filePath))
+            {
+                System.Net.WebClient cln = new System.Net.WebClient();
+                cln.DownloadFile(url, filePath);               
+            }
             return filePath;
         }
 
@@ -27,6 +29,7 @@ namespace GetNovelsApp.WPF.Utilidades
         /// </summary>
         public static string DescargaImagen(Uri imagenLink)
         {
+            if (imagenLink == null) return string.Empty;
             return DescargaImagen(imagenLink.ToString());
         }
     }
