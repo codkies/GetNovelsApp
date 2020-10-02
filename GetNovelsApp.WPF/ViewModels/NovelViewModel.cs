@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using GetNovelsApp.Core.Modelos;
 using GetNovelsApp.WPF.Models;
 using GetNovelsApp.WPF.Utilidades;
 
@@ -9,8 +11,11 @@ namespace GetNovelsApp.WPF.ViewModels
     {
         public NovelViewModel(NovelaWPF novela)
         {
-            novelaEnVista = novela;
+            NovelaEnVista = novela;
             ActualizaImagen();
+
+            Capitulos = new ObservableCollection<Capitulo>(NovelaEnVista.Capitulos);
+            Novelas.Add(NovelaEnVista);
         }
 
 
@@ -21,6 +26,10 @@ namespace GetNovelsApp.WPF.ViewModels
 
         public string PathImagenNovela { get => pathImagenNovela; private set => OnPropertyChanged(ref pathImagenNovela, value); }
 
+        public ObservableCollection<NovelaWPF> Novelas { get; private set; } = new ObservableCollection<NovelaWPF>();
+
+
+        public ObservableCollection<Capitulo> Capitulos { get; private set; } = new ObservableCollection<Capitulo>();
 
         private void ActualizaImagen()
         {

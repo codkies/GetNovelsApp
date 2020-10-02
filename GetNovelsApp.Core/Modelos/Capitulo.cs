@@ -5,10 +5,10 @@ using GetNovelsApp.Core.Conexiones.Internet;
 
 namespace GetNovelsApp.Core.Modelos
 {
-    public class Capitulo  
+    public class Capitulo
     {
         #region Constructor & setups       
-      
+
         /// <summary>
         /// DO NOT DELETE! For the DB!!!
         /// </summary>
@@ -31,7 +31,7 @@ namespace GetNovelsApp.Core.Modelos
                 TituloCapitulo = Titulo;
             }
 
-            if(Numero >= 0)
+            if (Numero >= 0)
             {
                 NumeroCapitulo = (float)Numero;
             }
@@ -76,7 +76,7 @@ namespace GetNovelsApp.Core.Modelos
         public float NumeroCapitulo { get; private set; }
 
         /// <summary>
-        /// El titulo de este capitulo.
+        /// El titulo de este capitulo. 
         /// </summary>
         public string TituloCapitulo { get; private set; }
 
@@ -104,6 +104,14 @@ namespace GetNovelsApp.Core.Modelos
         /// Cantidad de caracteres en este capitulo.
         /// </summary>
         public int Caracteres => Texto.Length;
+
+        /// <summary>
+        /// Usado por WPF Binding
+        /// </summary>
+        public string LinkString => Link.ToString();
+
+
+        public bool Descargado => Texto != null;
 
 
 

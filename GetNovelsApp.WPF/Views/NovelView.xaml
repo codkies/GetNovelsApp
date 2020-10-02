@@ -95,13 +95,53 @@
 
             <!--Capitulos-->
             <DockPanel>
+                <!--Caption-->
                 <TextBlock DockPanel.Dock="Top"
                            Margin="20 10 20 0"
                            Text="Capitulos:"
                            TextAlignment="Center"/>
-                <DataGrid Grid.Row="2"
-                          Margin="20" 
-                          DataContext="{Binding NovelaEnVista.Capitulos}"/>
+                
+                <!--Datagrid-->
+                <DataGrid Grid.Row="2" 
+                          Margin="20"
+                          x:Name="Capitulos"
+                          ItemsSource="{Binding Capitulos}" 
+                          AutoGenerateColumns="False" 
+                          Background="{StaticResource Color3}" 
+                          SelectedItem="{Binding EntradaSeleccionada, Mode=TwoWay}"  
+                          SelectionMode="Extended" 
+                          SelectionUnit="CellOrRowHeader">
+                    
+                    <DataGrid.Columns>
+
+                        <DataGridTemplateColumn Header="Titulo" Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Path=TituloCapitulo}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        
+                        <DataGridTemplateColumn Header="Descargado" Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Path=Descargado}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn Header="Link" Width="2*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Path=LinkString}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                    </DataGrid.Columns>
+
+                </DataGrid>
+
             </DockPanel>
 
             <!--Boton de leer-->
