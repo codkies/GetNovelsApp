@@ -44,6 +44,50 @@
 
         </Grid>
 
+         <!--Barra de estado-->
+        <Grid DockPanel.Dock="Bottom"
+                    Background="{StaticResource Color4}">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <!--Mensajes de la app-->
+            <TextBlock Grid.Column="2"
+                       TextAlignment="Right"
+                       Margin="0 0 10 0"
+                       FontSize="10">                
+                <!--Accion-->
+                <Run Text="Descargando"/>
+                <!--Mensaje-->
+                <Run Text="'Lord of the Flies' (23%)..."/>
+                <!--Cantidad de acciones-->
+                <Run Text="(1/3)"/>                
+            </TextBlock>
+            
+            <!--Nombre App-->
+            <TextBlock Grid.Column="1"
+                       TextAlignment="Center"
+                       Margin="0 0 10 0"
+                       FontSize="10">  
+                <Run Text="GetNovels"/>
+            </TextBlock>
+            
+            <!--Lugar donde te encuentras-->
+            <TextBlock Grid.Column="0"
+                       TextAlignment="Left"
+                       Margin="10 0 0 0"
+                       FontSize="10">                
+                <!--Carpeta 1-->
+                <Run Text="Biblioteca >"/>
+                <!--Carpeta 2-->
+                <Run Text="Lord of the Mysteries"/>
+            </TextBlock>
+            
+        </Grid>
+        
         <!--Views-->
         <Grid DockPanel.Dock="Bottom">
             <ContentControl Content="{Binding CurrentView}"/>
