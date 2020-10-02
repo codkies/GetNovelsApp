@@ -1,11 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO.Packaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GetNovelsApp.Core.Modelos;
 using GetNovelsApp.WPF.Models;
 using GetNovelsApp.WPF.Utilidades;
 

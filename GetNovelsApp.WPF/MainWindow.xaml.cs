@@ -22,7 +22,7 @@ namespace GetNovelsApp.WPF
     {
         public MainWindow()
         {
-            InitializeComponent();
+            InitializeComponent();            
         }
     }
 }

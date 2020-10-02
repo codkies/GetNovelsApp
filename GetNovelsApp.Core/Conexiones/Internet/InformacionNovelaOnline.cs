@@ -8,7 +8,7 @@ namespace GetNovelsApp.Core.Conexiones.Internet
     /// <summary>
     /// Modelo que utiliza la DB para obtener info acerca de una novela online.
     /// </summary>
-    public struct InformacionNovelaOnline
+    public class InformacionNovelaOnline
     {
         /// <summary>
         /// Titulo de la novela

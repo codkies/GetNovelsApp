@@ -68,6 +68,7 @@
     <Compile Include="Models\NovelaWPF.cs" />
     <Compile Include="Models\Setter.cs" />
     <Compile Include="Utilidades\RelayCommand.cs" />
+    <Compile Include="ViewModels\AddNovelViewModel.cs" />
     <Compile Include="ViewModels\BibliotecaViewModel.cs" />
     <Compile Include="ViewModels\ConfiguracionViewModel.cs" />
     <Compile Include="ViewModels\NovelViewModel.cs" />

@@ -13,33 +13,22 @@ using GetNovelsApp.Core.Utilidades;
 namespace GetNovelsApp.Core.Conexiones.DB
 {
     /// <summary>
-    /// Query maker
+    /// Metodos "viejos"
     /// </summary>
-    public class Archivador : IReportero
+    public partial class Archivador : IReportero
     {
-        private const string TablaNovelas = "Novelas";
-        private const string TablaCapitulos = "Capitulos";
-        private const string TablaTags = "Tags";
-
-        public string Nombre => "DB";
-
-        #region Core
-
-
         /// <summary>
         /// Regresa una instancia de una novela registrada en la base de datos.
         /// </summary>
         /// <param name="infoNov"></param>
         /// <returns></returns>
-        public INovela BuscaNovelaEnDB(Uri LinkNovela) 
+        public INovela MeteNovelaDB(Uri LinkNovela, out bool YaExiste)
         {
-            using IDbConnection cnn = DataBaseAccess.GetConnection();
-            string obtenIDnovela = GetIDNovel_Query(LinkNovela);
-            var _ = cnn.Query<int>(obtenIDnovela);
-
-            bool NoExisteLaNovela = _.Any() == false;
-            if (NoExisteLaNovela)
+            YaExiste = NovelaExisteEnDB(LinkNovela);
+            if (!YaExiste)
             {
+                using IDbConnection cnn = DataBaseAccess.GetConnection();
+
                 //Obteniendo toda la info de la web y metiendola en la DB:
                 InformacionNovelaDB novDBInfo = InsertaNovelaEnDB(LinkNovela, cnn, out InformacionNovelaOnline infoNov);
 
@@ -54,8 +43,84 @@ namespace GetNovelsApp.Core.Conexiones.DB
             }
             else
             {
-                cnn.Dispose();
                 return SacaNovelaDB(LinkNovela);
+            }
+        }
+
+
+        /// <summary>
+        /// Crea una novela en la DB. Regresa un NovelDBmodel y un out NovelaWebModel
+        /// </summary>
+        private InformacionNovelaDB InsertaNovelaEnDB(Uri LinkNovela, IDbConnection cnn, out InformacionNovelaOnline infoNov)
+        {
+            //Encontrando informacion de la web.
+            infoNov = ManipuladorDeLinks.EncuentraInformacionNovela(LinkNovela);
+
+            //Insertando la novela
+            string qry = InsertNovel_Query(infoNov);
+            cnn.Execute(qry);
+
+            //Insertando las tagas
+            string qID = $"select ID from {TablaNovelas} where LinkPrincipal = \"{LinkNovela}\" ";
+            int novelID = cnn.Query<int>(qID).First();
+            string qry_tags = InsertTags_Query(infoNov, novelID);
+            cnn.Execute(qry_tags);
+
+
+            //Obteniendo una referencia de la DB
+            string query_ObtenDBInfo = $"SELECT n.id, n.Titulo, n.LinkPrincipal, n.Sipnosis, n.Imagen, t.Tags " +
+                                        $"from {TablaNovelas} as n " +
+                                        $"join {TablaTags} as t " +
+                                        $"on n.ID = t.NovelaID and n.id = {novelID}";
+
+            InformacionNovelaDB novDBInfo = cnn.Query<InformacionNovelaDB>(query_ObtenDBInfo).First();
+
+
+            return novDBInfo;
+        }
+
+    }
+
+    /// <summary>
+    /// Query maker
+    /// </summary>
+    public partial class Archivador : IReportero
+    {
+        private const string TablaNovelas = "Novelas";
+        private const string TablaCapitulos = "Capitulos";
+        private const string TablaTags = "Tags";
+
+        public string Nombre => "DB";
+
+        #region Core
+
+
+        /// <summary>
+        /// Toma una informacion de novela online y la guarda.
+        /// </summary>
+        /// <param name="info"></param>
+        /// <returns></returns>
+        public INovela MeteNovelaDB(InformacionNovelaOnline info)
+        {
+            bool YaExiste = NovelaExisteEnDB(info.LinkPrincipal);
+            if (!YaExiste)
+            {
+                using IDbConnection cnn = DataBaseAccess.GetConnection();
+                //Obteniendo toda la info de la web y metiendola en la DB:
+                InformacionNovelaDB novDBInfo = InsertaNovelaEnDB(info, cnn);
+
+                //Capitulos:
+                List<Capitulo> CapitulosNovela = GetNovelsFactory.CreaCapitulos(info.LinksDeCapitulos);
+                GuardaCapitulos(CapitulosNovela, novDBInfo.ID); //Itera los caps y encuentra su info.
+
+                //Regresando una novela para runtime:
+                INovela nov = GetNovelsFactory.ObtenNovela(CapitulosNovela, novDBInfo);
+                cnn.Dispose();
+                return nov;
+            }
+            else
+            {
+                return SacaNovelaDB(info.LinkPrincipal);
             }
         }
 
@@ -97,6 +162,24 @@ namespace GetNovelsApp.Core.Conexiones.DB
 
             cnn.Dispose();
         }
+
+
+        /// <summary>
+        /// Regresa true or false dependiendo si el link ingresado, corresponde a alguna novela en la DB.
+        /// </summary>
+        /// <param name="Link"></param>
+        /// <returns></returns>
+        public bool NovelaExisteEnDB(Uri Link)
+        {
+            using IDbConnection cnn = DataBaseAccess.GetConnection();
+
+            string qry = GetIDNovel_Query(Link);
+            var resultados = cnn.Query<int>(qry);
+            cnn.Dispose();
+
+            return resultados.Any();
+        }
+
 
 
         #endregion
@@ -170,24 +253,18 @@ namespace GetNovelsApp.Core.Conexiones.DB
         }
 
 
-        /// <summary>
-        /// Crea una novela en la DB. Regresa un NovelDBmodel y un out NovelaWebModel
-        /// </summary>
-        private InformacionNovelaDB InsertaNovelaEnDB(Uri LinkNovela, IDbConnection cnn, out InformacionNovelaOnline infoNov)
+        private InformacionNovelaDB InsertaNovelaEnDB(InformacionNovelaOnline infoNov, IDbConnection cnn)
         {
-            //Encontrando informacion de la web.
-            infoNov = ManipuladorDeLinks.EncuentraInformacionNovela(LinkNovela);
-
             //Insertando la novela
             string qry = InsertNovel_Query(infoNov);
             cnn.Execute(qry);
 
             //Insertando las tagas
-            string qID = $"select ID from {TablaNovelas} where LinkPrincipal = \"{LinkNovela}\" ";
+            string qID = $"select ID from {TablaNovelas} where LinkPrincipal = \"{infoNov.LinkPrincipal}\" ";
             int novelID = cnn.Query<int>(qID).First();
             string qry_tags = InsertTags_Query(infoNov, novelID);
             cnn.Execute(qry_tags);
-           
+
 
             //Obteniendo una referencia de la DB
             string query_ObtenDBInfo = $"SELECT n.id, n.Titulo, n.LinkPrincipal, n.Sipnosis, n.Imagen, t.Tags " +
@@ -197,45 +274,9 @@ namespace GetNovelsApp.Core.Conexiones.DB
 
             InformacionNovelaDB novDBInfo = cnn.Query<InformacionNovelaDB>(query_ObtenDBInfo).First();
 
-            
+
             return novDBInfo;
         }
-
-
-        #endregion
-
-
-
-        #region Legacy
-
-
-        /// <summary>
-        /// Crea una novela en la DB. Regresa un NovelDBmodel y un out NovelaWebModel
-        /// </summary>
-        /// <param name="LinkNovela"></param>
-        /// <param name="cnn"></param>
-        /// <param name="infoNov"></param>
-        /// <returns></returns>
-        private InformacionNovelaDB Legacy_CreateNovel(Uri LinkNovela, IDbConnection cnn, out InformacionNovelaOnline infoNov)
-        {
-            //Encontrando informacion de la web.
-            infoNov = ManipuladorDeLinks.EncuentraInformacionNovela(LinkNovela);
-
-            string qry = InsertNovel_Query(infoNov);
-            cnn.Execute(qry);
-
-            int id = (int)DataBaseAccess.LastID;
-            string qry_tags = InsertTags_Query(infoNov, id);
-            cnn.Execute(qry_tags);
-
-            //Obteniendo un modelo de la DB.
-            string query_ObtenDBInfo = $"select * from {TablaNovelas} where LinkPrincipal = '{LinkNovela}'";
-            InformacionNovelaDB novDBInfo = cnn.Query<InformacionNovelaDB>(query_ObtenDBInfo).First();
-
-            //Regresando el modelo de la DB.
-            return novDBInfo;
-        }
-
 
 
         #endregion

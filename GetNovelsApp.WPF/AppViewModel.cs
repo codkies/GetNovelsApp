@@ -6,6 +6,7 @@ using GetNovelsApp.Core.Modelos;
 using GetNovelsApp.WPF.Models;
 using GetNovelsApp.WPF.Utilidades;
 using GetNovelsApp.WPF.ViewModels;
+using GetNovelsApp.WPF.Views.TEst;
 
 namespace GetNovelsApp.WPF
 {
@@ -16,7 +17,9 @@ namespace GetNovelsApp.WPF
         public AppViewModel()
         {
             InicializaApp();
-            InicializaViewModels();
+            InicializaViewModels(); 
+            TEST_AddNovel x = new TEST_AddNovel();
+            x.Show();
         }
 
         /// <summary>
@@ -37,7 +40,7 @@ namespace GetNovelsApp.WPF
             ConfiguracionViewModel = new ConfiguracionViewModel();
 
             Archivador ar = new Archivador();
-            INovela n = ar.BuscaNovelaEnDB(new Uri("https://wuxiaworld.site/novel/otherworldly-evil-monarch/"));
+            INovela n = ar.MeteNovelaDB(new Uri("https://wuxiaworld.site/novel/otherworldly-evil-monarch/"), out _);
             NovelaWPF novela = (NovelaWPF)n;
 
             NovelViewModel = new NovelViewModel(novela);
