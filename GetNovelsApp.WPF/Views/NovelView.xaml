@@ -5,123 +5,113 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GetNovelsApp.WPF.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Background="{StaticResource Color2}">
+             d:DesignHeight="690" d:DesignWidth="1000">
+
+    <Grid Background="{StaticResource Color3}"
+          Margin="10">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*"/>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <!--Primer Col-->
         <!--Info basica de novela-->
-        <Grid Margin="5">
+        <Grid Grid.Column="0" 
+              Margin="5">
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="2*"/>
                 <RowDefinition Height="3*"/>
             </Grid.RowDefinitions>
 
-            <!--Primera Row, Info a primera vista & Imagen-->
-            <DockPanel Grid.Row="0">
+            <!--Infobasica, Izquierda Arriba-->
+            <Grid Grid.Row="0" 
+                  Margin="10 0 0 0">
 
-                <!--Img-->
-                <Image DockPanel.Dock="Left" Source="/GetNovelsApp.WPF;component/Resources/NovelHeroTest.jpg"/>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
 
-                <!--Info a primera vista-->
-                <StackPanel DockPanel.Dock="Right">
+                <!--Cover-->
+                <Image Grid.Column="0"
+                       Margin="0 0 10 0"
+                       Source="{Binding PathImagenNovela, 
+                                    FallbackValue={StaticResource EmptyNovel}}"/>
 
+                <!--Informacion-->
+                <StackPanel Grid.Column="1"
+                                Margin="0 10 0 0">
                     <!--Titulo-->
-                    <TextBlock  Text="Otherworldly Evil Monarch" 
-                                FontSize="20"
-                                HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding NovelaEnVista.Titulo, FallbackValue='Titulo Novela'}"
+                                   FontSize="30"
+                                   FontFamily="{StaticResource MainFont}"/>
+                    
+                    <!--Porcentaja de descarga-->
+                    <TextBlock FontSize="15"
+                                FontFamily="{StaticResource MainFont}">
+                           <Run Text="{Binding NovelaEnVista.Capitulos.Count, FallbackValue=1277, Mode=OneWay}"/>
+                           <Run Text="capitulos."/>
+                    </TextBlock>
+                    
+                    <!--Cantidad Caps-->
+                    <TextBlock FontSize="15"
+                                FontFamily="{StaticResource MainFont}">
+                           <Run Text="{Binding NovelaEnVista.PorcentajeDescarga, FallbackValue=100, Mode=OneWay}"/>
+                           <Run Text="% descargado."/>
+                    </TextBlock>
+
+                    <!--Genres-->
+
 
                     <!--Tags-->
-                    <StackPanel Orientation="Horizontal"
-                                Margin="10">
-                        <TextBlock Grid.Row="0" Grid.Column="0"
-                           Text="Accion"
-                           TextAlignment="Center"
-                           HorizontalAlignment="Center"
-                           Background="{StaticResource Color5}"
-                           Height="17"                          
-                           Padding="2 0"
-                           Margin="10 0"
-                           Foreground="White"/>
-
-                        <TextBlock Grid.Row="0" Grid.Column="0"
-                           Text="Aventura"
-                           TextAlignment="Center"
-                           HorizontalAlignment="Center"
-                           Background="{StaticResource Color5}"
-                           Height="17"                          
-                           Padding="2 0"
-                           Margin="10 0"
-                           Foreground="White"/>
-
-                        <TextBlock Grid.Row="0" Grid.Column="0"
-                           Text="Fantasia"
-                           TextAlignment="Center"
-                           HorizontalAlignment="Center"
-                           Background="{StaticResource Color5}"
-                           Height="17"                          
-                           Padding="2 0"
-                           Margin="10 0"
-                           Foreground="White"/>
-
-                        <TextBlock Grid.Row="0" Grid.Column="0"
-                           Text="Drama"
-                           TextAlignment="Center"
-                           HorizontalAlignment="Center"
-                           Background="{StaticResource Color5}"
-                           Height="17"                          
-                           Padding="2 0"
-                           Margin="10 0"
-                           Foreground="White"/>
-
-                        <TextBlock Grid.Row="0" Grid.Column="0"
-                           Text="Ecchi"
-                           TextAlignment="Center"
-                           HorizontalAlignment="Center"
-                           Background="{StaticResource Color5}"
-                           Height="17"                          
-                           Padding="2 0"
-                           Margin="10 0"
-                           Foreground="White"/>
-                    </StackPanel>
-
 
                 </StackPanel>
 
-            </DockPanel>
+            </Grid>
 
-
-            <!--Segunda Row, Sipnosis-->
-            <StackPanel Grid.Row="1"
-                        Margin="10 0">
-                <TextBlock Text="Sipnosis"/>
-                <!--Sipnosis-->
-                <TextBlock FontSize="12"
-                           Padding="0 0 5 0"
-                           TextWrapping="Wrap">
-                    Jun Xie was the number one assassin in modern earth. His skills and knowledge in the field of assassination were unparalleled, his accomplishments unprecedented, his reputation terrified the entire underworld. However, during a mission to retrieve a mystical treasure, a mishap occurred…
-                <LineBreak/><LineBreak/>
-                    He is now Jun Moxie, a sixteen year old super level debauchee, sole heir to the declining Jun family. A family of valiant heroes, left with an old grandpa, a crippled uncle and a debauchee as the sole heir! Accepting the world’s criticism and cold stares with a smile, his new journey begins! His life will be carved by his own will! Rise to the top! Evil Monarch Jun Xie!
-                    <LineBreak/><LineBreak/>
-                    “This cup I toast to those I’ve killed in my past life. Forgive me, for there is no chance for you to have revenge. Gulp!”
-                   <LineBreak/><LineBreak/>
-                    “This cup I toast to those whose life I will take in my new life. Forgive me, for you are fated to die by my hands. Cheers!”
-                </TextBlock>
-            </StackPanel>
-
+            <!--Sipnosis. Izquierda Abajo-->
+            <TextBox Grid.Row="1"
+                         Margin="5"
+                         Padding="5"
+                         FontSize="16"
+                         TextAlignment="Left"
+                         BorderThickness="0"
+                         Background="{StaticResource Color3}"
+                         Text="{Binding NovelaEnVista.Sipnosis, 
+                    FallbackValue=' With the rising tide of steam power and machinery, who can come close to being a Beyonder? Shrouded in the fog of history and darkness, who or what is the lurking evil that murmurs into our ears? Waking up to be faced with a string of mysteries, Zhou Mingrui finds himself reincarnated as Klein Moretti in an alternate Victorian era world where he sees a world filled with machinery, cannons, dreadnoughts, airships, difference machines, as well as Potions, Divination, Hexes, Tarot Cards, Sealed Artifacts… The Light continues to shine but mystery has never gone far. Follow Klein as he finds himself entangled with the Churches of the world—both orthodox and unorthodox—while he slowly develops newfound powers thanks to the Beyonder potions. Like the corresponding tarot card, The Fool, which is numbered 0—a number of unlimited potential—this is the legend of The Fool.' }"
+                         TextWrapping="Wrap"/>
+            
         </Grid>
 
-        <!--Segunda Row-->
-        <!--Tags-->
-        <DockPanel Grid.Column="2">
-            <TextBlock DockPanel.Dock="Top"
-                       Margin="20 0"
-                       Text="Capitulos:"/>
-            <DataGrid Grid.Row="2"
-                  Margin="20"/>
-        </DockPanel>
+        
+        <!--Capitulos, parte izquierda de pantalla-->
+        <Grid Grid.Column="1">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="15*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!--Capitulos-->
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Top"
+                           Margin="20 10 20 0"
+                           Text="Capitulos:"
+                           TextAlignment="Center"/>
+                <DataGrid Grid.Row="2"
+                          Margin="20" 
+                          DataContext="{Binding NovelaEnVista.Capitulos}"/>
+            </DockPanel>
+
+            <!--Boton de leer-->
+            <Button Grid.Row="1"
+                    Content="Leer"
+                    HorizontalAlignment="Right"
+                    Margin="0 0 19 0"
+                    Height="20"
+                    Width="50"/>
+        </Grid>
+        
     </Grid>
 </UserControl>

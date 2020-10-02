@@ -111,7 +111,7 @@ namespace GetNovelsApp.WPF.ViewModels
         /// </summary>
         private void ActualizaImagen(string url)
         {
-            PathImagenNovela = DescargaImagen(url);
+            PathImagenNovela = EncontradorImagen.DescargaImagen(url);
         }
 
         private string DescargaImagen(string url)

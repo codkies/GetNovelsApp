@@ -10,21 +10,22 @@ namespace GetNovelsApp.WPF.ViewModels
         public NovelViewModel(NovelaWPF novela)
         {
             novelaEnVista = novela;
+            ActualizaImagen();
         }
 
-      
-        private NovelaWPF novelaEnVista;
 
+        private NovelaWPF novelaEnVista;
+        private string pathImagenNovela;
 
         public NovelaWPF NovelaEnVista { get => novelaEnVista; set => OnPropertyChanged(ref novelaEnVista, value); }
 
-        public string Sipnosis => novelaEnVista.Sipnosis;
+        public string PathImagenNovela { get => pathImagenNovela; private set => OnPropertyChanged(ref pathImagenNovela, value); }
 
-        public Uri Imagen => novelaEnVista.ImagenLink;
 
-        public string Titulo => novelaEnVista.Titulo;
-
-        public List<string> Tags => novelaEnVista.Tags;
+        private void ActualizaImagen()
+        {
+            PathImagenNovela = EncontradorImagen.DescargaImagen(NovelaEnVista.ImagenLink.ToString());
+        }
 
     }
 }

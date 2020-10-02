@@ -43,7 +43,7 @@ namespace GetNovelsApp.Core.Conexiones.Internet
             LinkPrincipal = linkPrincipal;
             LinksDeCapitulos = linksDeCapitulos;
             Imagen = imagen;
-            Sipnosis = sipnosis;
+            Sipnosis = sipnosis.Trim();
             Tags = tags;            
         }
     }

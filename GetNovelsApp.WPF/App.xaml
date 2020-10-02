@@ -4,8 +4,11 @@
              xmlns:local="clr-namespace:GetNovelsApp.WPF"
              xmlns:v="clr-namespace:GetNovelsApp.WPF.Views"
              xmlns:vm="clr-namespace:GetNovelsApp.WPF.ViewModels"
+             xmlns:utl="clr-namespace:GetNovelsApp.WPF.Utilidades"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
+        
+        <!--Views-->
         <DataTemplate DataType="{x:Type vm:BibliotecaViewModel}">
             <v:BibliotecaView/>
         </DataTemplate>
@@ -16,14 +19,22 @@
             <v:NovelView/>
         </DataTemplate>
 
+        
+        <!--Imagenes default-->
+        <BitmapImage x:Key="EmptyNovel" UriSource="pack://siteoforigin:,,,/Resources/EmptyNovel.png"/>
+
+        <!--Fuentes-->
+        <FontFamily x:Key="MainFont">Microsoft YaHei Light</FontFamily>
+        
+        <!--Colores-->
         <SolidColorBrush x:Key="Color1" Color="#F2C4DE"/>
         <SolidColorBrush x:Key="Color2" Color="#03588C"/>
         <SolidColorBrush x:Key="Color3" Color="#EFF28D"/>
         <SolidColorBrush x:Key="Color4" Color="#F29F05"/>
         <SolidColorBrush x:Key="Color5" Color="#F24405"/>
 
-        
-        
+        <x:Static x:Key="SipnosisStock" Member="utl:DefaultStrings.SipnosisDefault" />
+
         <!--Templates-->
         <Style x:Key="BotonNavMenu" TargetType="Button">
             <Setter Property="Background" Value="{StaticResource Color2}"/>

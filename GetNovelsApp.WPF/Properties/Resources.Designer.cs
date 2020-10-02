@@ -103,6 +103,16 @@ namespace GetNovelsApp.WPF.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap EmptyNovel1 {
+            get {
+                object obj = ResourceManager.GetObject("EmptyNovel1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap LoadingBarTest {
             get {
                 object obj = ResourceManager.GetObject("LoadingBarTest", resourceCulture);

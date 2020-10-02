@@ -67,6 +67,8 @@
     <Compile Include="Models\FactoryWPF.cs" />
     <Compile Include="Models\NovelaWPF.cs" />
     <Compile Include="Models\Setter.cs" />
+    <Compile Include="Utilidades\DefaultStrings.cs" />
+    <Compile Include="Utilidades\EncontradorImagen.cs" />
     <Compile Include="Utilidades\RelayCommand.cs" />
     <Compile Include="ViewModels\AddNovelViewModel.cs" />
     <Compile Include="ViewModels\BibliotecaViewModel.cs" />
@@ -77,6 +79,9 @@
     </Compile>
     <Compile Include="Views\ConfiguracionView.xaml.cs">
       <DependentUpon>ConfiguracionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddNovelView.xaml.cs">
+      <DependentUpon>AddNovelView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TEst\TEST_AddNovel.xaml.cs">
       <DependentUpon>TEST_AddNovel.xaml</DependentUpon>
@@ -107,6 +112,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ConfiguracionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddNovelView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -190,6 +199,11 @@
     <Resource Include="Resources\LoadingBarTest.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\EmptyNovel.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.113.1\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.113.1\build\net46\System.Data.SQLite.Core.targets')" />
