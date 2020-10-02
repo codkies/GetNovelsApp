@@ -14,7 +14,7 @@
     
     <DockPanel Background="{StaticResource Color3}">
 
-        <Grid DockPanel.Dock="Top" Height="40" Background="{StaticResource Color2}">
+        <Grid DockPanel.Dock="Top" Height="30" Background="{StaticResource Color2}">
             
             <!--Bar columns-->
             <Grid.ColumnDefinitions>
@@ -29,6 +29,7 @@
             </Grid.ColumnDefinitions>
 
             <Button Grid.Column="0" 
+                    Height="25"
                     Style="{StaticResource BotonNavMenu}">
                 <Button.Content>
                     <Image Source="pack://siteoforigin:,,,/Resources/Bib.png"/>
@@ -36,6 +37,7 @@
             </Button>
 
             <Button Grid.Column="1" 
+                    Height="25"
                     Style="{StaticResource BotonNavMenu}">
                 <Button.Content>
                     <Image Source="pack://siteoforigin:,,,/Resources/Config.png"/>

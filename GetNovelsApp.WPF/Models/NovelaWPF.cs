@@ -83,11 +83,13 @@ namespace GetNovelsApp.WPF.Models
             set => OnPropertyChanged(ref titulo, value);
         }
 
+
         public List<string> Tags
         {
             get => tags;
             set => OnPropertyChanged(ref tags, value);
         }
+
 
         public Uri ImagenLink
         {
@@ -95,13 +97,16 @@ namespace GetNovelsApp.WPF.Models
             set => OnPropertyChanged(ref imagenLink, value);
         }
 
+
         public string Sipnosis
         {
             get => sipnosis;
             set => OnPropertyChanged(ref sipnosis, value);
         }
 
+
         public int ID { get; private set; }
+
 
         public Uri LinkPrincipal
         {
@@ -185,10 +190,14 @@ namespace GetNovelsApp.WPF.Models
             }
         }
 
+
         /// <summary>
         /// Define el % de descarga de la novela.
         /// </summary>
         public int PorcentajeDescarga => CapitulosDescargados.Count * 100 / CantidadLinks;
+
+
+        public string PathImagen => EncontradorImagen.DescargaImagen(ImagenLink);
 
         #endregion
 

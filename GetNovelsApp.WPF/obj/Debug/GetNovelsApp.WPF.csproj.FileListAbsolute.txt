@@ -111,3 +111,5 @@ C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\D
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\Debug\Views\AddNovelView.g.cs
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\Debug\Views\AddNovelView.baml
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\bin\Debug\Resources\EmptyNovel.png
+C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\Debug\Views\TEst\TEST_NovelaEnBib.g.cs
+C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\obj\Debug\Views\TEst\TEST_NovelaEnBib.baml
