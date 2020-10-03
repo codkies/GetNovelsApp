@@ -8,50 +8,26 @@ namespace GetNovelsApp.Core.ConfiguracionApp
     /// <summary>
     /// Shorthand para una configuracion basica generica.
     /// </summary>
-    public abstract class ConfiguracionBasica : IConfig
-    { 
-        #region Contractor privado
+    public class ConfiguracionBasica : IConfig
+    {
+        public ConfiguracionBasica(int tamañoBatch, int capitulosPorDocumento, string folderPath)
+        {
+            TamañoBatch = tamañoBatch;
+            CapitulosPorDocumento = capitulosPorDocumento;
+            FolderPath = folderPath;
+        }
 
-        protected abstract int capsPorDocumento { get; }
-
-        protected abstract int tamañoBatch { get; }
-
-        protected abstract string direccionDiscoDuro { get; }
-
-        protected abstract IPath xPaths { get; }
-
-        protected abstract IComunicador comunicador { get; }
-
-        protected abstract IFabrica fabrica { get; }
-
-        #endregion
 
         #region Contracto publico (IConfig)
 
 
-        public int TamañoBatch => tamañoBatch;
+        public int TamañoBatch { get; private set; }
 
-        public int CapitulosPorDocumento => capsPorDocumento;
+        public int CapitulosPorDocumento { get; private set; }
 
-        public List<string> xPathsTextos => xPaths.xPathsTextos;
+        public string FolderPath { get; private set; }
 
-        public List<string> xPathsSiguienteBoton => xPaths.xPathsSiguienteBoton;
 
-        public List<string> xPathsTitulo => xPaths.xPathsTitulo;
-
-        public List<string> xPathsLinks => xPaths.xPathsLinks;
-
-        public IComunicador Comunicador => comunicador;
-
-        public string FolderPath => direccionDiscoDuro;
-
-        public IFabrica Fabrica => fabrica;
-
-        public List<string> xPathsSipnosis => xPaths.xPathsSipnosis;
-
-        public List<string> xPathsImagen => xPaths.xPathsImagen;
-
-        public List<string> xPathsTags => xPaths.xPathsTags;
         #endregion
     }
 }

@@ -20,6 +20,11 @@ namespace GetNovelsApp.WPF
         {
             InicializaApp();
             InicializaViewModels();
+
+            var ar = new Archivador();
+            //ar.GuardaPerfil(Setter.wb);
+            ar.SacaPerfiles();
+
             //InicializaViewModelsAsync(); //Call last
         }
 
@@ -37,9 +42,9 @@ namespace GetNovelsApp.WPF
         /// </summary>
         private void InicializaViewModels()
         {
-            ConfiguracionViewModel = new ConfiguracionViewModel();
+            //ConfiguracionViewModel = new ConfiguracionViewModel();
 
-            CurrentView = ConfiguracionViewModel;
+            //CurrentView = ConfiguracionViewModel;
         }
 
 
@@ -55,9 +60,9 @@ namespace GetNovelsApp.WPF
             }
 
             BibliotecaViewModel = new BibliotecaViewModel(Novelas);
-            ConfiguracionViewModel = new ConfiguracionViewModel();
+            //ConfiguracionViewModel = new ConfiguracionViewModel();
 
-            CurrentView = ConfiguracionViewModel;
+            //CurrentView = ConfiguracionViewModel;
         }
 
         #endregion

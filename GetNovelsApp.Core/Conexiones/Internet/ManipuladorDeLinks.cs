@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
+using GetNovelsApp.Core.Conexiones.DB;
 using GetNovelsApp.Core.Reportaje;
 using HtmlAgilityPack;
 using iText.Kernel.Pdf.Tagutils;
@@ -11,7 +12,7 @@ using iText.Kernel.Pdf.Tagutils;
 namespace GetNovelsApp.Core.Conexiones.Internet
 {
 
-    public static class ManipuladorDeLinks
+    public static partial class ManipuladorDeLinks
     {
         #region Cosas de reporter
         /// <summary>
@@ -137,11 +138,15 @@ namespace GetNovelsApp.Core.Conexiones.Internet
         }
 
 
-        public static InformacionNovelaOnline EncuentraInformacionNovela(Uri LinkPaginaPrincipal)
+        public static InformacionNovelaOnline EncuentraInformacionNovela(Uri LinkPaginaPrincipal, OrdenLinks orden = OrdenLinks.NULL,List<string> PathsTitulo = null, List<string> PathsLinks = null)
         {
+            if (PathsTitulo == null) PathsTitulo = GetNovelsConfig.xPathsDeTitulo(LinkPaginaPrincipal.IdnHost);
+            if(PathsLinks == null) PathsLinks = GetNovelsConfig.xPathsDeLinks(LinkPaginaPrincipal.IdnHost);
+            if (orden == OrdenLinks.NULL) orden = GetNovelsConfig.OrdenWebsite(LinkPaginaPrincipal.IdnHost);
+
             //Conexiones:
             Conector conector = new Conector(60 * 2); //2 minutos.
-            HtmlNodeCollection[] htmlNodes = conector.IntenaVariosNodos(LinkPaginaPrincipal, GetNovelsConfig.xPathsTitulo, GetNovelsConfig.xPathsLinks);
+            HtmlNodeCollection[] htmlNodes = conector.IntenaVariosNodos(LinkPaginaPrincipal, PathsTitulo, PathsLinks);
 
             //Titulo:
             HtmlNodeCollection nodosTitulo = htmlNodes[0];
@@ -152,7 +157,7 @@ namespace GetNovelsApp.Core.Conexiones.Internet
 
             //Links:
             HtmlNodeCollection nodosLinksCapitulos = htmlNodes[1];
-            List<Uri> LinksDeCapitulos = ObtenLinks(nodosLinksCapitulos, OrdenLinks.Descendiente);
+            List<Uri> LinksDeCapitulos = ObtenLinks(nodosLinksCapitulos, orden);
 
 
             //Ordeanando la información:
@@ -237,13 +242,6 @@ namespace GetNovelsApp.Core.Conexiones.Internet
 
             return new Uri(direccionEnNU);
         }
-
-
-
-        /// <summary>
-        /// Ayuda a definir la manera que se enlistan los links.
-        /// </summary>
-        private enum OrdenLinks { Ascendente, Descendiente }
 
 
         /// <summary>

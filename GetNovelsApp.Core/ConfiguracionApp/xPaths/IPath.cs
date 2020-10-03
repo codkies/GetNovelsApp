@@ -1,25 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using GetNovelsApp.Core.Conexiones.DB;
 
 namespace GetNovelsApp.Core.ConfiguracionApp.xPaths
 {
+
+
+
     public interface IPath
     {
-        Uri Dominio { get; }
+        /// <summary>
+        /// Orden en que se leen los links cuando se lee desde la página web.
+        /// </summary>
+        OrdenLinks OrdenLinks { get; }
+
+        string Dominio { get; }
 
         List<string> xPathsLinks { get; }
-
-        List<string> xPathsSiguienteBoton { get; }
 
         List<string> xPathsTextos { get; }
 
         List<string> xPathsTitulo { get; }
-
-        List<string> xPathsSipnosis { get; }
-        List<string> xPathsImagen { get; }
-        List<string> xPathsTags { get; }
-
-
 
     }
 }

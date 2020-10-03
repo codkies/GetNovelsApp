@@ -9,6 +9,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using GetNovelsApp.Core.Conexiones.Internet;
 using GetNovelsApp.Core.GetNovelsApp;
+using GetNovelsApp.Core.ConfiguracionApp;
 
 namespace GetAppsNovel.ConsoleVersion
 {
@@ -125,7 +126,7 @@ namespace GetAppsNovel.ConsoleVersion
         /// Le pregunta al usuario por campos a llenar referente a la manera en que la app funcionará.
         /// </summary>
         /// <returns></returns>
-        internal ConfiguracionConsoleUI PideConfiguracion()
+        internal IConfig PideConfiguracion()
         {
             string Direccion = string.Empty;
             int BatchSize = 25;
@@ -163,8 +164,8 @@ namespace GetAppsNovel.ConsoleVersion
                 }
             }
 
-            FabricaBasica fb = new FabricaBasica();
-            return new ConfiguracionConsoleUI(this, fb, Direccion, BatchSize, int.Parse(_CapsPorDoc));
+            int CapsPorDoc = int.Parse(_CapsPorDoc);
+            return new ConfiguracionBasica(BatchSize, CapsPorDoc, Direccion);
         }
 
 

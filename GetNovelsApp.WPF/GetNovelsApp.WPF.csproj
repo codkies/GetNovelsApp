@@ -37,6 +37,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HtmlAgilityPack, Version=1.11.24.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.11.24\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite, Version=1.0.113.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
@@ -63,12 +66,12 @@
     </ApplicationDefinition>
     <Compile Include="AppViewModel.cs" />
     <Compile Include="Models\ComunicadorWPF.cs" />
-    <Compile Include="Models\ConfiguracionWPF.cs" />
     <Compile Include="Models\FactoryWPF.cs" />
     <Compile Include="Models\NovelaWPF.cs" />
     <Compile Include="Models\Setter.cs" />
     <Compile Include="Utilidades\DefaultStrings.cs" />
     <Compile Include="Utilidades\EncontradorImagen.cs" />
+    <Compile Include="Utilidades\Randomnator.cs" />
     <Compile Include="Utilidades\RelayCommand.cs" />
     <Compile Include="ViewModels\AddNovelViewModel.cs" />
     <Compile Include="ViewModels\BibliotecaViewModel.cs" />

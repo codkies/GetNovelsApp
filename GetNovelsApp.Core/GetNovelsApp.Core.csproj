@@ -108,6 +108,7 @@
     <Compile Include="Conexiones\BaseDatos\DataBaseAccess.cs" />
     <Compile Include="Conexiones\BaseDatos\InformacionNovelaDB.cs" />
     <Compile Include="Conexiones\Internet\Conector.cs" />
+    <Compile Include="Conexiones\BaseDatos\OrdenLinks.cs" />
     <Compile Include="ConfiguracionApp\ConfiguracionBasica.cs" />
     <Compile Include="ConfiguracionApp\IConfig.cs" />
     <Compile Include="ConfiguracionApp\xPaths\Website.cs" />

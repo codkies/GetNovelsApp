@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using GetNovelsApp.Core.Conexiones.DB;
 
 namespace GetNovelsApp.Core.ConfiguracionApp.xPaths
 {
@@ -8,43 +9,53 @@ namespace GetNovelsApp.Core.ConfiguracionApp.xPaths
     /// </summary>
     public class Website : IPath
     {
-        public Website(Uri dominio, List<string> xpathsLinks, List<string> xpathsSiguienteBoton, List<string> xpathsTextos, List<string> xpathsTitulo, List<string> xpathsSipnosis, List<string> xPathsimagen, List<string> xpathsTags)
+        public Website(string dominio, List<string> xpathsLinks, List<string> xpathsTextos, List<string> xpathsTitulo, OrdenLinks OrdenLinks)
         {
             this.dominio = dominio;
             this.xpathsLinks = xpathsLinks;
-            this.xpathsSiguienteBoton = xpathsSiguienteBoton;
             this.xpathsTextos = xpathsTextos;
             this.xpathsTitulo = xpathsTitulo;
-            this.xpathsSipnosis = xpathsSipnosis;
-            this.xPathsimagen = xPathsimagen;
-            this.xpathsTags = xpathsTags;
+            ordenLinks = OrdenLinks;
         }
 
+        public Website()
+        {
+            xpathsLinks = new List<string>();
+            xpathsTextos = new List<string>();
+            xpathsTitulo = new List<string>();
+        }
 
-        private readonly Uri dominio;        
-        private readonly List<string> xpathsLinks;
-        private readonly List<string> xpathsSiguienteBoton;
-        private readonly List<string> xpathsTextos;
-        private readonly List<string> xpathsTitulo;
-        private readonly List<string> xpathsSipnosis;
-        private readonly List<string> xPathsimagen;
-        private readonly List<string> xpathsTags;
-        
+        public void AgregaLink(string xPathLink)
+        {
+            xpathsLinks.Add(xPathLink);
+        }
 
-        public Uri Dominio => dominio;
+        public void AgregaTexto(string xPathTexto)
+        {
+            xpathsTextos.Add(xPathTexto);
+        }
+
+        public void AgregaTitulo(string xPathTitulo)
+        {
+            xpathsTitulo.Add(xPathTitulo);
+        }
+
+        private string dominio;        
+        private List<string> xpathsLinks;
+        private List<string> xpathsTextos;
+        private List<string> xpathsTitulo;
+        private OrdenLinks ordenLinks;
+
+
+
+        public string Dominio => dominio;
 
         public List<string> xPathsLinks => xpathsLinks;
-
-        public List<string> xPathsSiguienteBoton => xpathsSiguienteBoton;
 
         public List<string> xPathsTextos => xpathsTextos;
 
         public List<string> xPathsTitulo => xpathsTitulo;
 
-        public List<string> xPathsSipnosis => xpathsSipnosis;
-
-        public List<string> xPathsImagen => xPathsimagen;
-
-        public List<string> xPathsTags => xpathsTags;
+        public OrdenLinks OrdenLinks => ordenLinks;
     }
 }

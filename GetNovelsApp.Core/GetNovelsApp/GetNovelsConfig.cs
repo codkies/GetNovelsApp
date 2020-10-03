@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using GetNovelsApp.Core.Conexiones.DB;
 using GetNovelsApp.Core.ConfiguracionApp;
+using GetNovelsApp.Core.ConfiguracionApp.xPaths;
 using GetNovelsApp.Core.GetNovelsApp;
+using Org.BouncyCastle.Asn1;
 
 namespace GetNovelsApp.Core
 {
@@ -9,12 +13,29 @@ namespace GetNovelsApp.Core
     /// </summary>
     public static class GetNovelsConfig
     {
-        public static void EstableceConfig(IConfig configuracion)
+        public static void InicializaConfig()
         {
-            ConfiguracionActual = configuracion;
-            GetNovelsComunicador.EstableceConfig(configuracion.Comunicador);
-            GetNovelsFactory.EstableceConfig(configuracion.Fabrica);
+            ActualizaWebsites();
+            ActualizaConfiguracion();
+            GetNovelsEvents.WebsitesCambiaron += ActualizaWebsites;
+            GetNovelsEvents.ConfiguracionCambio += ActualizaConfiguracion;
         }
+
+        private static void ActualizaConfiguracion()
+        {
+            ConfiguracionActual = new Archivador().ObtenConfiguracion();
+        }
+
+        private static void ActualizaWebsites()
+        {
+            WebsitesSoportados = new Archivador().SacaPerfiles();
+        }
+
+
+        #region Propiedades
+
+
+        //Instancias de interfaces
 
         /// <summary>
         /// Configuracion de la app.
@@ -22,13 +43,49 @@ namespace GetNovelsApp.Core
         private static IConfig ConfiguracionActual;
 
 
-        #region Propiedades
+        static List<IPath> WebsitesSoportados = new List<IPath>();
 
-        /// <summary>
-        /// Tipo de UI que se está usando
-        /// </summary>
-        public static IFabrica Fabrica => ConfiguracionActual.Fabrica;
+        public static List<string> xPathsDeTextos(string dominio)
+        {
+            foreach (IPath websites in WebsitesSoportados)
+            {
+                if (websites.Dominio == dominio) return websites.xPathsTextos;
+            }
+            return null;
+        }
 
+
+        public static List<string> xPathsDeLinks(string dominio)
+        {
+            foreach (IPath websites in WebsitesSoportados)
+            {
+                if (websites.Dominio == dominio) return websites.xPathsLinks;
+            }
+            return null;
+        }
+
+
+        public static List<string> xPathsDeTitulo(string dominio)
+        {
+            foreach (IPath websites in WebsitesSoportados)
+            {
+                if (websites.Dominio == dominio) return websites.xPathsTitulo;
+            }
+            return null;
+        }
+
+        public static OrdenLinks OrdenWebsite(string dominio)
+        {
+            foreach (IPath websites in WebsitesSoportados)
+            {
+                if (websites.Dominio == dominio) return websites.OrdenLinks;
+            }
+            return OrdenLinks.NULL;
+        }
+
+
+
+        //Props para el resto
         /// <summary>
         /// Direccion en el disco duro de la carpeta donde el usuario quiere que se guarden las novelas.
         /// </summary>
@@ -43,37 +100,38 @@ namespace GetNovelsApp.Core
         /// Capitulos por pdf.
         /// </summary>
         public static int CapitulosPorPdf => ConfiguracionActual.CapitulosPorDocumento;
+      
 
 
-        /// <summary>
-        /// Lista de xPaths a revisar.
-        /// </summary>
-        public static List<string> xPathsTextos => ConfiguracionActual.xPathsTextos;
+        #region Cambia esto luego (NU)
 
 
-        /// <summary>
-        /// Lista de xPaths para conseguir los botones next.
-        /// </summary>
-        public static List<string> xPathsSiguienteBoton => ConfiguracionActual.xPathsSiguienteBoton;
-
-        /// <summary>
-        /// Lista de xPaths para conseguir los titulos.
-        /// </summary>
-        public static List<string> xPathsTitulo => ConfiguracionActual.xPathsTitulo;
+        static List<string> sipnosis = new List<string>()
+            {
+                "//div[@id='editdescription']/p"
+            };
 
 
-        /// <summary>
-        /// Lista de xPaths para conseguir los links de los capitulos.
-        /// </summary>
-        public static List<string> xPathsLinks => ConfiguracionActual.xPathsLinks;
+        static List<string> imagen = new List<string>()
+            {
+                "//div[@class='seriesimg']/img"
+            };
 
 
-        public static List<string> xPathsSipnosis => ConfiguracionActual.xPathsSipnosis;
+        static List<string> tags = new List<string>()
+            {
+                "//div[@id='showtags']/a"
+            };
 
-        public static List<string> xPathsImagen => ConfiguracionActual.xPathsImagen;
 
-        public static List<string> xPathsTags => ConfiguracionActual.xPathsTags;
 
+        public static List<string> xPathsSipnosis => sipnosis;
+
+        public static List<string> xPathsImagen => imagen;
+
+        public static List<string> xPathsTags => tags;
+
+        #endregion
 
         #endregion
 

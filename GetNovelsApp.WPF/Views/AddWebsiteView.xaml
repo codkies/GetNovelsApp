@@ -34,11 +34,14 @@
                    VerticalAlignment="Center"
                    TextAlignment="Right"
                    Margin="5"/>
-        <TextBox Text="Ingresa Dominio"
-                 Grid.Row="0" Grid.Column="1"
+        <StackPanel Grid.Row="0" Grid.Column="1">
+            <TextBox Text="Test"
                  VerticalContentAlignment="Center"
                  Height="20"
                  Margin="5"/>
+            <Button Content="Listo"
+                    Width="60"/>
+        </StackPanel>
         <TextBlock Text="Allowed or Not Preview"
                    Grid.Row="0" Grid.Column="2"
                    VerticalAlignment="Center"
@@ -188,6 +191,12 @@
         <Button Content="Agregar Perfil"
                 Grid.Column="1" Grid.Row="10"
                 Height="25"/>
+
+        <Button Content="Invertir orden links"
+                Grid.Column="2" Grid.Row="10"
+                HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                Margin="10"
+                Height="20" Width="120"/>
 
     </Grid>
 </Window>

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using GetNovelsApp.Core.Conexiones.DB;
 using GetNovelsApp.Core.Conexiones.Internet;
+using GetNovelsApp.Core.ConfiguracionApp;
+using GetNovelsApp.Core.ConfiguracionApp.xPaths;
 using GetNovelsApp.Core.Empaquetadores;
 using GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores;
 using GetNovelsApp.Core.GetNovelsApp;
@@ -14,13 +16,18 @@ namespace GetNovelsApp.Core
     /// </summary>
     public static class GetNovelsFactory
     {
-        public static void EstableceConfig(IFabrica fabrica)
+        private static IFabrica Fabrica;
+
+        public static void InicializaFabrica(IFabrica fabrica)
         {
             Fabrica = fabrica;
         }
 
-        private static IFabrica Fabrica;
 
+        public static IPath FabricaWebsite(string dominio, List<string> xpathsLinks, List<string> xpathsTextos, List<string> xpathsTitulo, OrdenLinks OrdenLinks)
+        {
+            return Fabrica.FabricaWebsite(dominio, xpathsLinks, xpathsTextos, xpathsTitulo, OrdenLinks);
+        }
 
 
         /// <summary>
@@ -28,21 +35,16 @@ namespace GetNovelsApp.Core
         /// </summary>
         /// <param name="ListaDeLinks"></param>
         /// <returns></returns>
-        public static List<Capitulo> CreaCapitulos(List<Uri> ListaDeLinks)
+        public static List<Capitulo> FabricaCapitulos(List<Uri> ListaDeLinks)
         {
-            List<Capitulo> Capitulos = new List<Capitulo>();
-            foreach (Uri link in ListaDeLinks)
-            {
-                CapituloWebModel _ = ManipuladorDeLinks.EncuentraInformacionCapitulo(link);
-                Capitulo capitulo = new Capitulo(_);
-                Capitulos.Add(capitulo);
-            }
-            return Capitulos;
+            return Fabrica.FabricaCapitulos(ListaDeLinks);
         }
 
 
-
-        #region IFabrica metodos
+        public static IConfig FabricaConfiguracion(string Path, int TamañoBatch, int CapsPorDoc)
+        {
+            return Fabrica.FabricaConfiguracion(Path, TamañoBatch, CapsPorDoc);
+        }
 
 
         /// <summary>
@@ -55,16 +57,7 @@ namespace GetNovelsApp.Core
             return Fabrica.FabricaConstructor(novela, tipo, capsPorPDF, direccion, titulo, notCapImpreso, notDocCreado);
         }
 
-        public static IConstructor AsignaConstructor(IConstructor IConfig)
-        {
-            return Fabrica.FabricaConstructor(IConfig);
-        }
 
-
-        public static INovela ObtenNovela(INovela INovela)
-        {
-            return Fabrica.FabricaNovela(INovela);
-        }
 
         public static INovela ObtenNovela(IEnumerable<Capitulo> capitulos, InformacionNovelaDB info)
         {
@@ -72,7 +65,6 @@ namespace GetNovelsApp.Core
             return Fabrica.FabricaNovela(_, info);
         } 
 
-        #endregion
     }
 
 }

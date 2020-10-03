@@ -1,66 +1,42 @@
-﻿using System;
-using System.Diagnostics;
-using GetNovelsApp.Core.Reportaje;
+﻿using GetNovelsApp.Core.Reportaje;
 
 namespace GetNovelsApp.WPF.Models
 {
-    public class ComunicadorWPF : IComunicador
+    internal class ComunicadorWPF : IComunicador
     {
-        public ComunicadorWPF()
-        {
-
-        }
-
-
-        IReportero reporteroActual;
-
-        private void EscribeReportero(IReportero reportero)
-        {
-            if (reporteroActual != reportero)
-            {
-                Console.WriteLine($"\n-----------> {reportero.Nombre} says: <-----------\n");
-                reporteroActual = reportero;
-            }
-        }
         public string PideInput(string enunciado, IReportero reportero)
         {
-            throw new NotImplementedException();
+            throw new System.NotImplementedException();
         }
 
         public void Reporta(string enunciado, IReportero reportero)
         {
-            EscribeReportero(reportero);
-            Debug.WriteLine("Reporte: " +enunciado);
+            throw new System.NotImplementedException();
         }
 
         public void ReportaCambioEstado(string enunciado, IReportero reportero)
         {
-            EscribeReportero(reportero);
-            Debug.WriteLine("Cambio estado: " + enunciado);
+            throw new System.NotImplementedException();
         }
 
         public void ReportaError(string enunciado, IReportero reportero)
         {
-            EscribeReportero(reportero);
-            Debug.WriteLine("Error: " + enunciado);
+            throw new System.NotImplementedException();
         }
 
         public void ReportaErrorMayor(string enunciado, IReportero reportero)
         {
-            EscribeReportero(reportero);
-            Debug.WriteLine("Big Error: " + enunciado);
+            throw new System.NotImplementedException();
         }
 
         public void ReportaEspecial(string enunciado, IReportero reportero)
         {
-            EscribeReportero(reportero);
-            Debug.WriteLine("Especial: " + enunciado);
+            throw new System.NotImplementedException();
         }
 
         public void ReportaExito(string enunciado, IReportero reportero)
         {
-            EscribeReportero(reportero);
-            Debug.WriteLine("Exito: " + enunciado);
+            throw new System.NotImplementedException();
         }
     }
 }

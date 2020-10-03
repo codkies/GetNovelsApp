@@ -16,6 +16,7 @@ namespace GetNovelsApp.Core
         public static void DestruyeReferencias()
         {
             ImprimeNovela = null;
+            ConfiguracionCambio = null;
         }
 
 
@@ -30,6 +31,30 @@ namespace GetNovelsApp.Core
         {
             ImprimeNovela?.Invoke(novela, tipo);
         }
+
+
+        public static event Action ConfiguracionCambio;
+
+
+        /// <summary>
+        /// Notifica a la app de que la configuración (en DB) ha cambiado.
+        /// </summary>
+        public static void Invoke_ConfiguracionCambio()
+        {
+            ConfiguracionCambio?.Invoke();
+        }
+
+        public static event Action WebsitesCambiaron;
+
+
+        /// <summary>
+        /// Notifica a la app de que la configuración (en DB) ha cambiado.
+        /// </summary>
+        public static void Invoke_WebsitesCambiaron()
+        {
+            WebsitesCambiaron?.Invoke();
+        }
+
 
     }
 }

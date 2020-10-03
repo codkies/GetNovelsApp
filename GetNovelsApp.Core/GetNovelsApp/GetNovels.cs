@@ -12,6 +12,7 @@ using GetNovelsApp.Core.Empaquetadores;
 using GetNovelsApp.Core.Conexiones.DB;
 using System.Data;
 using System.Net.Http;
+using GetNovelsApp.Core.GetNovelsApp;
 
 
 /* Ideas:       
@@ -28,9 +29,13 @@ namespace GetNovelsApp.Core
     {
         #region Constructores & Setup
 
-        public GetNovels(IConfig ConfiguracionApp)
+        public GetNovels(IFabrica Fabrica, IComunicador comunicador)
         {
-            GetNovelsConfig.EstableceConfig(ConfiguracionApp);
+            GetNovelsConfig.InicializaConfig();
+            GetNovelsFactory.InicializaFabrica(Fabrica);
+            GetNovelsComunicador.InicializaComunicador(comunicador);
+
+
             Archivador = new Archivador();
             MyScraper = new Scraper();
             MyEmpaquetador = new EmpaquetadorNovelas(Archivador);

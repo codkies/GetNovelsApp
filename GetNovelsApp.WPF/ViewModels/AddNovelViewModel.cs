@@ -114,17 +114,6 @@ namespace GetNovelsApp.WPF.ViewModels
             PathImagenNovela = EncontradorImagen.DescargaImagen(url);
         }
 
-        private string DescargaImagen(string url)
-        {
-            string filePath = System.IO.Path.GetFileName(url);
-
-            System.Net.WebClient cln = new System.Net.WebClient();
-            filePath = $@"C:\NovelApp\{filePath}";
-
-            cln.DownloadFile(url, filePath);
-            return filePath;
-        }
-
 
     }
 }

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 
 using GetNovelsApp.Core;
 using GetNovelsApp.Core.Conexiones.DB;
+using GetNovelsApp.Core.ConfiguracionApp;
 using GetNovelsApp.Core.Empaquetador;
 using GetNovelsApp.Core.Empaquetadores;
 using GetNovelsApp.Core.GetNovelsApp;
@@ -48,7 +50,7 @@ namespace GetAppsNovel.ConsoleVersion
 
         #region Normal run
 
-        static ConfiguracionConsoleUI configuracion;
+        static IConfig configuracion;
         static GetNovels getNovels;
         static ConsoleUI ConsoleUI = new ConsoleUI();
 
@@ -77,9 +79,11 @@ namespace GetAppsNovel.ConsoleVersion
             string message = "Last before WPF\n";
             ConsoleUI.ReportaEspecial($"GetNovelsApp {ver}:\n{message}", ConsoleUI);
 
-            configuracion = ConsoleUI.PideConfiguracion();
+            //configuracion = ConsoleUI.PideConfiguracion();
 
-            getNovels = new GetNovels(configuracion);
+            IFabrica fb = new FabricaBasica();
+            
+            getNovels = new GetNovels(fb, ConsoleUI);
         }
 
 

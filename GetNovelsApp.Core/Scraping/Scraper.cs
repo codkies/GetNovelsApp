@@ -52,14 +52,7 @@ namespace GetNovelsApp.Core
         public Capitulo CompletaCapitulo(Capitulo capitulo)
         {
             Uri direccion = capitulo.Link;
-
-            List<string> textosRaw = ObtenTextoRaw(direccion);
-            if(textosRaw == null)
-            {
-                Console.WriteLine(capitulo.Link + "Nulo");
-                Console.ReadLine();
-            }
-            string Texto = OrdenaTextoRaw(textosRaw);
+            string Texto = ObtenCapituloTexto(direccion);
 
             capitulo.UpdateTexto(Texto);
 
@@ -69,11 +62,23 @@ namespace GetNovelsApp.Core
             return capitulo;
         }
 
+        public string ObtenCapituloTexto(Uri direccion)
+        {
+            List<string> textosRaw = ObtenTextoRaw(direccion);
+            if (textosRaw == null)
+            {
+                Console.WriteLine(direccion + "Nulo");
+                Console.ReadLine();
+            }
+            string Texto = OrdenaTextoRaw(textosRaw);
+            return Texto;
+        }
+
 
         #region Privados
         private List<string> ObtenTextoRaw(Uri direccion)
         {
-            HtmlNodeCollection nodos = conector.IntentaNodos(direccion, GetNovelsConfig.xPathsTextos);
+            HtmlNodeCollection nodos = conector.IntentaNodos(direccion, GetNovelsConfig.xPathsDeTextos(direccion.IdnHost));
 
             List<string> CapituloDesordenado = ObtenInnerText(nodos);
 

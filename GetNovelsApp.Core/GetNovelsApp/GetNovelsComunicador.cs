@@ -10,7 +10,7 @@ namespace GetNovelsApp.Core
     /// </summary>
     public static class GetNovelsComunicador
     {
-        public static void EstableceConfig(IComunicador mensajero)
+        public static void InicializaComunicador(IComunicador mensajero)
         {
             Mensajero = mensajero;
         }

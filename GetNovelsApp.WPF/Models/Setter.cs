@@ -20,29 +20,25 @@ namespace GetNovelsApp.WPF.Models
         /// Referencia al GetNovels que se está usando.
         /// </summary>
         private static GetNovels app;
+        public static IPath wb;
 
         public static GetNovels ObtenGetNovel()
         {
-            IPath wb = GetWebsite();
+            wb = GetWebsite();
 
             IComunicador com = new ComunicadorWPF();
 
             IFabrica fb = new FactoryWPF(); 
-            
-            string Folder = "C:\\Users\\Juan\\Desktop\\Novelas";
-            IConfig IConfig = new ConfiguracionWPF(wb, fb, com, Folder, 25, 0);
 
-            app = new GetNovels(IConfig);
+            app = new GetNovels(fb, com);
             return app;
         }
 
 
-
-
-
         private static Website GetWebsite()
         {
-            Uri dominio = new Uri("https://wuxiaworld.site");
+            string dominio = "wuxiaworld.site";
+
             List<string> textos = new List<string>()
             {
                 "//div[@class = 'cha-words']/p",
@@ -55,11 +51,6 @@ namespace GetNovelsApp.WPF.Models
                 "//*[@class = 'desc']/p"
             };
 
-            List<string> nextBtn = new List<string>()
-            {
-                "//div[@class='nav-next']/a", //Wuxiaworldsite
-                "//li/a[@class='next next-link']", //readlightnovels
-            };
 
             List<string> links = new List<string>()
             {
@@ -67,28 +58,15 @@ namespace GetNovelsApp.WPF.Models
                 "//li[@class= 'wp-manga-chapter  ']/a"
             };
 
+
             List<string> titulo = new List<string>()
             {
                 "//div[@class='post-title']/*",
                 "//h3"
             };
+            
 
-            List<string> sipnosis = new List<string>()
-            {
-                "//div[@id='editdescription']/p"
-            };
-
-            List<string> imagen = new List<string>()
-            {
-                "//div[@class='seriesimg']/img"
-            };
-
-            List<string> tags = new List<string>()
-            {
-                "//div[@id='showtags']/a"
-            };
-
-            return new Website(dominio, links, nextBtn, textos, titulo, sipnosis, imagen, tags);
+            return new Website(dominio, links, textos, titulo, Core.Conexiones.DB.OrdenLinks.Descendiente);
         }
 
     }
