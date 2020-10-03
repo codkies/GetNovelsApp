@@ -14,7 +14,7 @@
         <vm:AddWebsiteViewModel/>
     </Window.DataContext>
 
-    <Grid Margin="10">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
@@ -171,6 +171,13 @@
                     <Button Content="Obtener"/>
                 </StackPanel>
             </StackPanel>
+
+            <Button Content="Reset"
+                    Grid.Column="0" Grid.ColumnSpan="3"
+                    Grid.Row="5"
+                    Width="120"
+                    Height="25"/>
+
         </Grid>
 
         <!--Derecha-->

@@ -92,6 +92,11 @@ namespace GetNovelsApp.WPF.ViewModels
             xPathsTitulo.Add(xPathNuevo);
         }
 
+        public void Reset()
+        {
+            throw new NotImplementedException();
+        }
+
 
         #endregion
 
@@ -142,6 +147,7 @@ namespace GetNovelsApp.WPF.ViewModels
 
 
         #endregion
+
 
         #region Final del proceso
 
