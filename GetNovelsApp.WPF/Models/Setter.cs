@@ -16,6 +16,10 @@ namespace GetNovelsApp.WPF.Models
     /// </summary>
     public static class Setter
     {
+        /// <summary>
+        /// Referencia al GetNovels que se está usando.
+        /// </summary>
+        private static GetNovels app;
 
         public static GetNovels ObtenGetNovel()
         {
@@ -28,8 +32,13 @@ namespace GetNovelsApp.WPF.Models
             string Folder = "C:\\Users\\Juan\\Desktop\\Novelas";
             IConfig IConfig = new ConfiguracionWPF(wb, fb, com, Folder, 25, 0);
 
-            return new GetNovels(IConfig);
+            app = new GetNovels(IConfig);
+            return app;
         }
+
+
+
+
 
         private static Website GetWebsite()
         {

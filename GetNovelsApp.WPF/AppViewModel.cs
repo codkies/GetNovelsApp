@@ -42,6 +42,7 @@ namespace GetNovelsApp.WPF
             CurrentView = ConfiguracionViewModel;
         }
 
+
         private async Task InicializaViewModelsAsync()
         {
             Archivador ar = new Archivador();
