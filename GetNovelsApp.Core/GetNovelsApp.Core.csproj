@@ -105,6 +105,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Conexiones\BaseDatos\Archivador.cs" />
+    <Compile Include="Conexiones\BaseDatos\ArchivadorConfiguracion.cs" />
+    <Compile Include="Conexiones\BaseDatos\ArchivadorViejo.cs" />
     <Compile Include="Conexiones\BaseDatos\DataBaseAccess.cs" />
     <Compile Include="Conexiones\BaseDatos\InformacionNovelaDB.cs" />
     <Compile Include="Conexiones\Internet\Conector.cs" />
