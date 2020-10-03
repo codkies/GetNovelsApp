@@ -28,7 +28,7 @@ namespace GetNovelsApp.Core
 
         private static void ActualizaWebsites()
         {
-            WebsitesSoportados = new Archivador().SacaPerfiles();
+            WebsitesSoportados = new Archivador().ObtenPerfiles();
         }
 
 

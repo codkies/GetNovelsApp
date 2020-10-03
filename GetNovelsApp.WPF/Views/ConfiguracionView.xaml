@@ -33,7 +33,8 @@
                    VerticalAlignment="Center"
                    TextAlignment="Right"
                    Margin="10 0"/>
-        <TextBox Text="C:\Users\Juan\Desktop\Novels"
+            <TextBox Text="{Binding Carpeta, 
+                FallbackValue=C:\\Users\\Juan\\Desktop\\Novels}"
                  Background="Transparent"
                  Grid.Row="0"
                  Grid.Column="1"
@@ -49,7 +50,7 @@
                    VerticalAlignment="Center"
                    TextAlignment="Right"
                    Margin="10 0"/>
-        <TextBox Text="500"
+            <TextBox Text="{Binding CapitulosPorDocumento, Mode=TwoWay}"
                  Background="Transparent"
                  Grid.Row="1"
                  Grid.Column="1"
@@ -66,6 +67,7 @@
                    TextAlignment="Right"
                    Margin="10 0"/>
         <ComboBox Background="Transparent"
+                  SelectedItem="0"
                   Grid.Row="2"
                   Grid.Column="1"
                   Height="20"
@@ -87,21 +89,51 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 
-                <!--Viendo los que ya soporta-->
+                <!--Websites soportados-->
                 <ComboBox Background="Transparent"
+                          ItemsSource="{Binding WebsitesSoportados}"
                           Grid.Column="0"
                           Height="20"
                           VerticalContentAlignment="Center"
                           Margin="10 0"/>
                 <!--Agrega website-->
-                <Button DockPanel.Dock="Right"
-                        Grid.Column="1"
+                <Button Grid.Column="1"
                         Content="Agrega Nuevo"
-                        Height="30"
-                        Width="100"/>
+                        Height="20"
+                        Width="90"/>
             </Grid>
 
-
+        <!--Tamaño de batch-->
+            <TextBlock Text="Tamaño de Batch"
+                   Grid.Row="4"
+                   Grid.Column="0"
+                   VerticalAlignment="Center"
+                   TextAlignment="Right"
+                   Margin="10 0"/>
+            <TextBox Text="{Binding TamañoBatchDescarga, Mode=TwoWay}"
+                 Background="Transparent"
+                 Grid.Row="4"
+                 Grid.Column="1"
+                 Height="20"
+                 TextAlignment="Left"
+                 VerticalContentAlignment="Center"
+                 Margin="10 0"/>
+        
+        <!--Boton de salvado-->
+            <Grid Grid.Row="5"
+                       Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <!--Agrega website-->
+                <Button Grid.Column="1"
+                        Content="Salvar cambios"
+                        Command="{Binding Command_SalvaCambios}"
+                        Height="20"
+                        Width="90"/>
+            </Grid>
 
         </Grid>
         

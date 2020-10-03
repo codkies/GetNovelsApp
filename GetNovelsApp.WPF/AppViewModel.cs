@@ -17,9 +17,9 @@ namespace GetNovelsApp.WPF
         public AppViewModel()
         {
             InicializaApp();
-            InicializaViewModelsAsync(); //Call last
-            AddWebsiteView addWebsiteView = new AddWebsiteView();
-            addWebsiteView.Show();
+            InicializaViewModels(); //Call last
+            //AddWebsiteView addWebsiteView = new AddWebsiteView();
+            //addWebsiteView.Show();
         }
 
         /// <summary>
@@ -36,9 +36,9 @@ namespace GetNovelsApp.WPF
         /// </summary>
         private void InicializaViewModels()
         {
-            //ConfiguracionViewModel = new ConfiguracionViewModel();
+            ConfiguracionViewModel = new ConfiguracionViewModel();
 
-            //CurrentView = ConfiguracionViewModel;
+            CurrentView = ConfiguracionViewModel;
         }
 
 
@@ -54,9 +54,9 @@ namespace GetNovelsApp.WPF
             }
 
             BibliotecaViewModel = new BibliotecaViewModel(Novelas);
-            //ConfiguracionViewModel = new ConfiguracionViewModel();
+            ConfiguracionViewModel = new ConfiguracionViewModel();
 
-            //CurrentView = ConfiguracionViewModel;
+            CurrentView = ConfiguracionViewModel;
         }
 
         #endregion

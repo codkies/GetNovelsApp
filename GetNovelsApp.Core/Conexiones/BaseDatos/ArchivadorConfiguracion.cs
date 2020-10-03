@@ -105,7 +105,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
         }
 
 
-        public List<IPath> SacaPerfiles()
+        public List<IPath> ObtenPerfiles()
         {
             using IDbConnection cnn1 = DataBaseAccess.GetConnection();
 
