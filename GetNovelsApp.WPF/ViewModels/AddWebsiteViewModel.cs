@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.ServiceModel.Configuration;
 using System.Text;
 using System.Threading.Tasks;
 using GetNovelsApp.Core;
@@ -16,16 +18,23 @@ namespace GetNovelsApp.WPF.ViewModels
         private InformacionNovelaOnline UltimaInformacionObtenida;
         private OrdenLinks OrdenLinks = OrdenLinks.Descendiente;
         private Archivador ar = new Archivador();
+
         public AddWebsiteViewModel()
         {
-
+            Command_IngresarDominio = new RelayCommand<string>(IngresarDominio, Puede_IngresarDominio);
+            Command_IngresaPathTexto = new RelayCommand<string>(IngresarPathTexto, Puede_IngresarPathTexto);
+            Command_IngresaPathLinks = new RelayCommand<string>(IngresaPathLinks, Puede_IngresaPathLinks);
+            Command_IngresaPathTitulo = new RelayCommand<string>(IngresaPathTitulo, Puede_IngresaPathTitulo);
+            Command_Reset = new RelayCommand(Reset, Puedo_Reset);
+            Command_PruebaWebsite = new RelayCommand(PruebaWebsite, Puede_PruebaWebsite);
+            Command_InvierteOrdenLinks = new RelayCommand(InvierteOrdenLinks);
         }
 
         #region Props
 
-        private List<string> _xPathsTitulo;
-        private List<string> _xPathsTextos;
-        private List<string> _xPathsLinks;
+        private List<string> _xPathsTitulo = new List<string>();
+        private List<string> _xPathsTextos = new List<string>();
+        private List<string> _xPathsLinks = new List<string>();
         private string _dominio;
         private string _linkPrueba;        
 
@@ -36,6 +45,7 @@ namespace GetNovelsApp.WPF.ViewModels
         public string LinkPrueba { get => _linkPrueba; set => OnPropertyChanged(ref _linkPrueba, value); }
 
         #endregion
+
 
         #region Props de vista previa
 
@@ -57,44 +67,89 @@ namespace GetNovelsApp.WPF.ViewModels
         public string VistaPrevia_TextoRandom { get => vistaPrevia_TextoRandom; set => OnPropertyChanged(ref vistaPrevia_TextoRandom, value); }
 
 
-
         #endregion
 
 
         #region Ingresando info basica
 
 
+        public RelayCommand<string> Command_IngresarDominio { get; set; }
+
+        public void IngresarDominio(string dominio)
+        {
+            /*
+             * Desbloquea los otros campos
+             */
+            Debug.WriteLine(dominio);
+        }
+
         /// <summary>
         /// Llamado cuando el usuario presiona "Listo"
         /// </summary>
         /// <returns></returns>
-        public bool DominioAceptado()
+        public bool Puede_IngresarDominio(string Dominio)
         {
-            //Limpiar texto de textbox
-            Archivador ar = new Archivador();
-            return ar.PerfilExiste(Dominio);
+            //TO DO: Limpiar texto de textbox
+            return ar.PerfilExiste(Dominio) == false;
             //If true, desbloquea los siguienes inputs.
-
         }
+
+
+
+        public RelayCommand<string> Command_IngresaPathTexto{ get; set; }
+
+
+        public void IngresarPathTexto(string xPathNuevo)
+        {
+            xPathsTextos.Add(xPathNuevo);
+        }
+
+        public bool Puede_IngresarPathTexto(string xPathNuevo)
+        {
+            return xPathsTextos.Contains(xPathNuevo) == false;
+        }
+
+
+
+        public RelayCommand<string> Command_IngresaPathLinks{ get; set; }
 
         public void IngresaPathLinks(string xPathNuevo)
         {
             xPathsLinks.Add(xPathNuevo);
         }
 
-        public void IngresaPathTexto(string xPathNuevo)
+        public bool Puede_IngresaPathLinks(string xPathNuevo)
         {
-            xPathsTextos.Add(xPathNuevo);
+            return xPathsLinks.Contains(xPathNuevo) == false;
         }
+
+
+        public RelayCommand<string> Command_IngresaPathTitulo { get; set; }
 
         public void IngresaPathTitulo(string xPathNuevo)
         {
             xPathsTitulo.Add(xPathNuevo);
         }
 
+        public bool Puede_IngresaPathTitulo(string xPathNuevo)
+        {
+            return xPathsTitulo.Contains(xPathNuevo) == false;
+        }
+
+
+
+        public RelayCommand Command_Reset { get; set; }
+
         public void Reset()
         {
-            throw new NotImplementedException();
+            xPathsLinks = new List<string>();
+            xPathsTextos = new List<string>();
+            xPathsTitulo = new List<string>();
+        }
+
+        public bool Puedo_Reset()
+        {
+            return xPathsLinks.Any() | xPathsTextos.Any() | xPathsTitulo.Any();
         }
 
 
@@ -103,38 +158,54 @@ namespace GetNovelsApp.WPF.ViewModels
 
         #region Viendo vista previa
 
-        public async Task PruebaWebsite()
+
+
+        public RelayCommand Command_PruebaWebsite { get; set; }
+
+        public async void PruebaWebsite()
         {
-            InformacionNovelaOnline info = await Task.Run(() => ManipuladorDeLinks.EncuentraInformacionNovela(new Uri(LinkPrueba), OrdenLinks, xPathsTitulo, xPathsLinks));
+            Debug.WriteLine("Probando website");
+            //InformacionNovelaOnline info = await Task.Run(() => ManipuladorDeLinks.EncuentraInformacionNovela(new Uri(LinkPrueba), OrdenLinks, xPathsTitulo, xPathsLinks));
+            InformacionNovelaOnline info = await Task.Run(() => ManipuladorDeLinks.EncuentraInformacionNovela(new Uri(LinkPrueba)));
+            Debug.WriteLine("Website encontrado");
 
             ActualizaVistasPrevias(info);
         }
 
-        private void ActualizaVistasPrevias(InformacionNovelaOnline info)
+        public bool Puede_PruebaWebsite()
         {
-            UltimaInformacionObtenida = info;
-
-            VistaPrevia_Titulo = info.Titulo;
-
-            VistaPrevia_PrimerLink = info.LinksDeCapitulos.First().ToString();
-            VistaPrevia_UltimoLink = info.LinksDeCapitulos.Last().ToString();
+            return LinkPrueba != null & xPathsTitulo.Any() & xPathsLinks.Any();
         }
+
+
+        public RelayCommand Command_InvierteOrdenLinks { get; private set; }
 
         public void InvierteOrdenLinks()
         {
             string link1 = VistaPrevia_PrimerLink;
             string link2 = VistaPrevia_UltimoLink;
 
+            
             VistaPrevia_PrimerLink = link2;
             VistaPrevia_UltimoLink = link1;
-            InvierteOrden();
-        }
 
-        private void InvierteOrden()
-        {
             if ((int)OrdenLinks == 1) OrdenLinks = (OrdenLinks)2;
             else if ((int)OrdenLinks == 2) OrdenLinks = (OrdenLinks)1;
         }
+
+
+
+        private void ActualizaVistasPrevias(InformacionNovelaOnline info)
+        {
+            UltimaInformacionObtenida = info;
+
+            VistaPrevia_Titulo = info.Titulo;
+            VistaPrevia_CantidadLinks = info.LinksDeCapitulos.Count.ToString();
+            VistaPrevia_PrimerLink = info.LinksDeCapitulos.First().ToString();
+            VistaPrevia_UltimoLink = info.LinksDeCapitulos.Last().ToString();
+        }
+
+        
 
         public void VerTexto()
         {

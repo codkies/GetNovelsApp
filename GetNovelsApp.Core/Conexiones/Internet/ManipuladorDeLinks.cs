@@ -284,10 +284,14 @@ namespace GetNovelsApp.Core.Conexiones.Internet
         private static string ObtenInnerText(HtmlNodeCollection nodosTitulo)
         {
             //Tomando información:
-            foreach (HtmlNode node in nodosTitulo.First().SelectNodes("span"))
+            if(nodosTitulo.First().SelectNodes("span") != null)
             {
-                node.Remove();
+                foreach (HtmlNode node in nodosTitulo.First().SelectNodes("span"))
+                {
+                    node.Remove();
+                }
             }
+            
             string Titulo = HttpUtility.HtmlDecode(nodosTitulo.FirstOrDefault().InnerText);
 
             Titulo = Titulo.Replace("\n", "").Replace("\t", "").Trim();

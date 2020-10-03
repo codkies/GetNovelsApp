@@ -54,19 +54,24 @@
                 <StackPanel Orientation="Horizontal">
 
                     <TextBox Text="wuxiaworld.site"
+                             Name="Dominio"
                              Width="120"
                              Margin="10 0"/>
-                    <Button Content="Ingresar"/>
+                    <Button Content="Ingresar"
+                            Command="{Binding Command_IngresarDominio}"
+                            CommandParameter="{Binding ElementName=Dominio, Path=Text}"/>
                 </StackPanel>
 
             </StackPanel>
             
             
-            <TextBlock Text="Allowed or Not Preview"
-                   Grid.Row="0" Grid.Column="2"
-                   VerticalAlignment="Center"
-                   TextAlignment="Center"
-                   Margin="5"/>
+            <TextBlock Text="No te dejará escribir un dominio que ya existe."
+                       Grid.Row="0" Grid.Column="2"
+                       VerticalAlignment="Center"
+                       TextAlignment="Center"
+                       FontSize="10"
+                       TextWrapping="Wrap"
+                       Margin="5"/>
             
 
             <!--row 1, xPaths de texto-->
@@ -83,18 +88,22 @@
                 <!--Escribe-->
                 <StackPanel Orientation="Horizontal">
 
-                    <TextBox Text="xPath"
+                    <TextBox Text="xPath texto"
+                             Name="xPathTexto"
                              Width="120"
                              Margin="10 0"/>
-                    <Button Content="Ingresar"/>
+                    <Button Content="Ingresar"
+                            Command="{Binding Command_IngresaPathTexto}"
+                            CommandParameter="{Binding ElementName=xPathTexto, Path=Text}"/>
                 </StackPanel>
              </StackPanel>
 
             <!--Vista previa de xPath Textos-->
             <ComboBox Grid.Row="1"
                       Grid.Column="2"
+                      ItemsSource="{Binding xPathsTextos}"                      
                       Height="20"
-                      Margin="0 15 0 0"/>
+                      Margin="0 15 10 0"/>
 
             <!--row 2, xPaths de Titulo-->
             <StackPanel Grid.Column="0" Grid.ColumnSpan="2"
@@ -110,18 +119,22 @@
                 <!--Escribe-->
                 <StackPanel Orientation="Horizontal">
 
-                    <TextBox Text="xPath"
+                    <TextBox Text="xPath de titulos"
+                             Name="xPathTitulo"
                              Width="120"
                              Margin="10 0"/>
-                    <Button Content="Ingresar"/>
+                    <Button Content="Ingresar"
+                            Command="{Binding Command_IngresaPathTitulo}"
+                            CommandParameter="{Binding ElementName=xPathTitulo, Path=Text}"/>
                 </StackPanel>
             </StackPanel>
             
             <!--Vista previa de xPath Titulos-->
             <ComboBox Grid.Row="2"
                       Grid.Column="2"
+                      ItemsSource="{Binding xPathsTitulo}"
                       Height="20"
-                      Margin="0 15 0 0"/>
+                       Margin="0 15 10 0"/>
 
 
             <!--row 3, xPaths de Links-->
@@ -138,18 +151,22 @@
                 <!--Escribe-->
                 <StackPanel Orientation="Horizontal">
 
-                    <TextBox Text="xPath"
+                    <TextBox Text="xPath de links"
+                             Name="xPathLinks"
                              Width="120"
                              Margin="10 0"/>
-                    <Button Content="Ingresar"/>
+                    <Button Content="Ingresar"
+                            Command="{Binding Command_IngresaPathLinks}"
+                            CommandParameter="{Binding ElementName=xPathLinks, Path=Text}"/>
                 </StackPanel>
             </StackPanel>
 
             <!--Vista previa de xPath Links-->
             <ComboBox Grid.Row="3"
                       Grid.Column="2"
+                      ItemsSource="{Binding xPathsLinks}"
                       Height="20"
-                      Margin="0 15 0 0"/>
+                       Margin="0 15 10 0"/>
 
             <!--row 4, Prueba de links-->
             <StackPanel Grid.Column="0" Grid.ColumnSpan="3"
@@ -163,16 +180,18 @@
                            HorizontalAlignment="Center"/>
 
                 <!--Escribe-->
-                <StackPanel Orientation="Horizontal">
-
-                    <TextBox Text="xPath"
-                             Width="200"
+                <TextBox Text="{Binding LinkPrueba, Mode=TwoWay}"
+                             Width="300"
+                             FontSize="10"
+                            VerticalContentAlignment="Center"
                              Margin="10 0"/>
-                    <Button Content="Obtener"/>
-                </StackPanel>
-            </StackPanel>
+                    <Button Content="Prueba"
+                            Command="{Binding Command_PruebaWebsite}"
+                            Width="60" Margin="5"/>
+            </StackPanel> 
 
             <Button Content="Reset"
+                    Command="{Binding Command_Reset}"
                     Grid.Column="0" Grid.ColumnSpan="3"
                     Grid.Row="5"
                     Width="120"
@@ -202,17 +221,23 @@
                    Grid.Row="0" Grid.Column="0"
                    TextAlignment="Right" VerticalAlignment="Center"
                    Margin="5"/>
-            <TextBlock Text="Lord of the flies" FontStyle="Italic"
-                   Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
-                   TextAlignment="Center" VerticalAlignment="Center"
-                   Margin="5"/>
+            <TextBlock Text="{Binding VistaPrevia_Titulo, 
+                        FallbackValue=N/A, 
+                        TargetNullValue=N/A}" 
+                       FontStyle="Italic"
+                       Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
+                       TextAlignment="Center" VerticalAlignment="Center"
+                       Margin="5"/>
 
             <!--row 6, revisando el resultado de la prueba. Cantida de links-->
             <TextBlock Text="Cantidad de links:"
                    Grid.Row="1" Grid.Column="0"
                    TextAlignment="Right" VerticalAlignment="Center"
                    Margin="5"/>
-            <TextBlock Text="1400 Links." FontStyle="Italic"
+            <TextBlock Text="{Binding VistaPrevia_CantidadLinks, 
+                        FallbackValue=N/A, 
+                        TargetNullValue=N/A}" 
+                       FontStyle="Italic"
                    Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
                    TextAlignment="Center" VerticalAlignment="Center"
                    Margin="5"/>
@@ -222,7 +247,9 @@
                    Grid.Row="2" Grid.Column="0"
                    TextAlignment="Right" VerticalAlignment="Center"
                    Margin="5"/>
-            <TextBlock Text="https://wuxiaworld.site/novel/otherworldly-evil-monarch/chapter-1" 
+            <TextBlock Text="{Binding VistaPrevia_PrimerLink, 
+                        FallbackValue=N/A, 
+                        TargetNullValue=N/A}"  
                    FontStyle="Italic" FontSize="11" TextWrapping="Wrap"
                    Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
                    TextAlignment="Center" VerticalAlignment="Center"
@@ -233,7 +260,9 @@
                    Grid.Row="3" Grid.Column="0"
                    TextAlignment="Right" VerticalAlignment="Center"
                    Margin="5"/>
-            <TextBlock Text="https://wuxiaworld.site/novel/otherworldly-evil-monarch/chapter-700" 
+            <TextBlock Text="{Binding VistaPrevia_UltimoLink, 
+                        FallbackValue=N/A, 
+                        TargetNullValue=N/A}" 
                    FontStyle="Italic" FontSize="11" TextWrapping="Wrap"
                    Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"
                    TextAlignment="Center" VerticalAlignment="Center"
@@ -260,6 +289,7 @@
                 Height="25" Width="150"/>
 
             <Button Content="Invertir orden links"
+                    Command="{Binding Command_InvierteOrdenLinks}"
                 Grid.Column="2" Grid.Row="5"
                 HorizontalAlignment="Right" VerticalAlignment="Bottom"
                 Margin="10"
