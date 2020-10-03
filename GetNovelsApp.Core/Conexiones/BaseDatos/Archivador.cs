@@ -160,10 +160,12 @@ namespace GetNovelsApp.Core.Conexiones.DB
 
         private void OrganizeNovels(List<INovela> locker, InformacionNovelaDB InfoNov)
         {
-            using IDbConnection cnn = DataBaseAccess.GetConnection();
-            string getThemChapters = GetChaptersOfNovel_Query(InfoNov);
-            var Capitulos = cnn.Query<Capitulo>(getThemChapters);
-            locker.Add(GetNovelsFactory.ObtenNovela(Capitulos, InfoNov));
+            using (IDbConnection cnn = DataBaseAccess.GetConnection())
+            {
+                string getThemChapters = GetChaptersOfNovel_Query(InfoNov);
+                var Capitulos = cnn.Query<Capitulo>(getThemChapters);
+                locker.Add(GetNovelsFactory.ObtenNovela(Capitulos, InfoNov));
+            }
         }
 
 

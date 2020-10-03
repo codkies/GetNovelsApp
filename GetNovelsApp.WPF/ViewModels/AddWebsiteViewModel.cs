@@ -28,6 +28,7 @@ namespace GetNovelsApp.WPF.ViewModels
             Command_Reset = new RelayCommand(Reset, Puedo_Reset);
             Command_PruebaWebsite = new RelayCommand(PruebaWebsite, Puede_PruebaWebsite);
             Command_InvierteOrdenLinks = new RelayCommand(InvierteOrdenLinks);
+            Command_AgregaPerfil = new RelayCommand(AgregaPerfil, Puedo_AgregaPerfil);
         }
 
         #region Props
@@ -76,11 +77,10 @@ namespace GetNovelsApp.WPF.ViewModels
         public RelayCommand<string> Command_IngresarDominio { get; set; }
 
         public void IngresarDominio(string dominio)
-        {
-            /*
-             * Desbloquea los otros campos
-             */
-            Debug.WriteLine(dominio);
+        {           
+            Debug.WriteLine("Dominio: " + dominio);
+            Dominio = dominio;
+
         }
 
         /// <summary>
@@ -165,8 +165,8 @@ namespace GetNovelsApp.WPF.ViewModels
         public async void PruebaWebsite()
         {
             Debug.WriteLine("Probando website");
-            //InformacionNovelaOnline info = await Task.Run(() => ManipuladorDeLinks.EncuentraInformacionNovela(new Uri(LinkPrueba), OrdenLinks, xPathsTitulo, xPathsLinks));
-            InformacionNovelaOnline info = await Task.Run(() => ManipuladorDeLinks.EncuentraInformacionNovela(new Uri(LinkPrueba)));
+            InformacionNovelaOnline info = await Task.Run(() => ManipuladorDeLinks.EncuentraInformacionNovela(new Uri(LinkPrueba), OrdenLinks, xPathsTitulo, xPathsLinks));
+            //InformacionNovelaOnline info = await Task.Run(() => ManipuladorDeLinks.EncuentraInformacionNovela(new Uri(LinkPrueba)));
             Debug.WriteLine("Website encontrado");
 
             ActualizaVistasPrevias(info);
@@ -222,10 +222,18 @@ namespace GetNovelsApp.WPF.ViewModels
 
         #region Final del proceso
 
+        public RelayCommand Command_AgregaPerfil { get; set; }
+
         public void AgregaPerfil()
         {
             IPath Website = GetNovelsFactory.FabricaWebsite(Dominio, xPathsLinks, xPathsTextos, xPathsTitulo, OrdenLinks);
             GuardaWebsiteNuevoEnDB(Website);            
+        }
+
+        public bool Puedo_AgregaPerfil()
+        {
+            //return Dominio != string.Empty & xPathsLinks.Any() & xPathsTextos.Any & xPathsTitulo.Any();
+            return xPathsTextos.Any() & xPathsTitulo.Any() & xPathsLinks.Any() & Dominio != null;
         }
 
         private void GuardaWebsiteNuevoEnDB(IPath Website)

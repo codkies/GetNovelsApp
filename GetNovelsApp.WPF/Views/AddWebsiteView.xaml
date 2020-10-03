@@ -285,6 +285,7 @@
 
             <!--row 9, boton para confirmar-->
             <Button Content="Agregar Perfil"
+                    Command="{Binding Command_AgregaPerfil}"
                 Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2"
                 Height="25" Width="150"/>
 
