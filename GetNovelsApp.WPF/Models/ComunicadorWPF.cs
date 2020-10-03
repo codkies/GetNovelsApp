@@ -11,32 +11,26 @@ namespace GetNovelsApp.WPF.Models
 
         public void Reporta(string enunciado, IReportero reportero)
         {
-            throw new System.NotImplementedException();
         }
 
         public void ReportaCambioEstado(string enunciado, IReportero reportero)
         {
-            throw new System.NotImplementedException();
         }
 
         public void ReportaError(string enunciado, IReportero reportero)
         {
-            throw new System.NotImplementedException();
         }
 
         public void ReportaErrorMayor(string enunciado, IReportero reportero)
         {
-            throw new System.NotImplementedException();
         }
 
         public void ReportaEspecial(string enunciado, IReportero reportero)
         {
-            throw new System.NotImplementedException();
         }
 
         public void ReportaExito(string enunciado, IReportero reportero)
         {
-            throw new System.NotImplementedException();
         }
     }
 }

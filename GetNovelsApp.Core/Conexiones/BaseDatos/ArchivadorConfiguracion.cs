@@ -26,11 +26,11 @@ namespace GetNovelsApp.Core.Conexiones.DB
         {
             string qry = $"Select * from {TablaConfiguracion}";
             using IDbConnection cnn = DataBaseAccess.GetConnection();
-            var dynamic = new { CarpetasDescarga = "", CapitulosPorDocumento = 0, TamañoBatch = 25 };
-            var resultado = cnn.Query(qry, dynamic);
+            var dynamic = new { CarpetaDescargas = "", CapitulosPorDocumento = 0, TamañoBatch = 25 };
+            var resultado = cnn.Query(qry, dynamic).First();
 
 
-            string CarpetasDescarga = GetProperty(resultado, "CarpetasDescarga") as string;
+            string CarpetasDescarga = GetProperty(resultado, "CarpetaDescargas") as string;
             int CapitulosPorDocumento = Convert.ToInt32(GetProperty(resultado, "CapitulosPorDocumento"));
             int TamañoBatch = Convert.ToInt32(GetProperty(resultado, "TamañoBatch"));
 
@@ -126,6 +126,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
                 string TituloQry = $"select xPath from {TablaXPathTitulo} where WebsiteID = '{id}'";
 
                 string LinkQry = $"select xPath from {TablaXPathLinks} where WebsiteID = '{id}'";
+
                 string OrdenQry = $"select OrdenID from {TablaXPathLinks} where WebsiteID = '{id}'";
 
                 string TextoQry = $"select xPath from {TablaXPathTextos} where WebsiteID = '{id}'";
@@ -149,14 +150,11 @@ namespace GetNovelsApp.Core.Conexiones.DB
         }
 
 
-        public static object GetProperty(object target, string name)
+        private object GetProperty(object target, string name)
         {
-            var site = System.Runtime.CompilerServices.CallSite<Func<System.Runtime.CompilerServices.CallSite, object, object>>.Create(Microsoft.CSharp.RuntimeBinder.Binder.GetMember(0, name, target.GetType(), new[] { Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo.Create(0, null) }));
+               var site = System.Runtime.CompilerServices.CallSite<Func<System.Runtime.CompilerServices.CallSite, object, object>>.Create(Microsoft.CSharp.RuntimeBinder.Binder.GetMember(0, name, target.GetType(), new[] { Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo.Create(0, null) }));
             return site.Target(site, target);
         }
-
-
-
 
 
         #region Queries

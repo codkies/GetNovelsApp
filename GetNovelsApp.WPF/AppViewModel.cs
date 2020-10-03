@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using GetNovelsApp.Core;
 using GetNovelsApp.Core.Conexiones.DB;
-using GetNovelsApp.Core.Conexiones.Internet;
 using GetNovelsApp.Core.Modelos;
 using GetNovelsApp.WPF.Models;
 using GetNovelsApp.WPF.Utilidades;
 using GetNovelsApp.WPF.ViewModels;
-using GetNovelsApp.WPF.Views.TEst;
+using GetNovelsApp.WPF.Views;
 
 namespace GetNovelsApp.WPF
 {
@@ -19,13 +17,9 @@ namespace GetNovelsApp.WPF
         public AppViewModel()
         {
             InicializaApp();
-            InicializaViewModels();
-
-            var ar = new Archivador();
-            //ar.GuardaPerfil(Setter.wb);
-            ar.SacaPerfiles();
-
-            //InicializaViewModelsAsync(); //Call last
+            InicializaViewModelsAsync(); //Call last
+            AddWebsiteView addWebsiteView = new AddWebsiteView();
+            addWebsiteView.Show();
         }
 
         /// <summary>

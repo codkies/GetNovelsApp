@@ -7,11 +7,8 @@ using System.Threading.Tasks;
 using System;
 
 using GetNovelsApp.Core.Reportaje;
-using GetNovelsApp.Core.ConfiguracionApp;
 using GetNovelsApp.Core.Empaquetadores;
 using GetNovelsApp.Core.Conexiones.DB;
-using System.Data;
-using System.Net.Http;
 using GetNovelsApp.Core.GetNovelsApp;
 
 
@@ -31,9 +28,9 @@ namespace GetNovelsApp.Core
 
         public GetNovels(IFabrica Fabrica, IComunicador comunicador)
         {
-            GetNovelsConfig.InicializaConfig();
             GetNovelsFactory.InicializaFabrica(Fabrica);
             GetNovelsComunicador.InicializaComunicador(comunicador);
+            GetNovelsConfig.InicializaConfig();
 
 
             Archivador = new Archivador();

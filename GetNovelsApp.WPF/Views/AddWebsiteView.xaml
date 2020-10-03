@@ -4,199 +4,264 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GetNovelsApp.WPF.Views"
+        xmlns:vm="clr-namespace:GetNovelsApp.WPF.ViewModels"
         mc:Ignorable="d"
-        Title="AddWebsiteView" Height="700" Width="500">
+        Title="AddWebsiteView" Height="700" Width="700">
+
+
+    <!--Dandole contexto a la vista principal-->
+    <Window.DataContext>
+        <vm:AddWebsiteViewModel/>
+    </Window.DataContext>
+
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        
-        <!--Metiendo info-->
-        <!--row 0, Dominio-->
-        <TextBlock Text="Dominio"
-                   Grid.Row="0" Grid.Column="0"
-                   VerticalAlignment="Center"
-                   TextAlignment="Right"
-                   Margin="5"/>
-        <StackPanel Grid.Row="0" Grid.Column="1">
-            <TextBox Text="Test"
-                 VerticalContentAlignment="Center"
-                 Height="20"
-                 Margin="5"/>
-            <Button Content="Listo"
-                    Width="60"/>
-        </StackPanel>
-        <TextBlock Text="Allowed or Not Preview"
+        <!--Izquierda-->
+        <Grid Grid.Column="0"
+              Background="{StaticResource Color2}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!--Metiendo info-->
+            <!--row 0, Dominio-->
+            <StackPanel Grid.Column="0" Grid.ColumnSpan="2"
+                        Grid.Row="0" 
+                        Margin="15"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                
+                <!--Titulo-->
+                <TextBlock Text="Ingresa dominio."
+                           HorizontalAlignment="Center"/>
+                
+                <!--Escribe-->
+                <StackPanel Orientation="Horizontal">
+
+                    <TextBox Text="wuxiaworld.site"
+                             Width="120"
+                             Margin="10 0"/>
+                    <Button Content="Ingresar"/>
+                </StackPanel>
+
+            </StackPanel>
+            
+            
+            <TextBlock Text="Allowed or Not Preview"
                    Grid.Row="0" Grid.Column="2"
                    VerticalAlignment="Center"
                    TextAlignment="Center"
                    Margin="5"/>
-
-        <!--row 1, xPaths de texto-->
-        <TextBlock Text="xPaths para textos de capitulos"
-                   Grid.Row="1" Grid.Column="0"
-                   VerticalAlignment="Center"
-                   TextAlignment="Right"
-                   TextWrapping="Wrap"
-                   Margin="5"/>
-        <StackPanel Grid.Row="1" Grid.Column="1">
-            <TextBox Text="Ingresa xPath"
-                 VerticalContentAlignment="Center"
-                 Height="20"
-                 Margin="5"/>
-            <Button Content="Agregar"
-                    Width="60"/>
-        </StackPanel>
-        <ComboBox Text="Preview"
-                   Grid.Row="1" Grid.Column="2"
-                   VerticalAlignment="Center"
-                   Margin="5"/>
-        
-        <!--row 2, xPaths de Titulo-->
-        <TextBlock Text="xPaths para Titulo de novela"
-                   Grid.Row="2" Grid.Column="0"
-                   VerticalAlignment="Center"
-                   TextAlignment="Right"
-                   TextWrapping="Wrap"
-                   Margin="5"/>
-        <StackPanel Grid.Row="2" Grid.Column="1">
-            <TextBox Text="Ingresa xPath"
-                 VerticalContentAlignment="Center"
-                 Height="20"
-                 Margin="5"/>
-            <Button Content="Agregar"
-                    Width="60"/>
-        </StackPanel>
-        <ComboBox Text="Preview"
-                   Grid.Row="2" Grid.Column="2"
-                   VerticalAlignment="Center"
-                   Margin="5"/>
-
-
-        <!--row 3, xPaths de Links-->
-        <TextBlock Text="xPaths para Links de capitulos"
-                   Grid.Row="3" Grid.Column="0"
-                   VerticalAlignment="Center"
-                   TextAlignment="Right"
-                   TextWrapping="Wrap"
-                   Margin="5"/>
-        <StackPanel Grid.Row="3" Grid.Column="1">
-            <TextBox Text="Ingresa xPath"
-                 VerticalContentAlignment="Center"
-                 Height="20"
-                 Margin="5"/>
-            <Button Content="Agregar"
-                    Width="60"/>
-        </StackPanel>
-        <ComboBox Text="Preview"
-                   Grid.Row="3" Grid.Column="2"
-                   VerticalAlignment="Center"
-                   Margin="5"/>
-        
-        
-        <!--row 4, Prueba de links-->
-        <TextBlock Text="Ingresa un link para probar esta configuracion"
-                   Grid.Column="0" Grid.Row="4"
-                   TextWrapping="Wrap" 
-                   TextAlignment="Center" VerticalAlignment="Center"/>
-        
-        <!--Text box para probar un link-->
-        <StackPanel Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Margin="5">
             
-            <TextBox Text="Ingresa un link aquí" FontSize="13"
-                     Height="20"
-                     VerticalContentAlignment="Center"
-                     HorizontalContentAlignment="Center"
-                     Margin="0 3"/>
 
-            <Button Content="Probar" FontSize="10"
-                    Height="19" Width="50"/>
+            <!--row 1, xPaths de texto-->
+            <StackPanel Grid.Column="0" Grid.ColumnSpan="2"
+                        Grid.Row="1" 
+                        Margin="15"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
 
-        </StackPanel>
-        
-        <!--row 5, revisando el resultado de la prueba. Titulo-->
-        <TextBlock Text="Titulo:"
-                   Grid.Row="5" Grid.Column="0"
+                <!--Titulo-->
+                <TextBlock Text="Ingresa xPath de Textos."
+                           HorizontalAlignment="Center"/>
+
+                <!--Escribe-->
+                <StackPanel Orientation="Horizontal">
+
+                    <TextBox Text="xPath"
+                             Width="120"
+                             Margin="10 0"/>
+                    <Button Content="Ingresar"/>
+                </StackPanel>
+             </StackPanel>
+
+            <!--Vista previa de xPath Textos-->
+            <ComboBox Grid.Row="1"
+                      Grid.Column="2"
+                      Height="20"
+                      Margin="0 15 0 0"/>
+
+            <!--row 2, xPaths de Titulo-->
+            <StackPanel Grid.Column="0" Grid.ColumnSpan="2"
+                        Grid.Row="2" 
+                        Margin="15"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+
+                <!--Titulo-->
+                <TextBlock Text="Ingresa xPath de titulos."
+                           HorizontalAlignment="Center"/>
+
+                <!--Escribe-->
+                <StackPanel Orientation="Horizontal">
+
+                    <TextBox Text="xPath"
+                             Width="120"
+                             Margin="10 0"/>
+                    <Button Content="Ingresar"/>
+                </StackPanel>
+            </StackPanel>
+            
+            <!--Vista previa de xPath Titulos-->
+            <ComboBox Grid.Row="2"
+                      Grid.Column="2"
+                      Height="20"
+                      Margin="0 15 0 0"/>
+
+
+            <!--row 3, xPaths de Links-->
+            <StackPanel Grid.Column="0" Grid.ColumnSpan="2"
+                        Grid.Row="3" 
+                        Margin="15"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+
+                <!--Titulo-->
+                <TextBlock Text="Ingresa xPath de Links."
+                           HorizontalAlignment="Center"/>
+
+                <!--Escribe-->
+                <StackPanel Orientation="Horizontal">
+
+                    <TextBox Text="xPath"
+                             Width="120"
+                             Margin="10 0"/>
+                    <Button Content="Ingresar"/>
+                </StackPanel>
+            </StackPanel>
+
+            <!--Vista previa de xPath Links-->
+            <ComboBox Grid.Row="3"
+                      Grid.Column="2"
+                      Height="20"
+                      Margin="0 15 0 0"/>
+
+            <!--row 4, Prueba de links-->
+            <StackPanel Grid.Column="0" Grid.ColumnSpan="3"
+                        Grid.Row="4" 
+                        Margin="15"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+
+                <!--Titulo-->
+                <TextBlock Text="Ingresa un link de novela para probar."
+                           HorizontalAlignment="Center"/>
+
+                <!--Escribe-->
+                <StackPanel Orientation="Horizontal">
+
+                    <TextBox Text="xPath"
+                             Width="200"
+                             Margin="10 0"/>
+                    <Button Content="Obtener"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+
+        <!--Derecha-->
+        <Grid Grid.Column="1"
+              Background="DodgerBlue">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!--row 5, revisando el resultado de la prueba. Titulo-->
+            <TextBlock Text="Titulo:"
+                   Grid.Row="0" Grid.Column="0"
                    TextAlignment="Right" VerticalAlignment="Center"
                    Margin="5"/>
-        <TextBlock Text="Lord of the flies" FontStyle="Italic"
-                   Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2"
+            <TextBlock Text="Lord of the flies" FontStyle="Italic"
+                   Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
                    TextAlignment="Center" VerticalAlignment="Center"
                    Margin="5"/>
 
-        <!--row 6, revisando el resultado de la prueba. Cantida de links-->
-        <TextBlock Text="Cantidad de links:"
-                   Grid.Row="6" Grid.Column="0"
+            <!--row 6, revisando el resultado de la prueba. Cantida de links-->
+            <TextBlock Text="Cantidad de links:"
+                   Grid.Row="1" Grid.Column="0"
                    TextAlignment="Right" VerticalAlignment="Center"
                    Margin="5"/>
-        <TextBlock Text="1400 Links." FontStyle="Italic"
-                   Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2"
+            <TextBlock Text="1400 Links." FontStyle="Italic"
+                   Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
                    TextAlignment="Center" VerticalAlignment="Center"
                    Margin="5"/>
 
-        <!--row 7, revisando el resultado de la prueba. Primer link-->
-        <TextBlock Text="Primer link:"
-                   Grid.Row="7" Grid.Column="0"
+            <!--row 7, revisando el resultado de la prueba. Primer link-->
+            <TextBlock Text="Primer link:"
+                   Grid.Row="2" Grid.Column="0"
                    TextAlignment="Right" VerticalAlignment="Center"
                    Margin="5"/>
-        <TextBlock Text="https://wuxiaworld.site/novel/otherworldly-evil-monarch/chapter-1" 
+            <TextBlock Text="https://wuxiaworld.site/novel/otherworldly-evil-monarch/chapter-1" 
                    FontStyle="Italic" FontSize="11" TextWrapping="Wrap"
-                   Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2"
+                   Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
                    TextAlignment="Center" VerticalAlignment="Center"
                    Margin="7"/>
 
-        <!--row 8, revisando el resultado de la prueba. Ultimo link-->
-        <TextBlock Text="Ultimo link:"
-                   Grid.Row="8" Grid.Column="0"
+            <!--row 8, revisando el resultado de la prueba. Ultimo link-->
+            <TextBlock Text="Ultimo link:"
+                   Grid.Row="3" Grid.Column="0"
                    TextAlignment="Right" VerticalAlignment="Center"
                    Margin="5"/>
-        <TextBlock Text="https://wuxiaworld.site/novel/otherworldly-evil-monarch/chapter-700" 
+            <TextBlock Text="https://wuxiaworld.site/novel/otherworldly-evil-monarch/chapter-700" 
                    FontStyle="Italic" FontSize="11" TextWrapping="Wrap"
-                   Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="2"
+                   Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"
                    TextAlignment="Center" VerticalAlignment="Center"
                    Margin="7"/>
-        
-        <!--row 8, revisando el resultado de la prueba. Ultimo link-->
-        <TextBlock Text="Texto del primer link:"
-                   Grid.Row="9"
+
+            <!--row 8, revisando el resultado de la prueba. Ultimo link-->
+            <TextBlock Text="Texto del primer link:"
+                   Grid.Row="4"
                    Grid.Column="0" 
                    TextAlignment="Right" VerticalAlignment="Center"
                    Margin="5"/>
-        <Button Content="Ver texto"                    
+            <Button Content="Ver texto"                    
                    FontStyle="Italic" FontSize="10" 
                    Width="90"
-                   Grid.Row="9" 
+                   Grid.Row="4" 
                    Grid.Column="1" Grid.ColumnSpan="2"
                    VerticalAlignment="Center"
-                   Margin="7"/>       
-        
-        
-        <!--row 9, boton para confirmar-->
-        <Button Content="Agregar Perfil"
-                Grid.Column="1" Grid.Row="10"
-                Height="25"/>
+                   Margin="7"/>
 
-        <Button Content="Invertir orden links"
-                Grid.Column="2" Grid.Row="10"
+
+            <!--row 9, boton para confirmar-->
+            <Button Content="Agregar Perfil"
+                Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2"
+                Height="25" Width="150"/>
+
+            <Button Content="Invertir orden links"
+                Grid.Column="2" Grid.Row="5"
                 HorizontalAlignment="Right" VerticalAlignment="Bottom"
                 Margin="10"
                 Height="20" Width="120"/>
+        </Grid>
+        
+        
+        
+        
 
     </Grid>
 </Window>
