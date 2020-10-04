@@ -18,6 +18,9 @@
         <DataTemplate DataType="{x:Type vm:NovelViewModel}">
             <v:NovelView/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:DescargasViewModel}">
+            <v:DescargasView/>
+        </DataTemplate>
 
         
         <!--Imagenes default-->

@@ -24,29 +24,7 @@ namespace GetNovelsApp.Core
     /// </summary>
     public class GetNovels : IReportero
     {
-        #region Constructores & Setup
-
-        public GetNovels(IFabrica Fabrica, IComunicador comunicador)
-        {
-            GetNovelsFactory.InicializaFabrica(Fabrica);
-            GetNovelsComunicador.InicializaComunicador(comunicador);
-            GetNovelsConfig.InicializaConfig();
-
-
-            Archivador = new Archivador();
-            MyScraper = new Scraper();
-            MyEmpaquetador = new EmpaquetadorNovelas(Archivador);
-            GetNovelsEvents.ImprimeNovela += RecolectaInformacion;
-        }
-
-        
-
-
-
-        #endregion
-
-
-        #region Manejo interno script
+        #region Constantish
 
         /// <summary>
         /// Referencia a los capitulos por descargar.
@@ -75,6 +53,26 @@ namespace GetNovelsApp.Core
         #endregion
 
 
+        #region Constructores & Setup
+
+        public GetNovels(IFabrica Fabrica, IComunicador comunicador)
+        {
+            GetNovelsFactory.InicializaFabrica(Fabrica);
+            GetNovelsComunicador.InicializaComunicador(comunicador);
+            GetNovelsConfig.InicializaConfig();
+
+
+            Archivador = new Archivador();
+            MyScraper = new Scraper();
+            MyEmpaquetador = new EmpaquetadorNovelas(Archivador);
+            GetNovelsEvents.ImprimeNovela += RecolectaInformacion;
+        }
+
+        #endregion
+
+
+
+
         #region Publico
 
 
@@ -92,11 +90,22 @@ namespace GetNovelsApp.Core
 
         public string Nombre => "GetNovelsApp";
 
+
         private readonly Archivador Archivador;
 
         #endregion
 
-     
+
+
+        #region New
+
+        public bool AgregaAlQueue(INovela novela)
+        {
+            return true;
+        } 
+        #endregion
+
+
         /// <summary>
         /// Obtiene capitulos de una novela en el formato establecido y los coloca en la carpeta de la configuracion.
         /// </summary>

@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using GetNovelsApp.WPF.ViewModels;
 
 namespace GetNovelsApp.WPF.Utilidades
 {
     public static class GetNovelsWPFEvents
     {
+        #region Cambia view model
         public static event Action<object> CambiaViewModel;
 
 
@@ -16,5 +18,17 @@ namespace GetNovelsApp.WPF.Utilidades
         {
             CambiaViewModel?.Invoke(ViewModel);
         }
+        #endregion
+
+        #region AgregaDescarga
+
+        public static event Action<Descarga> AgregaDescarga;
+
+        public static void Invoke_AgregaDescarga(Descarga descarga)
+        {
+            AgregaDescarga?.Invoke(descarga);
+        }
+
+        #endregion
     }
 }

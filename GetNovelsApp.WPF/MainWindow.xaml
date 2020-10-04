@@ -46,6 +46,17 @@
                 </Button.Content>
             </Button>
 
+            <Button Grid.Column="2" 
+                    Height="25"
+                    Command="{Binding Command_VeDescargas}"
+                    Style="{StaticResource BotonNavMenu}">
+                <Button.Content>
+                    <Image Source="pack://siteoforigin:,,,/Resources/DescargaIcon.png"/>
+                </Button.Content>
+            </Button>
+
+
+
         </Grid>
 
          <!--Barra de estado-->

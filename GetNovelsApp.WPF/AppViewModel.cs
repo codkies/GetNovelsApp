@@ -16,9 +16,12 @@ namespace GetNovelsApp.WPF
     public class AppViewModel : ObservableObject
     {
         #region Private fields
+
         public static GetNovels GetNovels { get; private set; }
 
-        private static bool Inicializado = false; 
+
+        private static bool Inicializado = false;
+
         #endregion
 
         #region Setup
@@ -31,6 +34,7 @@ namespace GetNovelsApp.WPF
 
             Command_VeBiblioteca = new RelayCommand(VeBiblioteca, Puedo_VeBibliteca);
             Command_VeConfiguracion = new RelayCommand(VeConfiguracion);
+            Command_VeDescargas = new RelayCommand(VeDescargas);
 
             VeBiblioteca();
         }
@@ -45,7 +49,7 @@ namespace GetNovelsApp.WPF
         /// </summary>
         private void InicializaApp()
         {
-            if(Inicializado == false)
+            if (Inicializado == false)
             {
                 GetNovels = Setter.ObtenGetNovel();
                 Inicializado = true;
@@ -62,6 +66,7 @@ namespace GetNovelsApp.WPF
         private ConfiguracionViewModel configuracionViewModel;
         private BibliotecaViewModel bibliotecaViewModel;
         private NovelViewModel novelViewModel;
+        private DescargasViewModel descargasViewModel;
 
         /// <summary>
         /// La vista que la app está mostrando actualmente.
@@ -99,17 +104,20 @@ namespace GetNovelsApp.WPF
             set => OnPropertyChanged(ref novelViewModel, value);
         }
 
+        public DescargasViewModel DescargasViewModel { get => descargasViewModel; set => OnPropertyChanged(ref descargasViewModel, value); }
+
 
         #endregion
 
 
         #region Comandos de menu barra
 
+        #region Ve Biblioteca
         public RelayCommand Command_VeBiblioteca { get; set; }
 
-        
+
         public void VeBiblioteca()
-        {            
+        {
             BibliotecaViewModel = new BibliotecaViewModel();
             CurrentView = BibliotecaViewModel;
         }
@@ -119,16 +127,27 @@ namespace GetNovelsApp.WPF
             return true;
         }
 
-        
+        #endregion
+
+        #region Ve Configuracion
+
         public RelayCommand Command_VeConfiguracion { get; set; }
 
         public void VeConfiguracion()
         {
             ConfiguracionViewModel = new ConfiguracionViewModel();
             CurrentView = ConfiguracionViewModel;
+        } 
+
+        #endregion
+
+        public RelayCommand Command_VeDescargas { get; set; }
+
+        public void VeDescargas()
+        {
+            DescargasViewModel = new DescargasViewModel(GetNovels);
+            CurrentView = DescargasViewModel;
         }
-
-
 
 
         #endregion

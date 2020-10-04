@@ -102,14 +102,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="GetNovelsApp.Core.dll" size="55296">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="GetNovelsApp.Core.dll" size="56320">
       <assemblyIdentity name="GetNovelsApp.Core" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>yVdxpUqNDWWtctxXReCfXjXe67WFQnhv/kZRVemkG3M=</dsig:DigestValue>
+        <dsig:DigestValue>YlEpG76KzW111LRiqPQC0CLJiCzzkeNcel7cmxpS0xQ=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

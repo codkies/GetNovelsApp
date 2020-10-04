@@ -93,6 +93,7 @@
                 <ComboBox Background="Transparent"
                           ItemsSource="{Binding WebsitesSoportados}"
                           Grid.Column="0"
+                          SelectedIndex="0"
                           Height="20"
                           VerticalContentAlignment="Center"
                           Margin="10 0"/>
