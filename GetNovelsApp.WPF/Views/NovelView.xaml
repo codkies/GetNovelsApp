@@ -50,14 +50,16 @@
                     <!--Porcentaja de descarga-->
                     <TextBlock FontSize="15"
                                 FontFamily="{StaticResource MainFont}">
-                           <Run Text="{Binding NovelaEnVista.Capitulos.Count, FallbackValue=1277, Mode=OneWay}"/>
+                           <Run Text="{Binding NovelaEnVista.Capitulos.Count, Mode=OneWay, FallbackValue=xxx}"/>
                            <Run Text="capitulos."/>
                     </TextBlock>
                     
                     <!--Cantidad Caps-->
                     <TextBlock FontSize="15"
                                 FontFamily="{StaticResource MainFont}">
-                           <Run Text="{Binding NovelaEnVista.PorcentajeDescarga, FallbackValue=100, Mode=OneWay}"/>
+                           <Run Text="{Binding NovelaEnVista.PorcentajeDescarga,
+                                           Mode=OneWay,
+                                           FallbackValue=xx}"/>
                            <Run Text="% descargado."/>
                     </TextBlock>
 
@@ -105,7 +107,7 @@
                 <DataGrid Grid.Row="2" 
                           Margin="20"
                           x:Name="Capitulos"
-                          ItemsSource="{Binding Capitulos}" 
+                          ItemsSource="{Binding NovelaEnVista.Capitulos}" 
                           AutoGenerateColumns="False" 
                           Background="{StaticResource Color3}" 
                           SelectedItem="{Binding EntradaSeleccionada, Mode=TwoWay}"  
@@ -144,21 +146,42 @@
 
             </DockPanel>
 
-            <!--Boton de leer-->
-            <Button Grid.Row="1"
-                    Content="Leer"
-                    HorizontalAlignment="Right"
-                    Margin="0 0 19 0"
-                    Height="20"
-                    Width="50"/>
-            
-            <!--Boton para actualizar info-->
-            <Button Grid.Row="1"
+            <Grid Grid.Row="1">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <!--Boton para actualizar info-->
+                <Button Grid.Column="0"
                     Content="Actualizar"
                     HorizontalAlignment="Left"
                     Margin="19 0 0 0"
                     Height="20"
                     Width="60"/>
+                
+                <!--Boton para descargar capitulos-->
+                <Button Grid.Column="1"
+                        Content="Descargar"
+                        Command="{Binding Command_DescargaNovela}"
+                        HorizontalAlignment="Center"
+                        Margin="19 0 0 0"
+                        Height="20"
+                        Width="70"/>
+
+                <!--Boton de leer-->
+                <Button Grid.Column="2"
+                        Content="Leer"
+                        HorizontalAlignment="Right"
+                        Margin="0 0 19 0"
+                        Height="20"
+                        Width="50"/>
+                
+            </Grid>
+            
+           
             
         </Grid>
         

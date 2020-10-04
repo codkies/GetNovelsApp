@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using GetNovelsApp.Core;
 using GetNovelsApp.Core.Modelos;
 using GetNovelsApp.WPF.Models;
 using GetNovelsApp.WPF.Utilidades;
@@ -10,31 +13,47 @@ namespace GetNovelsApp.WPF.ViewModels
     public class NovelViewModel : ObservableObject
     {
         public NovelViewModel(NovelaWPF novela)
-        {
+        {            
             NovelaEnVista = novela;
-            ActualizaImagen();
+            if(novela.ImagenLink != null) ActualizaImagen();
 
-            Capitulos = new ObservableCollection<Capitulo>(NovelaEnVista.Capitulos);
-            Novelas.Add(NovelaEnVista);
+            Command_DescargaNovela = new RelayCommand(DescargaNovelaAsync, Puedo_DescargaNovela);
         }
 
 
+        private void ActualizaImagen()
+        {
+            PathImagenNovela = EncontradorImagen.DescargaImagen(NovelaEnVista.ImagenLink.ToString());
+        }
+
+        #region Props
         private NovelaWPF novelaEnVista;
         private string pathImagenNovela;
 
         public NovelaWPF NovelaEnVista { get => novelaEnVista; set => OnPropertyChanged(ref novelaEnVista, value); }
 
         public string PathImagenNovela { get => pathImagenNovela; private set => OnPropertyChanged(ref pathImagenNovela, value); }
+        #endregion
 
-        public ObservableCollection<NovelaWPF> Novelas { get; private set; } = new ObservableCollection<NovelaWPF>();
+        #region Descarga
 
+        public RelayCommand Command_DescargaNovela { get; set; }
 
-        public ObservableCollection<Capitulo> Capitulos { get; private set; } = new ObservableCollection<Capitulo>();
-
-        private void ActualizaImagen()
+        public async void DescargaNovelaAsync()
         {
-            PathImagenNovela = EncontradorImagen.DescargaImagen(NovelaEnVista.ImagenLink.ToString());
+            Debug.WriteLine($"Descargando {NovelaEnVista.Titulo}");
+            await AppViewModel.GetNovels.GetNovelAsync(NovelaEnVista, 0);
+            Debug.WriteLine($"Descargada {NovelaEnVista.Titulo}");
         }
+
+        public bool Puedo_DescargaNovela()
+        {
+            return !NovelaEnVista.EstoyCompleta;
+        }
+
+        #endregion
+
+
 
     }
 }

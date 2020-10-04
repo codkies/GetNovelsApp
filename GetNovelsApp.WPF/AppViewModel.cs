@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.ServiceModel.Dispatcher;
 using System.Threading.Tasks;
 using GetNovelsApp.Core;
 using GetNovelsApp.Core.Conexiones.DB;
@@ -14,7 +15,11 @@ namespace GetNovelsApp.WPF
 {
     public class AppViewModel : ObservableObject
     {
-        private readonly Archivador ar;
+        #region Private fields
+        public static GetNovels GetNovels { get; private set; }
+
+        private static bool Inicializado = false; 
+        #endregion
 
         #region Setup
 
@@ -22,7 +27,6 @@ namespace GetNovelsApp.WPF
         {
             InicializaApp();
 
-            ar = new Archivador();
             GetNovelsWPFEvents.CambiaViewModel += GetNovelsWPFEvents_CambiaViewModel;
 
             Command_VeBiblioteca = new RelayCommand(VeBiblioteca, Puedo_VeBibliteca);
@@ -41,15 +45,18 @@ namespace GetNovelsApp.WPF
         /// </summary>
         private void InicializaApp()
         {
-            GetNovels = Setter.ObtenGetNovel();
+            if(Inicializado == false)
+            {
+                GetNovels = Setter.ObtenGetNovel();
+                Inicializado = true;
+            }
         }
 
 
         #endregion
 
-        #region ViewModels references
 
-        public GetNovels GetNovels { get; private set; }
+        #region ViewModels references
 
         private object currentView;
         private ConfiguracionViewModel configuracionViewModel;
