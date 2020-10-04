@@ -72,6 +72,7 @@
     <Compile Include="Models\Setter.cs" />
     <Compile Include="Utilidades\DefaultStrings.cs" />
     <Compile Include="Utilidades\EncontradorImagen.cs" />
+    <Compile Include="Utilidades\GetNovelsWPFEvents.cs" />
     <Compile Include="Utilidades\Randomnator.cs" />
     <Compile Include="Utilidades\RelayCommand.cs" />
     <Compile Include="Utilidades\RelayCommandAsync.cs" />

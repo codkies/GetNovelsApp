@@ -225,5 +225,6 @@ namespace GetNovelsApp.WPF.Models
             CapitulosImpresos.Add(capitulo);
         }
         #endregion
+
     }
 }

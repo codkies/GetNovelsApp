@@ -21,6 +21,7 @@
                   ItemsSource="{Binding NovelasVisibles}">
 
             <ListView.ItemTemplate>
+                
                 <DataTemplate>
                     <p:NovelaEnBibView/>
                 </DataTemplate>
@@ -31,7 +32,7 @@
         <!--Soportive bar-->
         <Grid Grid.Column="1"
               Margin="10 10 5 10"                   
-            Background="{StaticResource Color1}">
+            Background="Transparent">
 
             <Grid.RowDefinitions>
                 <RowDefinition/>
@@ -43,7 +44,7 @@
             <!--Parte superior-->
             <StackPanel Grid.Row="0" Grid.RowSpan="3"
                         Margin="5"
-                        Background="{StaticResource Color4}">
+                        Background="Transparent">
                 
                 <!--Barra de busqueda-->
                 <StackPanel Margin="0 0 0 10">
@@ -96,7 +97,7 @@
             <!--Boton para añadir novela nueva-->
             <Button Grid.Row="4" VerticalAlignment="Bottom"
                     Margin="20"
-                    Background="{StaticResource Color4}"                    
+                    Background="{StaticResource Color1}"                    
                     Content="Añadir novela nueva"/>
 
         </Grid>

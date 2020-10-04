@@ -24,10 +24,18 @@
         <!--Text-->
         <StackPanel Grid.Column="1">
             <!--Titulo-->
-            <TextBlock Text="{Binding Titulo,FallbackValue=TituloNovela}"
-                           VerticalAlignment="Center"
-                           Margin="5 0 0 0"
-                           FontSize="17"/>
+            <Button Content="{Binding Titulo,FallbackValue=TituloNovela}"
+                    Command="{Binding Path=DataContext.Command_VerNovela, 
+                              RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl},AncestorLevel=2}  
+                             }"
+                    HorizontalAlignment="Left"
+                    HorizontalContentAlignment="Left"
+                    CommandParameter="{Binding}"
+                    BorderThickness="0"
+                    Margin="5 0 0 0"
+                    Width="600"
+                    Background="Transparent"                           
+                    FontSize="17"/>
 
             <!--Stats-->
             <StackPanel Orientation="Horizontal"
@@ -76,6 +84,7 @@
                      Padding="5 2"
                      Background="Transparent"
                      Height="67"
+                     Width="600"
                      BorderThickness="0"
                      IsReadOnly="True"
                      Text="{Binding Sipnosis, FallbackValue='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque et mauris eget est suscipit pharetra. Donec et convallis lorem. Integer blandit lacus non rutrum convallis. Pellentesque et porta quam, id fringilla ex. Cras rutrum mi imperdiet ligula imperdiet pharetra. Nunc hendrerit diam vel ex maximus auctor. Pellentesque egestas in justo sed finibus. Phasellus vehicula neque turpis, eget hendrerit justo laoreet in. Cras felis lectus, pretium eget leo ac, vehicula hendrerit ipsum. Maecenas eleifend ultrices ex quis imperdiet.'}"/>

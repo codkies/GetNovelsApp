@@ -1,4 +1,5 @@
 ﻿<Window x:Class="GetNovelsApp.WPF.Views.AddWebsiteView"
+        Name="EstaVentana"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -286,6 +287,7 @@
             <!--row 9, boton para confirmar-->
             <Button Content="Agregar Perfil"
                     Command="{Binding Command_AgregaPerfil}"
+                    CommandParameter="{Binding ElementName=EstaVentana}"
                 Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2"
                 Height="25" Width="150"/>
 

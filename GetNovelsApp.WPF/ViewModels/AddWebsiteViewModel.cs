@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.ServiceModel.Configuration;
-using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using GetNovelsApp.Core;
 using GetNovelsApp.Core.Conexiones.DB;
 using GetNovelsApp.Core.Conexiones.Internet;
@@ -28,7 +27,7 @@ namespace GetNovelsApp.WPF.ViewModels
             Command_Reset = new RelayCommand(Reset, Puedo_Reset);
             Command_PruebaWebsite = new RelayCommand(PruebaWebsite, Puede_PruebaWebsite);
             Command_InvierteOrdenLinks = new RelayCommand(InvierteOrdenLinks);
-            Command_AgregaPerfil = new RelayCommand(AgregaPerfil, Puedo_AgregaPerfil);
+            Command_AgregaPerfil = new RelayCommand<Window>(AgregaPerfil, Puedo_AgregaPerfil);
         }
 
         #region Props
@@ -222,15 +221,16 @@ namespace GetNovelsApp.WPF.ViewModels
 
         #region Final del proceso
 
-        public RelayCommand Command_AgregaPerfil { get; set; }
+        public RelayCommand<Window> Command_AgregaPerfil { get; set; }
 
-        public void AgregaPerfil()
+        public void AgregaPerfil(Window ventana)
         {
             IPath Website = GetNovelsFactory.FabricaWebsite(Dominio, xPathsLinks, xPathsTextos, xPathsTitulo, OrdenLinks);
-            GuardaWebsiteNuevoEnDB(Website);            
+            GuardaWebsiteNuevoEnDB(Website);
+            ventana.Close();
         }
 
-        public bool Puedo_AgregaPerfil()
+        public bool Puedo_AgregaPerfil(Window ventana)
         {
             //return Dominio != string.Empty & xPathsLinks.Any() & xPathsTextos.Any & xPathsTitulo.Any();
             return xPathsTextos.Any() & xPathsTitulo.Any() & xPathsLinks.Any() & Dominio != null;

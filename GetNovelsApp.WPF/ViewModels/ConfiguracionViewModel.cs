@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using GetNovelsApp.Core;
 using GetNovelsApp.Core.Conexiones.DB;
 using GetNovelsApp.Core.ConfiguracionApp;
-using GetNovelsApp.Core.ConfiguracionApp.xPaths;
-using GetNovelsApp.WPF.Models;
 using GetNovelsApp.WPF.Utilidades;
+using GetNovelsApp.WPF.Views;
 
 namespace GetNovelsApp.WPF.ViewModels
 {
@@ -20,6 +15,7 @@ namespace GetNovelsApp.WPF.ViewModels
         private IConfig configDefault;
 
         #endregion
+
 
         #region Setup
         public ConfiguracionViewModel()
@@ -34,10 +30,14 @@ namespace GetNovelsApp.WPF.ViewModels
             TamañoBatchDescarga = configDefault.TamañoBatch.ToString();
 
             Command_SalvaCambios = new RelayCommand(SalvaCambios, Puede_SalvaCambios);
+            Command_AggPerfil = new RelayCommand(AggPerfil, Puede_AggPerfil);
+            GetNovelsEvents.WebsitesCambiaron += ObtenWebsitesSoportados;
+
         }
 
         private void ObtenWebsitesSoportados()
         {
+            WebsitesSoportados = new List<string>();
             var perfiles = ar.ObtenPerfiles();
             foreach (var perfil in perfiles)
             {
@@ -60,17 +60,19 @@ namespace GetNovelsApp.WPF.ViewModels
 
         public string Carpeta { get => carpeta; set => OnPropertyChanged(ref carpeta, value); }
 
-        public string TamañoBatchDescarga { get => tamañoBatchDescarga; set => OnPropertyChanged(ref tamañoBatchDescarga, value); } 
+        public string TamañoBatchDescarga { get => tamañoBatchDescarga; set => OnPropertyChanged(ref tamañoBatchDescarga, value); }
         #endregion
 
 
+
+        #region Salvar cambios
         public RelayCommand Command_SalvaCambios { get; set; }
 
 
         public void SalvaCambios()
         {
             var confignueva = GetNovelsFactory.FabricaConfiguracion(Carpeta, int.Parse(TamañoBatchDescarga), int.Parse(CapitulosPorDocumento));
-            
+
             ar.ActualizaConfiguracion(confignueva);
             configDefault = ar.ObtenConfiguracion();
 
@@ -82,7 +84,44 @@ namespace GetNovelsApp.WPF.ViewModels
                    Carpeta != null &
                    CapitulosPorDocumento != null &
                    int.TryParse(TamañoBatchDescarga, out _) &
-                   int.TryParse(CapitulosPorDocumento, out _);
+                   int.TryParse(CapitulosPorDocumento, out _) &
+                   HayCambios;
+        } 
+
+        /// <summary>
+        /// El usuario cambió algo con respecto a la configuración inicial.
+        /// </summary>
+        private bool HayCambios 
+        { 
+            get
+            {
+                bool cambioCarpeta = !Carpeta.Equals(configDefault.FolderPath);
+
+                int.TryParse(CapitulosPorDocumento, out int caps);
+                bool cambioCaps = configDefault.CapitulosPorDocumento != caps;
+
+                int.TryParse(TamañoBatchDescarga, out int batch);
+                bool cambioBatch = configDefault.TamañoBatch != batch;
+
+                return cambioBatch | cambioCarpeta | cambioCaps;
+            } 
         }
+        
+        #endregion
+
+
+        public RelayCommand Command_AggPerfil { get; set; }
+
+        public void AggPerfil()
+        {
+            AddWebsiteView websiteView = new AddWebsiteView();            
+            websiteView.Show();
+        }
+
+        public bool Puede_AggPerfil()
+        {
+            return true;
+        }
+
     }
 }

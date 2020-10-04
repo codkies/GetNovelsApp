@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using GetNovelsApp.Core;
 using GetNovelsApp.Core.Conexiones.DB;
@@ -12,14 +14,24 @@ namespace GetNovelsApp.WPF
 {
     public class AppViewModel : ObservableObject
     {
+        private readonly Archivador ar;
+
         #region Setup
 
         public AppViewModel()
         {
+            GetNovelsWPFEvents.CambiaViewModel += GetNovelsWPFEvents_CambiaViewModel;
+            ar = new Archivador();
+            Command_VeBiblioteca = new RelayCommand(VeBiblioteca, Puedo_VeBibliteca);
+            Command_VeConfiguracion = new RelayCommand(VeConfiguracion);
+
             InicializaApp();
-            InicializaViewModels(); //Call last
-            //AddWebsiteView addWebsiteView = new AddWebsiteView();
-            //addWebsiteView.Show();
+            VeBiblioteca();
+        }
+
+        private void GetNovelsWPFEvents_CambiaViewModel(object obj)
+        {
+            CurrentView = obj;
         }
 
         /// <summary>
@@ -30,34 +42,6 @@ namespace GetNovelsApp.WPF
             GetNovels = Setter.ObtenGetNovel();
         }
 
-
-        /// <summary>
-        /// Crea instancias de todos los view models y hace que la current view sea la biblioteca.
-        /// </summary>
-        private void InicializaViewModels()
-        {
-            ConfiguracionViewModel = new ConfiguracionViewModel();
-
-            CurrentView = ConfiguracionViewModel;
-        }
-
-
-        private async Task InicializaViewModelsAsync()
-        {
-            Archivador ar = new Archivador();
-            var output = await ar.ObtenTodasNovelasAsync();
-
-            List<NovelaWPF> Novelas = new List<NovelaWPF>();
-            foreach (INovela novela in output)
-            {                
-                Novelas.Add((NovelaWPF)novela);
-            }
-
-            BibliotecaViewModel = new BibliotecaViewModel(Novelas);
-            ConfiguracionViewModel = new ConfiguracionViewModel();
-
-            CurrentView = ConfiguracionViewModel;
-        }
 
         #endregion
 
@@ -105,6 +89,53 @@ namespace GetNovelsApp.WPF
             get => novelViewModel;
             set => OnPropertyChanged(ref novelViewModel, value);
         }
+
+
+        #endregion
+
+
+        #region Comandos de menu barra
+
+        public RelayCommand Command_VeBiblioteca { get; set; }
+
+        /// <summary>
+        /// Define si el Async para obtener las novelas a mostrar en la biblioteca está corriendo.
+        /// </summary>
+        bool isExecuting = false;
+
+        public async void VeBiblioteca()
+        {
+            Debug.WriteLine("Ejecutando");
+            isExecuting = true;
+            var novelasEnDB = await ar.ObtenTodasNovelasAsync();
+
+            List<NovelaWPF> Novelas = new List<NovelaWPF>();
+            foreach (INovela novela in novelasEnDB)
+            {
+                Novelas.Add((NovelaWPF)novela);
+            }
+
+            BibliotecaViewModel = new BibliotecaViewModel(Novelas);
+            CurrentView = BibliotecaViewModel;
+            isExecuting = false;
+            Debug.WriteLine("Finalizado");
+        }
+
+        public bool Puedo_VeBibliteca()
+        {
+            return isExecuting == false;
+        }
+
+        
+        public RelayCommand Command_VeConfiguracion { get; set; }
+
+        public void VeConfiguracion()
+        {
+            ConfiguracionViewModel = new ConfiguracionViewModel();
+            CurrentView = ConfiguracionViewModel;
+        }
+
+
 
 
         #endregion

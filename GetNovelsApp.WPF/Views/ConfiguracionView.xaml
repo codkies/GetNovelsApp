@@ -99,6 +99,7 @@
                 <!--Agrega website-->
                 <Button Grid.Column="1"
                         Content="Agrega Nuevo"
+                        Command="{Binding Command_AggPerfil}"
                         Height="20"
                         Width="90"/>
             </Grid>
