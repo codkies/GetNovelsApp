@@ -97,6 +97,7 @@
             <!--Boton para añadir novela nueva-->
             <Button Grid.Row="4" VerticalAlignment="Bottom"
                     Margin="20"
+                    Command="{Binding Command_AgregarNovela}"
                     Background="{StaticResource Color1}"                    
                     Content="Añadir novela nueva"/>
 

@@ -5,6 +5,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GetNovelsApp.Core;
+using GetNovelsApp.Core.Conexiones.DB;
+using GetNovelsApp.Core.Modelos;
 using GetNovelsApp.WPF.Models;
 using GetNovelsApp.WPF.Utilidades;
 using GetNovelsApp.WPF.Views;
@@ -13,11 +16,41 @@ namespace GetNovelsApp.WPF.ViewModels
 {
     public class BibliotecaViewModel : ObservableObject
     {
-
-        public BibliotecaViewModel(List<NovelaWPF> NovelasEnBiblioteca)
+        private readonly Archivador ar;
+        public BibliotecaViewModel()
         {
-            NovelasVisibles = new ObservableCollection<NovelaWPF>(NovelasEnBiblioteca);
+            ar = new Archivador();
+            GetNovelsEvents.NovelaAgregadaADB += GetNovelsEvents_NovelaAgregadaADB;
             Command_VerNovela = new RelayCommand<NovelaWPF>(VerNovela, Puedo_VerNovela);
+            Command_AgregarNovela = new RelayCommand(AgregarNovela, Puedo_AgregarNovela);
+            if (novelasVisibles == null) ObtenNovelasDB();
+        }
+
+        /// <summary>
+        /// Define si el Async para obtener las novelas a mostrar en la biblioteca está corriendo.
+        /// </summary>
+        bool isExecuting = false;
+
+        private async void GetNovelsEvents_NovelaAgregadaADB()
+        {
+            await ObtenNovelasDB();
+        }
+
+        private async Task ObtenNovelasDB()
+        {
+            Debug.WriteLine("Buscando novelas en DB");
+            isExecuting = true;
+            var novelasEnDB = await ar.ObtenTodasNovelasAsync();
+
+            List<NovelaWPF> Novelas = new List<NovelaWPF>();
+            foreach (INovela novela in novelasEnDB)
+            {
+                Novelas.Add((NovelaWPF)novela);
+            }
+
+            NovelasVisibles = new ObservableCollection<NovelaWPF>(Novelas);
+            isExecuting = false;
+            Debug.WriteLine("Novelas en DB, encontradas.");
         }
 
 
@@ -26,13 +59,19 @@ namespace GetNovelsApp.WPF.ViewModels
 
         private ObservableCollection<NovelaWPF> novelasVisibles;
 
-        public ObservableCollection<NovelaWPF> NovelasVisibles { get => novelasVisibles; set => OnPropertyChanged(ref novelasVisibles, value); } 
+
+        public ObservableCollection<NovelaWPF> NovelasVisibles { get => novelasVisibles; set => OnPropertyChanged(ref novelasVisibles, value); }
+
+        #endregion
+
+
+        #region Ver novela
 
 
         public RelayCommand<NovelaWPF> Command_VerNovela { get; set; }
 
         public void VerNovela(NovelaWPF novela)
-        {          
+        {
             //Crea un ViewModel para la novela, y pasaselo al AppViewModel (main script).
             GetNovelsWPFEvents.Invoke_Cambia(new NovelViewModel(novela));
         }
@@ -41,7 +80,26 @@ namespace GetNovelsApp.WPF.ViewModels
         {
             return true;
         }
+        #endregion
+
+
+        #region Agregar novela
+
+        public RelayCommand Command_AgregarNovela { get; set; }
+
+        public void AgregarNovela()
+        {
+            AddNovelView addNovelView = new AddNovelView();
+            addNovelView.Show();
+
+        }
+
+        public bool Puedo_AgregarNovela()
+        {
+            return true;
+        }
 
         #endregion
+
     }
 }

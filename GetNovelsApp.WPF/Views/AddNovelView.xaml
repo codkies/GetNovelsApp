@@ -1,4 +1,5 @@
 ﻿<Window x:Class="GetNovelsApp.WPF.Views.AddNovelView"
+        Name="EstaVentana"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -36,6 +37,7 @@
 
         <!--Resultados-->
         <Grid Margin="10">
+            
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="2*"/>
@@ -54,19 +56,20 @@
             <TextBlock Text="Titulo"
                        Grid.Column="0" 
                        Grid.Row="0"/>
-            <TextBox Grid.Column="1"
-                     Grid.Row="0"
-                     Text="{Binding Titulo}"/>
+            <TextBlock Grid.Column="1"
+                       Grid.Row="0"
+                       Text="{Binding Titulo}"
+                       FontStyle="Italic"/>
 
             <!--2nd row-->
             <TextBlock Text="Cantidad de links"
                        Margin="0 10 0 0"
                        Grid.Column="0" 
                        Grid.Row="1"/>
-            <TextBox Margin="0 10 0 0"
-                     Grid.Column="1"
-                     Grid.Row="1"
-                     Text="{Binding CantidadCapitulos}"/>
+            <TextBlock Margin="0 10 0 0"
+                       Grid.Column="1" Grid.Row="1"
+                       FontStyle="Italic"
+                       Text="{Binding CantidadCapitulos}"/>
 
             <!--3rd row, Sipnosis-->
             <Image Height="80"                    
@@ -76,10 +79,12 @@
                    Grid.Row="2"/>
             <!--Source="/GetNovelsApp.WPF;component/Resources/NovelHeroTest.jpg"-->
             <TextBox Margin="0 10 0 0"
-                     Grid.Column="1"
-                     Grid.Row="2"
+                     Grid.Column="1" Grid.Row="2"
                      Height="200"
+                     IsReadOnly="True"
+                     BorderThickness="0"
                      TextWrapping="Wrap"
+                     FontStyle="Italic"
                      Text="{Binding Sipnosis}"/>
 
             <!--4th row, Tags-->
@@ -94,8 +99,9 @@
                       ItemsSource="{Binding Tags}"/>
 
             <!--5th row-->
-            <Button Content="Add"
+            <Button Content="Guarda Novela"
                     Command="{Binding Ejecuta_GuardaNovela}"
+                    CommandParameter="{Binding ElementName=EstaVentana}"
                     Margin="0 40 0 0"
                     Grid.Column="0" Grid.ColumnSpan="2" 
                     Grid.Row="4"/>

@@ -17,9 +17,12 @@ namespace GetNovelsApp.Core
         {
             ImprimeNovela = null;
             ConfiguracionCambio = null;
+            WebsitesCambiaron = null;
+            NovelaAgregadaADB = null;
         }
 
 
+        #region Imprime novela
         public static event Action<INovela, TiposDocumentos> ImprimeNovela;
 
         /// <summary>
@@ -31,10 +34,11 @@ namespace GetNovelsApp.Core
         {
             ImprimeNovela?.Invoke(novela, tipo);
         }
+        #endregion
 
 
+        #region Configuracion cambio
         public static event Action ConfiguracionCambio;
-
 
         /// <summary>
         /// Notifica a la app de que la configuración (en DB) ha cambiado.
@@ -43,10 +47,11 @@ namespace GetNovelsApp.Core
         {
             ConfiguracionCambio?.Invoke();
         }
+        #endregion
 
+
+        #region Perfiles de Websites cambiaron
         public static event Action WebsitesCambiaron;
-
-
         /// <summary>
         /// Notifica a la app de que la configuración (en DB) ha cambiado.
         /// </summary>
@@ -54,7 +59,18 @@ namespace GetNovelsApp.Core
         {
             WebsitesCambiaron?.Invoke();
         }
+        #endregion
 
 
+        #region Novela agregada
+
+        public static event Action NovelaAgregadaADB;
+
+        public static void Invoke_NovelaAgregadaADB()
+        {
+            NovelaAgregadaADB?.Invoke();
+        }
+
+        #endregion
     }
 }

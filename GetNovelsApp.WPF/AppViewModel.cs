@@ -20,12 +20,14 @@ namespace GetNovelsApp.WPF
 
         public AppViewModel()
         {
-            GetNovelsWPFEvents.CambiaViewModel += GetNovelsWPFEvents_CambiaViewModel;
+            InicializaApp();
+
             ar = new Archivador();
+            GetNovelsWPFEvents.CambiaViewModel += GetNovelsWPFEvents_CambiaViewModel;
+
             Command_VeBiblioteca = new RelayCommand(VeBiblioteca, Puedo_VeBibliteca);
             Command_VeConfiguracion = new RelayCommand(VeConfiguracion);
 
-            InicializaApp();
             VeBiblioteca();
         }
 
@@ -98,32 +100,16 @@ namespace GetNovelsApp.WPF
 
         public RelayCommand Command_VeBiblioteca { get; set; }
 
-        /// <summary>
-        /// Define si el Async para obtener las novelas a mostrar en la biblioteca está corriendo.
-        /// </summary>
-        bool isExecuting = false;
-
-        public async void VeBiblioteca()
-        {
-            Debug.WriteLine("Ejecutando");
-            isExecuting = true;
-            var novelasEnDB = await ar.ObtenTodasNovelasAsync();
-
-            List<NovelaWPF> Novelas = new List<NovelaWPF>();
-            foreach (INovela novela in novelasEnDB)
-            {
-                Novelas.Add((NovelaWPF)novela);
-            }
-
-            BibliotecaViewModel = new BibliotecaViewModel(Novelas);
+        
+        public void VeBiblioteca()
+        {            
+            BibliotecaViewModel = new BibliotecaViewModel();
             CurrentView = BibliotecaViewModel;
-            isExecuting = false;
-            Debug.WriteLine("Finalizado");
         }
 
         public bool Puedo_VeBibliteca()
         {
-            return isExecuting == false;
+            return true;
         }
 
         

@@ -147,7 +147,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
             List<Task> tareas = new List<Task>();
             foreach (var InfoNov in InfosDeNovelas)
             {
-                var tarea = Task.Run(() => OrganizeNovels(output, InfoNov));
+                var tarea = Task.Run(() => MeteCapitulosEnINovela(output, InfoNov));
                 tareas.Add(tarea);
             }
 
@@ -156,19 +156,6 @@ namespace GetNovelsApp.Core.Conexiones.DB
 
             return output;
         }
-
-
-        private void OrganizeNovels(List<INovela> locker, InformacionNovelaDB InfoNov)
-        {
-            using (IDbConnection cnn = DataBaseAccess.GetConnection())
-            {
-                string getThemChapters = GetChaptersOfNovel_Query(InfoNov);
-                var Capitulos = cnn.Query<Capitulo>(getThemChapters);
-                locker.Add(GetNovelsFactory.ObtenNovela(Capitulos, InfoNov));
-            }
-        }
-
-
 
 
         #endregion
@@ -252,6 +239,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
                     $"('{ID}', '{ManipuladorStrings.TagsEnString(infoNov.Tags)}')";
         }
 
+
         /// <summary>
         /// Toma un capitulo vacio, obtiene su info basica y la mete en la DB.
         /// </summary>
@@ -282,6 +270,20 @@ namespace GetNovelsApp.Core.Conexiones.DB
 
         #region Helpers
 
+        /// <summary>
+        /// Mete los capitulos de una novela en un INovela y mete la dicha INovela en el Locker.
+        /// </summary>
+        /// <param name="locker"></param>
+        /// <param name="InfoNov"></param>
+        private void MeteCapitulosEnINovela(List<INovela> locker, InformacionNovelaDB InfoNov)
+        {
+            using (IDbConnection cnn = DataBaseAccess.GetConnection())
+            {
+                string getThemChapters = GetChaptersOfNovel_Query(InfoNov);
+                var Capitulos = cnn.Query<Capitulo>(getThemChapters);
+                locker.Add(GetNovelsFactory.ObtenNovela(Capitulos, InfoNov));
+            }
+        }
 
 
         private INovela SacaNovelaDB(Uri LinkNovela) //Debe ir privada.
@@ -323,7 +325,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
 
             InformacionNovelaDB novDBInfo = cnn.Query<InformacionNovelaDB>(query_ObtenDBInfo).First();
 
-
+            GetNovelsEvents.Invoke_NovelaAgregadaADB();
             return novDBInfo;
         }
 

@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using GetNovelsApp.Core.Conexiones.DB;
 using GetNovelsApp.Core.Conexiones.Internet;
-using GetNovelsApp.Core.Modelos;
 using GetNovelsApp.WPF.Utilidades;
-using GetNovelsApp.WPF.Views.TEst;
 
 
 namespace GetNovelsApp.WPF.ViewModels
@@ -23,8 +18,8 @@ namespace GetNovelsApp.WPF.ViewModels
         public AddNovelViewModel()
         {
             Archivador = new Archivador();
-            Ejecuta_BuscaLink = new RelayCommand<string>(ObtenInfoNovela, EsLink);
-            Ejecuta_GuardaNovela = new RelayCommand(GuardaNovela, PuedeGuardarNovela);
+            Ejecuta_BuscaLink = new RelayCommand<string>(BuscaLink, Puede_BuscaLink);
+            Ejecuta_GuardaNovela = new RelayCommand<Window>(GuardarNovela, Puede_GuardarNovela);
         }
 
         InformacionNovelaOnline InfoNovela;
@@ -56,20 +51,15 @@ namespace GetNovelsApp.WPF.ViewModels
         #endregion
 
 
-        #region Comandos
+        #region Buscar link
 
-        public ICommand Ejecuta_BuscaLink { get; private set; }
-        public ICommand Ejecuta_GuardaNovela { get; private set; }
+        public RelayCommand<string> Ejecuta_BuscaLink { get; private set; }
 
 
-        #endregion
-
-        #region Comandos (metodos)
-
-        public void ObtenInfoNovela(string link)
+        public async void BuscaLink(string link)
         {
             Uri Link = new Uri(link);
-            InfoNovela = ManipuladorDeLinks.EncuentraInformacionNovela(Link);
+            InfoNovela = await Task.Run( ()=> ManipuladorDeLinks.EncuentraInformacionNovela(Link));
 
             //Descarga imagen
             Task.Run(() => ActualizaImagen(InfoNovela.Imagen.ToString()));
@@ -84,19 +74,28 @@ namespace GetNovelsApp.WPF.ViewModels
         }
 
 
-        public bool EsLink(string posibleLink)
+        public bool Puede_BuscaLink(string posibleLink)
         {
             return Uri.TryCreate(posibleLink, uriKind: UriKind.Absolute, out _);
-        } 
-
-
-
-        public void GuardaNovela()
-        {
-            Archivador.MeteNovelaDB(InfoNovela);
         }
 
-        public bool PuedeGuardarNovela()
+
+        #endregion
+
+
+        #region Guardar novela
+
+        public RelayCommand<Window> Ejecuta_GuardaNovela { get; private set; }
+
+
+        public void GuardarNovela(Window window)
+        {
+            Archivador.MeteNovelaDB(InfoNovela);
+            window.Close();
+        }
+
+
+        public bool Puede_GuardarNovela(Window window)
         {
             return (!NovelaYaEstaEnDB) & (InfoNovela != null) ;
         }
