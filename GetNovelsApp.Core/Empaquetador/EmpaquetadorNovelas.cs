@@ -6,6 +6,7 @@ using GetNovelsApp.Core.Reportaje;
 using GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores;
 using GetNovelsApp.Core.Empaquetador;
 using GetNovelsApp.Core.Conexiones.DB;
+using Testing;
 
 namespace GetNovelsApp.Core.Empaquetadores
 {
@@ -62,7 +63,7 @@ namespace GetNovelsApp.Core.Empaquetadores
         }
          
 
-        public void EmpaquetaCapitulo(List<Capitulo> CapitulosDescargados, INovela novela)
+        public void EmpaquetaCapitulo(List<Capitulo> CapitulosDescargados, INovela novela, IProgress<Descarga> reporte)
         {          
             foreach (Capitulo c in CapitulosDescargados)
             {
@@ -70,6 +71,14 @@ namespace GetNovelsApp.Core.Empaquetadores
             }
 
             Archivador.GuardaCapitulos(CapitulosDescargados, novela.ID);
+
+            Descarga descarga = new Descarga()
+            {
+                PorcentajeDescarga = novela.PorcentajeDescarga,
+                Novela = novela
+            };
+
+            reporte.Report(descarga);
         }
 
         
