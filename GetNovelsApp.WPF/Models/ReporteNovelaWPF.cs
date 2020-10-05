@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
 using GetNovelsApp.Core.Modelos;
 using GetNovelsApp.Core.Reportaje;
 using GetNovelsApp.WPF.Utilidades;
 
 namespace GetNovelsApp.WPF.Models
-{
-    public class ReporteNovelaWPF : ObservableObject, IReporteNovela<NovelaWPF>
+{   
+    public class ReporteNovelaWPF : ObservableObject, IReporteNovela
     {
-        private NovelaWPF objetoDescargado;
+        private INovela objetoReportado;
         private int total;
         private int actual;
         private string mensaje;
@@ -21,10 +18,12 @@ namespace GetNovelsApp.WPF.Models
         public ReporteNovelaWPF(INovela novelaDescargada)
         {
             Identificador = novelaDescargada.ID;
-            ObjetoReportado = novelaDescargada as NovelaWPF;
+            ObjetoReportado = novelaDescargada;
+            Total = novelaDescargada.Capitulos.Count;
+            Actual = novelaDescargada.CapitulosPorDescargar.Count;
         }
 
-        public ReporteNovelaWPF(int capitulosTotales, int capitulosDescargados, int novelaID, IReportero reportero, string mensaje = "", NovelaWPF novelaDescargada = null)
+        public ReporteNovelaWPF(int capitulosTotales, int capitulosDescargados, int novelaID, IReportero reportero, string mensaje = "", INovela novelaDescargada = null)
         {
             Total = capitulosTotales;
             Actual = capitulosDescargados;
@@ -40,7 +39,7 @@ namespace GetNovelsApp.WPF.Models
         /// <summary>
         /// Puede ser nulo. Cuidado.
         /// </summary>
-        public NovelaWPF ObjetoReportado { get => objetoDescargado; private set => OnPropertyChanged(ref objetoDescargado, value); }
+        public INovela ObjetoReportado { get => objetoReportado; private set => OnPropertyChanged(ref objetoReportado, value); }
 
         public int PorcentajeDeCompletado => Total > 0 ? (Actual * 100) / Total : 0;
 
@@ -55,7 +54,7 @@ namespace GetNovelsApp.WPF.Models
         public IReportero Reportero { get => reportero; private set => OnPropertyChanged(ref reportero, value); }
 
 
-        public bool ActualizaReporte(IReporte<NovelaWPF> actualizacion)
+        public bool ActualizaReporte(IReporteNovela actualizacion)
         {
             if(identificador != actualizacion.Identificador)
             {
@@ -67,8 +66,9 @@ namespace GetNovelsApp.WPF.Models
             Reportero = actualizacion.Reportero;
 
             //Opcionales:
-            Mensaje = actualizacion.Mensaje.Equals("") ? null : actualizacion.Mensaje;
+            if(actualizacion.Mensaje != null) Mensaje = actualizacion.Mensaje;
             return true;
         }
+      
     }
 }

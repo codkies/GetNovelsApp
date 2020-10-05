@@ -99,10 +99,11 @@ namespace GetNovelsApp.Core
         /// <summary>
         /// Une el reporte con el ID de la novela.
         /// </summary>
-        private Dictionary<int, Progress<IReporteNovela<INovela>>> ReportePorID = new Dictionary<int, Progress<IReporteNovela<INovela>>>();
+        private Dictionary<int, IProgress<IReporteNovela>> ReportePorID = new Dictionary<int, IProgress<IReporteNovela>>();
 
-        public async Task<bool> AgregaAlQueue(INovela novela, Progress<IReporteNovela<INovela>> reporte)
-        {
+
+        public async Task<bool> AgregaAlQueue(INovela novela, IProgress<IReporteNovela> progreso)
+        {            
             #region Checks
             //no puede estar en la DB al 100%
             if (novela.EstoyCompleta)
@@ -119,7 +120,7 @@ namespace GetNovelsApp.Core
             #endregion
 
             
-            RegistraNovela(novela, reporte);
+            RegistraNovela(novela, progreso);
 
             await RevisaSiQuedanNovelasPorDescargarAsync();
 
@@ -129,10 +130,10 @@ namespace GetNovelsApp.Core
         /// <summary>
         /// Registra una novela para ser descargada cuando se pueda.
         /// </summary>
-        private void RegistraNovela(INovela novela, IProgress<IReporte<INovela>> reporte)
+        private void RegistraNovela(INovela novela, IProgress<IReporteNovela> progreso)
         {
             NovelasPorDescargar.Enqueue(novela);            
-            ReportePorID.Add(novela.ID, reporte);
+            ReportePorID.Add(novela.ID, progreso);
         }
 
         /// <summary>
@@ -190,7 +191,7 @@ namespace GetNovelsApp.Core
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            IProgress<IReporte<INovela>> Reporte = ReportePorID[novelaNueva.ID];
+            IProgress<IReporteNovela> Reporte = ReportePorID[novelaNueva.ID];
             await ScrapMyNovelaAsync(ComienzaEn, Reporte);
 
             stopwatch.Stop();
@@ -212,7 +213,7 @@ namespace GetNovelsApp.Core
         #region Scraping:
 
 
-        private async Task ScrapMyNovelaAsync(int ComienzaEn, IProgress<IReporte<INovela>> reporte)
+        private async Task ScrapMyNovelaAsync(int ComienzaEn, IProgress<IReporteNovela> progreso)
         {
             //Preparaciones:
             int tamañoBatch = GetNovelsConfig.TamañoBatch;
@@ -242,7 +243,7 @@ namespace GetNovelsApp.Core
 
                 
 
-                Task.Run(() => MyEmpaquetador.EmpaquetaCapitulo(capitulosCompletos, MyNovela, reporte));
+                Task.Run(() => MyEmpaquetador.EmpaquetaCapitulo(capitulosCompletos, MyNovela, progreso));
 
                 GetNovelsComunicador.Reporta($"... {((i + 1) * 100) / (batches + 1)}% de las iteraciones completadas...", this);
 

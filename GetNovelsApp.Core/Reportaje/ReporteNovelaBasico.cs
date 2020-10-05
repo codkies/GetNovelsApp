@@ -2,7 +2,7 @@
 
 namespace GetNovelsApp.Core.Reportaje
 {
-    public class ReporteBasico : IReporte<INovela>
+    public class ReporteNovelaBasico : IReporteNovela
     {
         private INovela objetoDescargado;
         private int total;
@@ -11,7 +11,7 @@ namespace GetNovelsApp.Core.Reportaje
         private int identificador;
         private IReportero reportero;
 
-        public ReporteBasico(int capitulosTotales, int capitulosDescargados, int novelaID, IReportero reportero, string mensaje = "", INovela objetoDescargado = null)
+        public ReporteNovelaBasico(int capitulosTotales, int capitulosDescargados, int novelaID, IReportero reportero, string mensaje = "", INovela objetoDescargado = null)
         {
             Total = capitulosTotales;
             Actual = capitulosDescargados;

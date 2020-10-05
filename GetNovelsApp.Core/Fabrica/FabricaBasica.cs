@@ -83,9 +83,9 @@ namespace GetNovelsApp.Core.GetNovelsApp
         #region Reportes
 
 
-        public IReporte<INovela> FabricaReporteNovela(int capitulosTotales, int capitulosDescargados, IReportero reportero, int novelaID, string mensaje, INovela novela)
+        public IReporteNovela FabricaReporteNovela(int capitulosTotales, int capitulosDescargados, IReportero reportero, int novelaID, string mensaje, INovela novela)
         {
-            return new ReporteBasico(capitulosTotales, capitulosDescargados, novelaID, reportero, mensaje, novela);
+            return new ReporteNovelaBasico(capitulosTotales, capitulosDescargados, novelaID, reportero, mensaje, novela) as IReporteNovela;
         }
 
 

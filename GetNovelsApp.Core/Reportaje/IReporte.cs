@@ -1,12 +1,11 @@
-﻿using GetNovelsApp.Core.Modelos;
-
-namespace GetNovelsApp.Core.Reportaje
+﻿namespace GetNovelsApp.Core.Reportaje
 {
+
     /// <summary>
     /// Interfaz para los mensajes dentro del 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IReporte<T>
+    public interface IReporte<out T>
     {
         public int PorcentajeDeCompletado { get; }
 
@@ -22,15 +21,4 @@ namespace GetNovelsApp.Core.Reportaje
 
         public IReportero Reportero { get; }
     }
-
-    public interface IReporteNovela<T> : IReporte<T> where T : INovela
-    {
-
-    }
-
-    public class ReporteNovela
-    {
-
-    }
-
 }

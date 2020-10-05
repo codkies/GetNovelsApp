@@ -67,7 +67,7 @@ namespace GetNovelsApp.Core
         }
 
 
-        public static IReporte<INovela> FabricaReporteNovela(int capitulosTotales, int capitulosDescargados, int novelaID, IReportero reportero, string mensaje = "", INovela novela = null)
+        public static IReporteNovela FabricaReporteNovela(int capitulosTotales, int capitulosDescargados, int novelaID, IReportero reportero, string mensaje = "", INovela novela = null)
         {
             return Fabrica.FabricaReporteNovela(capitulosTotales, capitulosDescargados, reportero, novelaID, mensaje, novela);
         }

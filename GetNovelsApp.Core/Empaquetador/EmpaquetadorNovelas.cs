@@ -62,7 +62,7 @@ namespace GetNovelsApp.Core.Empaquetadores
         }
 
 
-        public void EmpaquetaCapitulo(List<Capitulo> CapitulosDescargados, INovela novela, IProgress<IReporte<INovela>> reporte)
+        public void EmpaquetaCapitulo(List<Capitulo> CapitulosDescargados, INovela novela, IProgress<IReporteNovela> progreso)
         {
             foreach (Capitulo c in CapitulosDescargados)
             {
@@ -73,7 +73,8 @@ namespace GetNovelsApp.Core.Empaquetadores
 
             var nuevo_Reporte = GetNovelsFactory.FabricaReporteNovela(novela.Capitulos.Count, novela.CapitulosDescargados.Count, novela.ID, this);
 
-            reporte.Report(nuevo_Reporte);
+            progreso.Report(nuevo_Reporte);
+           
         }
 
         

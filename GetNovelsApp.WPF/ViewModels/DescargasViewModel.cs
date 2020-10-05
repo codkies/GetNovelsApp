@@ -50,15 +50,14 @@ namespace GetNovelsApp.WPF.ViewModels
 
         private async void GetNovelsWPFEvents_DescargaNovela(INovela novela)
         {
-            ReporteNovelaWPF repo = new ReporteNovelaWPF(novela);
-            Descargas.Add(repo);
+            ReporteNovelaWPF reporteVacio = new ReporteNovelaWPF(novela);
+            Descargas.Add(reporteVacio);
 
-            Progress<ReporteNovelaWPF> progress = new Progress<ReporteNovelaWPF>();
-            
+            ProgresoNovela progresoNovela = new ProgresoNovela();
 
-            _.ProgressChanged += Reporte_ProgressChanged;
+            progresoNovela.ProgressChanged += ProgresoNovela_ProgressChanged;
 
-            bool exito = await GetNovels.AgregaAlQueue(novela, progress);
+            bool exito = await GetNovels.AgregaAlQueue(novela, progresoNovela);
 
             if(exito == false)
             {
@@ -66,21 +65,16 @@ namespace GetNovelsApp.WPF.ViewModels
             }
         }
 
-        /// <summary>
-        /// Llamado cada vez que un reporte creado por este script, cambia.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Reporte_ProgressChanged(object sender, ReporteNovelaWPF e)
+        private void ProgresoNovela_ProgressChanged(object sender, IReporteNovela e)
         {
             //Encontrando la novela a la que este cambio está notificando.
             var descarga = Descargas.Where(x => x.Identificador == e.Identificador).First();
             descarga?.ActualizaReporte(e);
-            if(descarga == null)
+            if (descarga == null)
             {
                 throw new Exception("Se intento actualizar el reporte de una descarga del cual no se tiene referencia\n- DescargasViewModel.");
             }
-        }
+        }      
 
 
         #endregion
