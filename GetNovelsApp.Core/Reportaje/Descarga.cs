@@ -2,7 +2,7 @@
 using GetNovelsApp.Core.Modelos;
 
 namespace Testing
-{ 
+{
     /// <summary>
     /// This class is kinda dumb...
     /// </summary>
@@ -17,8 +17,9 @@ namespace Testing
 
         public INovela Novela { get; set; }
 
+        
+
 
         public int PorcentajeDescarga { get; set; }
     }
-
 }

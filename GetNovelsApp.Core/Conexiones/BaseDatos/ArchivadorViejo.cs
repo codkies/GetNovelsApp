@@ -34,7 +34,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
                 GuardaCapitulos(CapitulosNovela, novDBInfo.ID); //Itera los caps y encuentra su info.
 
                 //Regresando una novela para runtime:
-                INovela nov = GetNovelsFactory.ObtenNovela(CapitulosNovela, novDBInfo);
+                INovela nov = GetNovelsFactory.FabricaNovela(CapitulosNovela, novDBInfo);
                 cnn.Dispose();
                 return nov;
             }

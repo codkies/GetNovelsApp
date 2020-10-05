@@ -129,7 +129,9 @@
     <Compile Include="ConfiguracionApp\xPaths\IPath.cs" />
     <Compile Include="Modelos\INovela.cs" />
     <Compile Include="Reportaje\IComunicador.cs" />
+    <Compile Include="Reportaje\IReporte.cs" />
     <Compile Include="Reportaje\IReportero.cs" />
+    <Compile Include="Reportaje\ReporteBasico.cs" />
     <Compile Include="Utilidades\ComparerOrdenadorCapitulos.cs" />
     <Compile Include="Empaquetador\EmpaquetadorNovelas.cs" />
     <Compile Include="Modelos\NovelaRT.cs" />

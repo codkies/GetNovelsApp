@@ -45,7 +45,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
                 GuardaCapitulos(CapitulosNovela, novDBInfo.ID); //Itera los caps y encuentra su info.
 
                 //Regresando una novela para runtime:
-                INovela nov = GetNovelsFactory.ObtenNovela(CapitulosNovela, novDBInfo);
+                INovela nov = GetNovelsFactory.FabricaNovela(CapitulosNovela, novDBInfo);
                 cnn.Dispose();
                 return nov;
             }
@@ -126,7 +126,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
             {
                 string getThemChapters = GetChaptersOfNovel_Query(InfoNov);
                 var Capitulos = cnn.Query<Capitulo>(getThemChapters);
-                output.Add(GetNovelsFactory.ObtenNovela(Capitulos, InfoNov));
+                output.Add(GetNovelsFactory.FabricaNovela(Capitulos, InfoNov));
             }
 
             cnn.Dispose();
@@ -281,7 +281,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
             {
                 string getThemChapters = GetChaptersOfNovel_Query(InfoNov);
                 var Capitulos = cnn.Query<Capitulo>(getThemChapters);
-                locker.Add(GetNovelsFactory.ObtenNovela(Capitulos, InfoNov));
+                locker.Add(GetNovelsFactory.FabricaNovela(Capitulos, InfoNov));
             }
         }
 
@@ -299,7 +299,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
             List<Capitulo> Capitulos = cnn.Query<Capitulo>(qryCapitlos).ToList();
             
             //Construye la Inovela
-            INovela novela = GetNovelsFactory.ObtenNovela(Capitulos, infoDBNovela);
+            INovela novela = GetNovelsFactory.FabricaNovela(Capitulos, infoDBNovela);
 
             cnn.Dispose();
             return novela;

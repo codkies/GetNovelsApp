@@ -6,7 +6,6 @@ using GetNovelsApp.Core.Reportaje;
 using GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores;
 using GetNovelsApp.Core.Empaquetador;
 using GetNovelsApp.Core.Conexiones.DB;
-using Testing;
 
 namespace GetNovelsApp.Core.Empaquetadores
 {
@@ -61,20 +60,20 @@ namespace GetNovelsApp.Core.Empaquetadores
         {
 
         }
-         
 
-        public void EmpaquetaCapitulo(List<Capitulo> CapitulosDescargados, INovela novela, IProgress<Descarga> reporte)
-        {          
+
+        public void EmpaquetaCapitulo(List<Capitulo> CapitulosDescargados, INovela novela, IProgress<IReporte<INovela>> reporte)
+        {
             foreach (Capitulo c in CapitulosDescargados)
             {
-                novela.CapituloFueDescargado(c);                
+                novela.CapituloFueDescargado(c);
             }
 
             Archivador.GuardaCapitulos(CapitulosDescargados, novela.ID);
 
-            Descarga descarga = new Descarga(novela);
+            var nuevo_Reporte = GetNovelsFactory.FabricaReporteNovela(novela.Capitulos.Count, novela.CapitulosDescargados.Count, novela.ID, this);
 
-            reporte.Report(descarga);
+            reporte.Report(nuevo_Reporte);
         }
 
         
@@ -86,7 +85,7 @@ namespace GetNovelsApp.Core.Empaquetadores
         private void ImprimeNovela(INovela novela, TiposDocumentos tipo)
         {
             string Path = LocalPathManager.DefinePathNovela(novela);
-            IConstructor Constructor = GetNovelsFactory.AsignaConstructor(novela, tipo, GetNovelsConfig.CapitulosPorPdf, Path, novela.Titulo, CapituloImpreso, DocumentoCreado);
+            IConstructor Constructor = GetNovelsFactory.FabricaConstructor(novela, tipo, GetNovelsConfig.CapitulosPorPdf, Path, novela.Titulo, CapituloImpreso, DocumentoCreado);
 
             List<Capitulo> CapitulosAImprimir = new List<Capitulo>(novela.CapitulosDescargados);
 

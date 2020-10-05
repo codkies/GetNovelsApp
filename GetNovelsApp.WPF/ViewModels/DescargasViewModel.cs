@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using GetNovelsApp.Core;
 using GetNovelsApp.Core.Conexiones.DB;
 using GetNovelsApp.Core.Modelos;
+using GetNovelsApp.Core.Reportaje;
 using GetNovelsApp.WPF.Models;
 using GetNovelsApp.WPF.Utilidades;
 using Testing;
@@ -22,7 +23,7 @@ namespace GetNovelsApp.WPF.ViewModels
         /// Referencia a la app.
         /// </summary>
         private readonly GetNovels GetNovels;
-        private ObservableCollection<Descarga> descargas = new ObservableCollection<Descarga>();
+        private ObservableCollection<ReporteNovelaWPF> descargas = new ObservableCollection<ReporteNovelaWPF>();
 
         #endregion
 
@@ -32,24 +33,15 @@ namespace GetNovelsApp.WPF.ViewModels
         {
             GetNovels = getNovels;
             GetNovelsWPFEvents.DescargaNovela += GetNovelsWPFEvents_DescargaNovela;
-            //obtenNovelasDemo();
         }
 
-        private async Task obtenNovelasDemo()
-        {
-            var novelas = await new Archivador().ObtenTodasNovelasAsync();
-            foreach (var nov in novelas)
-            {
-                Descargas.Add( new Descarga(nov)); 
-            }
-        }
 
         #endregion
 
         #region Props 
 
 
-        public ObservableCollection<Descarga> Descargas { get => descargas; set => OnPropertyChanged(ref descargas, value); }
+        public ObservableCollection<ReporteNovelaWPF> Descargas { get => descargas; set => OnPropertyChanged(ref descargas, value); }
 
 
         #endregion
@@ -58,15 +50,16 @@ namespace GetNovelsApp.WPF.ViewModels
 
         private async void GetNovelsWPFEvents_DescargaNovela(INovela novela)
         {
-            Progress<Descarga> Reporte = new Progress<Descarga>();
+            ReporteNovelaWPF repo = new ReporteNovelaWPF(novela);
+            Descargas.Add(repo);
 
-            Descarga descarga = new Descarga(novela);
+            Progress<ReporteNovelaWPF> progress = new Progress<ReporteNovelaWPF>();
+            
 
-            Descargas.Add(descarga);
+            _.ProgressChanged += Reporte_ProgressChanged;
 
-            Reporte.ProgressChanged += Reporte_ProgressChanged;
+            bool exito = await GetNovels.AgregaAlQueue(novela, progress);
 
-            bool exito = await GetNovels.AgregaAlQueue(novela, Reporte);
             if(exito == false)
             {
                 throw new NotImplementedException($"no se pudo agregar {novela.Titulo} a las descargas.");
@@ -78,12 +71,15 @@ namespace GetNovelsApp.WPF.ViewModels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Reporte_ProgressChanged(object sender, Descarga e)
+        private void Reporte_ProgressChanged(object sender, ReporteNovelaWPF e)
         {
             //Encontrando la novela a la que este cambio está notificando.
-            var descarga = Descargas.Where(i => i.Novela == e.Novela).First();
-
-            descarga.PorcentajeDescarga = e.PorcentajeDescarga;
+            var descarga = Descargas.Where(x => x.Identificador == e.Identificador).First();
+            descarga?.ActualizaReporte(e);
+            if(descarga == null)
+            {
+                throw new Exception("Se intento actualizar el reporte de una descarga del cual no se tiene referencia\n- DescargasViewModel.");
+            }
         }
 
 

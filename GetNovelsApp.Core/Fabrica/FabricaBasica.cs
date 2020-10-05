@@ -7,6 +7,7 @@ using GetNovelsApp.Core.ConfiguracionApp.xPaths;
 using GetNovelsApp.Core.Empaquetadores;
 using GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores;
 using GetNovelsApp.Core.Modelos;
+using GetNovelsApp.Core.Reportaje;
 
 namespace GetNovelsApp.Core.GetNovelsApp
 {
@@ -68,7 +69,6 @@ namespace GetNovelsApp.Core.GetNovelsApp
             return new NovelaRT(capitulos, dbInfo);
         }
 
-
         #endregion
 
         #region Website
@@ -77,6 +77,17 @@ namespace GetNovelsApp.Core.GetNovelsApp
         {
             return new Website(dominio, xpathsLinks, xpathsTextos, xpathsTitulo, OrdenLinks);
         }
+
+        #endregion
+
+        #region Reportes
+
+
+        public IReporte<INovela> FabricaReporteNovela(int capitulosTotales, int capitulosDescargados, IReportero reportero, int novelaID, string mensaje, INovela novela)
+        {
+            return new ReporteBasico(capitulosTotales, capitulosDescargados, novelaID, reportero, mensaje, novela);
+        }
+
 
         #endregion
     }

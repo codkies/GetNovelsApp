@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GetNovelsApp.Core.Conexiones.DB;
 using GetNovelsApp.Core.Conexiones.Internet;
 using GetNovelsApp.Core.ConfiguracionApp;
@@ -11,6 +8,7 @@ using GetNovelsApp.Core.Empaquetadores;
 using GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores;
 using GetNovelsApp.Core.GetNovelsApp;
 using GetNovelsApp.Core.Modelos;
+using GetNovelsApp.Core.Reportaje;
 
 namespace GetNovelsApp.WPF.Models
 {
@@ -75,7 +73,6 @@ namespace GetNovelsApp.WPF.Models
             return new NovelaWPF(capitulos, dbInfo);
         }
 
-
         #endregion
 
 
@@ -84,6 +81,15 @@ namespace GetNovelsApp.WPF.Models
         public IPath FabricaWebsite(string dominio, List<string> xpathsLinks, List<string> xpathsTextos, List<string> xpathsTitulo, OrdenLinks OrdenLinks)
         {
             return new Website(dominio, xpathsLinks, xpathsTextos, xpathsTitulo, OrdenLinks);
+        }
+
+        #endregion
+
+        #region Reporte
+
+        public IReporte<INovela> FabricaReporteNovela(int capitulosTotales, int capitulosDescargados, IReportero reportero, int novelaID, string mensaje, INovela novelaDescargada)
+        {
+            return new ReporteNovelaWPF(capitulosTotales, capitulosDescargados, novelaID, reportero, mensaje, novelaDescargada as NovelaWPF) as IReporte<INovela>;
         }
 
         #endregion

@@ -8,6 +8,7 @@ using GetNovelsApp.Core.Empaquetadores;
 using GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores;
 using GetNovelsApp.Core.GetNovelsApp;
 using GetNovelsApp.Core.Modelos;
+using GetNovelsApp.Core.Reportaje;
 
 namespace GetNovelsApp.Core
 {
@@ -52,18 +53,24 @@ namespace GetNovelsApp.Core
         /// </summary>
         /// <param name="tipo"></param>
         /// <returns></returns>
-        public static IConstructor AsignaConstructor(INovela novela, TiposDocumentos tipo, int capsPorPDF, string direccion, string titulo, NotificaCapituloImpreso notCapImpreso, NotificaDocumentoCreado notDocCreado)
+        public static IConstructor FabricaConstructor(INovela novela, TiposDocumentos tipo, int capsPorPDF, string direccion, string titulo, NotificaCapituloImpreso notCapImpreso, NotificaDocumentoCreado notDocCreado)
         {
             return Fabrica.FabricaConstructor(novela, tipo, capsPorPDF, direccion, titulo, notCapImpreso, notDocCreado);
         }
 
 
 
-        public static INovela ObtenNovela(IEnumerable<Capitulo> capitulos, InformacionNovelaDB info)
+        public static INovela FabricaNovela(IEnumerable<Capitulo> capitulos, InformacionNovelaDB info)
         {
             List<Capitulo> _ = new List<Capitulo>(capitulos);
             return Fabrica.FabricaNovela(_, info);
-        } 
+        }
+
+
+        public static IReporte<INovela> FabricaReporteNovela(int capitulosTotales, int capitulosDescargados, int novelaID, IReportero reportero, string mensaje = "", INovela novela = null)
+        {
+            return Fabrica.FabricaReporteNovela(capitulosTotales, capitulosDescargados, reportero, novelaID, mensaje, novela);
+        }
 
     }
 

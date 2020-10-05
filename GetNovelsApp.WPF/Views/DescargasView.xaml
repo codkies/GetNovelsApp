@@ -26,7 +26,7 @@
                 <DataGridTemplateColumn Header="Novela" Width="*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Path=Novela.Titulo}"/>
+                            <TextBlock Text="{Binding Path=ObjetoDescargado.Titulo}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -38,9 +38,9 @@
                         <DataTemplate>
                             <TextBlock VerticalAlignment="Center"
                                        TextAlignment="Center">
-                                <Run Text="{Binding Novela.CapitulosDescargados.Count, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Run Text="{Binding Actual, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
                                 <Run Text="/"/>
-                                <Run Text="{Binding Novela.Capitulos.Count, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Run Text="{Binding Total, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
                                 <Run Text="Capitulos"/>
                             </TextBlock>
                         </DataTemplate>
@@ -52,7 +52,7 @@
                                         IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <ProgressBar DataContext="{Binding PorcentajeDescarga, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                            <ProgressBar DataContext="{Binding PorcentajeDeCompletado, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                          Margin="10"
                                          Padding="10"/>
                         </DataTemplate>

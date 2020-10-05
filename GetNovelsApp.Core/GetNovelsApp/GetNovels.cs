@@ -11,7 +11,6 @@ using GetNovelsApp.Core.Empaquetadores;
 using GetNovelsApp.Core.Conexiones.DB;
 using GetNovelsApp.Core.GetNovelsApp;
 using System.Linq;
-using Testing;
 
 
 namespace GetNovelsApp.Core
@@ -88,7 +87,7 @@ namespace GetNovelsApp.Core
 
         private readonly Archivador Archivador;
 
-        #endregion
+        #endregion 
 
 
 
@@ -100,9 +99,9 @@ namespace GetNovelsApp.Core
         /// <summary>
         /// Une el reporte con el ID de la novela.
         /// </summary>
-        private Dictionary<int, IProgress<Descarga>> ReportePorID = new Dictionary<int, IProgress<Descarga>>();
+        private Dictionary<int, Progress<IReporteNovela<INovela>>> ReportePorID = new Dictionary<int, Progress<IReporteNovela<INovela>>>();
 
-        public async Task<bool> AgregaAlQueue(INovela novela, IProgress<Descarga> reporte)
+        public async Task<bool> AgregaAlQueue(INovela novela, Progress<IReporteNovela<INovela>> reporte)
         {
             #region Checks
             //no puede estar en la DB al 100%
@@ -130,7 +129,7 @@ namespace GetNovelsApp.Core
         /// <summary>
         /// Registra una novela para ser descargada cuando se pueda.
         /// </summary>
-        private void RegistraNovela(INovela novela, IProgress<Descarga> reporte)
+        private void RegistraNovela(INovela novela, IProgress<IReporte<INovela>> reporte)
         {
             NovelasPorDescargar.Enqueue(novela);            
             ReportePorID.Add(novela.ID, reporte);
@@ -191,7 +190,7 @@ namespace GetNovelsApp.Core
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            IProgress<Descarga> Reporte = ReportePorID[novelaNueva.ID];
+            IProgress<IReporte<INovela>> Reporte = ReportePorID[novelaNueva.ID];
             await ScrapMyNovelaAsync(ComienzaEn, Reporte);
 
             stopwatch.Stop();
@@ -213,7 +212,7 @@ namespace GetNovelsApp.Core
         #region Scraping:
 
 
-        private async Task ScrapMyNovelaAsync(int ComienzaEn, IProgress<Descarga> reporte)
+        private async Task ScrapMyNovelaAsync(int ComienzaEn, IProgress<IReporte<INovela>> reporte)
         {
             //Preparaciones:
             int tamañoBatch = GetNovelsConfig.TamañoBatch;

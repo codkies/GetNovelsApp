@@ -6,6 +6,7 @@ using GetNovelsApp.Core.ConfiguracionApp.xPaths;
 using GetNovelsApp.Core.Empaquetadores;
 using GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores;
 using GetNovelsApp.Core.Modelos;
+using GetNovelsApp.Core.Reportaje;
 
 namespace GetNovelsApp.Core.GetNovelsApp
 {
@@ -20,5 +21,10 @@ namespace GetNovelsApp.Core.GetNovelsApp
         List<Capitulo> FabricaCapitulos(List<Uri> ListaDeLinks);
 
         public IPath FabricaWebsite(string dominio, List<string> xpathsLinks, List<string> xpathsTextos, List<string> xpathsTitulo, OrdenLinks OrdenLinks);
+
+        public IReporte<INovela> FabricaReporteNovela(int capitulosTotales, int capitulosDescargados, IReportero reportero, int novelaID, string mensaje, INovela objetoDescargado);
+
+
+        //public IReporte<INovela> FabricaReporteCapitulo(int capitulosTotales, int capitulosDescargados, int novelaID, string mensaje, object objetoDescargado);
     }
 }
