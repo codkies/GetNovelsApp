@@ -1,15 +1,7 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.ServiceModel.Dispatcher;
-using System.Threading.Tasks;
-using GetNovelsApp.Core;
-using GetNovelsApp.Core.Conexiones.DB;
-using GetNovelsApp.Core.Modelos;
+﻿using GetNovelsApp.Core;
 using GetNovelsApp.WPF.Models;
 using GetNovelsApp.WPF.Utilidades;
 using GetNovelsApp.WPF.ViewModels;
-using GetNovelsApp.WPF.Views;
 
 namespace GetNovelsApp.WPF
 {
@@ -29,20 +21,22 @@ namespace GetNovelsApp.WPF
         public AppViewModel()
         {
             InicializaApp();
-
+            //Descargas 
             GetNovelsWPFEvents.CambiaViewModel += GetNovelsWPFEvents_CambiaViewModel;
 
             Command_VeBiblioteca = new RelayCommand(VeBiblioteca, Puedo_VeBibliteca);
             Command_VeConfiguracion = new RelayCommand(VeConfiguracion);
             Command_VeDescargas = new RelayCommand(VeDescargas);
 
-            VeBiblioteca();
+            VeDescargas();
+            //VeBiblioteca();
         }
 
         private void GetNovelsWPFEvents_CambiaViewModel(object obj)
         {
             CurrentView = obj;
         }
+
 
         /// <summary>
         /// Toma referencias de GetNovels y GetNovelsConfig
@@ -52,6 +46,7 @@ namespace GetNovelsApp.WPF
             if (Inicializado == false)
             {
                 GetNovels = Setter.ObtenGetNovel();
+                //DescargasViewModel = new DescargasViewModel(GetNovels);
                 Inicializado = true;
             }
         }
@@ -118,7 +113,7 @@ namespace GetNovelsApp.WPF
 
         public void VeBiblioteca()
         {
-            BibliotecaViewModel = new BibliotecaViewModel();
+            if(BibliotecaViewModel == null) BibliotecaViewModel = new BibliotecaViewModel();
             CurrentView = BibliotecaViewModel;
         }
 
@@ -135,7 +130,7 @@ namespace GetNovelsApp.WPF
 
         public void VeConfiguracion()
         {
-            ConfiguracionViewModel = new ConfiguracionViewModel();
+            if (ConfiguracionViewModel == null) ConfiguracionViewModel = new ConfiguracionViewModel();
             CurrentView = ConfiguracionViewModel;
         } 
 
@@ -143,9 +138,10 @@ namespace GetNovelsApp.WPF
 
         public RelayCommand Command_VeDescargas { get; set; }
 
+        
         public void VeDescargas()
         {
-            DescargasViewModel = new DescargasViewModel(GetNovels);
+            if(DescargasViewModel == null) DescargasViewModel = new DescargasViewModel(GetNovels);
             CurrentView = DescargasViewModel;
         }
 

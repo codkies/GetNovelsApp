@@ -72,11 +72,7 @@ namespace GetNovelsApp.Core.Empaquetadores
 
             Archivador.GuardaCapitulos(CapitulosDescargados, novela.ID);
 
-            Descarga descarga = new Descarga()
-            {
-                PorcentajeDescarga = novela.PorcentajeDescarga,
-                Novela = novela
-            };
+            Descarga descarga = new Descarga(novela);
 
             reporte.Report(descarga);
         }

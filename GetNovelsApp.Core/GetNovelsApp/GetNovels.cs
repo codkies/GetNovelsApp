@@ -94,7 +94,7 @@ namespace GetNovelsApp.Core
 
         #region New
 
-        private Queue<INovela> NovelasPorDescargar;
+        private Queue<INovela> NovelasPorDescargar = new Queue<INovela>();
         private bool Descargando = false;
 
         /// <summary>

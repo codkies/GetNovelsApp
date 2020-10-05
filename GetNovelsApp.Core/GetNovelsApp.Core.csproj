@@ -118,6 +118,7 @@
     <Compile Include="Empaquetador\CreadorDocumentos\Constructores\ConstructorPDF.cs" />
     <Compile Include="Empaquetador\CreadorDocumentos\Constructores\IConstructor.cs" />
     <Compile Include="Empaquetador\LocalPathManager.cs" />
+    <Compile Include="Reportaje\Descarga.cs" />
     <Compile Include="GetNovelsApp\GetNovelsEvents.cs" />
     <Compile Include="Fabrica\FabricaBasica.cs" />
     <Compile Include="GetNovelsApp\GetNovelsFactory.cs" />

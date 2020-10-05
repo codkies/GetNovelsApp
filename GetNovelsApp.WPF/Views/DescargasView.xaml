@@ -13,51 +13,53 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="10*"/>            
-        </Grid.RowDefinitions>
+        <DataGrid Grid.Row="1" 
+                  ItemsSource="{Binding Descargas, UpdateSourceTrigger=PropertyChanged}" 
+                  AutoGenerateColumns="False" 
+                  Background="{StaticResource Color3}" 
+                  SelectedItem="{Binding EntradaSeleccionada, Mode=TwoWay}"  
+                  SelectionMode="Extended" 
+                  SelectionUnit="CellOrRowHeader">
 
-        <!--Col 1, descargas-->
-        <!--Nombre columnas-->
-        <Grid Grid.Row="0" ShowGridLines="True">
-            
-            <!--Estas columnas tienen que coincidir con las de DescargaView-->
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            
-            <!--primera columna, Novelas-->
-            <TextBlock Text="Novelas"
-                       Grid.Column="0"
-                       VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center"
-                       />
+            <DataGrid.Columns>
 
-            <!--primera columna, Progreso (Bar + Capitulos-->
-            <TextBlock Text="Progreso"
-                       Grid.Column="1"
-                       VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center"
-                       />
+                <DataGridTemplateColumn Header="Novela" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Path=Novela.Titulo}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
 
-            <!--primera columna, Novelas-->
-            <TextBlock Text="Estado"
-                       Grid.Column="2"
-                       VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center"
-                       />
-        </Grid>
-        <ListView Grid.Column="0" Grid.Row="1"
-                  Background="Transparent"
-                  BorderThickness="0">
-            
-            <!--Darle contexto-->
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <p:DescargaView/>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-        
+                <DataGridTemplateColumn Header="Capitulos" 
+                                        Width="*" 
+                                        IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock VerticalAlignment="Center"
+                                       TextAlignment="Center">
+                                <Run Text="{Binding Novela.CapitulosDescargados.Count, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Run Text="/"/>
+                                <Run Text="{Binding Novela.Capitulos.Count, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Run Text="Capitulos"/>
+                            </TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Progreso" 
+                                        Width="*"    
+                                        IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ProgressBar DataContext="{Binding PorcentajeDescarga, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                         Margin="10"
+                                         Padding="10"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </UserControl>

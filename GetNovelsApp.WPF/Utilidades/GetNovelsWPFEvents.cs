@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using GetNovelsApp.WPF.ViewModels;
+using GetNovelsApp.Core.Modelos;
 using Testing;
 
 namespace GetNovelsApp.WPF.Utilidades
@@ -23,11 +18,11 @@ namespace GetNovelsApp.WPF.Utilidades
 
         #region AgregaDescarga
 
-        public static event Action<Descarga> AgregaDescarga;
+        public static event Action<INovela> DescargaNovela;
 
-        public static void Invoke_AgregaDescarga(Descarga descarga)
+        public static void Invoke_DescargaNovela(INovela novela)
         {
-            AgregaDescarga?.Invoke(descarga);
+            DescargaNovela?.Invoke(novela);
         }
 
         #endregion

@@ -18,7 +18,7 @@
         </Grid.ColumnDefinitions>
         
         <!--Nombre novela-->
-        <TextBlock Text="{Binding Titulo, FallbackValue=N/A}" FontSize="15"
+        <TextBlock Text="{Binding Novela.Titulo, FallbackValue=N/A}" FontSize="15"
                    Grid.Column="0"
                    VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center"
                    />
@@ -28,9 +28,15 @@
             <TextBlock Text="15/1477 capitulos" 
                        Grid.Column="1"
                        VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center"
-                       Panel.ZIndex="1"/>
+                       Panel.ZIndex="1">
+                <Run Text="{Binding Novela.CapitulosPorDescargar.Count, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <Run Text="{Binding Novela.Capitulos.Count, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <Run Text="capitulos."/>
+
+            </TextBlock>
 
             <ProgressBar Panel.ZIndex="0"
+                         DataContext="{Binding PorcentajeDescarga, UpdateSourceTrigger=PropertyChanged}"
                          Height="15"/>
         </Grid>
         

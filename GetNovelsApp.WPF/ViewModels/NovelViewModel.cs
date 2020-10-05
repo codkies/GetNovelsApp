@@ -26,6 +26,7 @@ namespace GetNovelsApp.WPF.ViewModels
             PathImagenNovela = EncontradorImagen.DescargaImagen(NovelaEnVista.ImagenLink.ToString());
         }
 
+
         #region Props
         private NovelaWPF novelaEnVista;
         private string pathImagenNovela;
@@ -35,20 +36,22 @@ namespace GetNovelsApp.WPF.ViewModels
         public string PathImagenNovela { get => pathImagenNovela; private set => OnPropertyChanged(ref pathImagenNovela, value); }
         #endregion
 
+
         #region Descarga
 
         public RelayCommand Command_DescargaNovela { get; set; }
 
-        public async void DescargaNovelaAsync()
+        bool descargando = false;
+
+        public void DescargaNovelaAsync()
         {
-            Debug.WriteLine($"Descargando {NovelaEnVista.Titulo}");
-            await AppViewModel.GetNovels.GetNovelAsync(NovelaEnVista, 0);
-            Debug.WriteLine($"Descargada {NovelaEnVista.Titulo}");
+            GetNovelsWPFEvents.Invoke_DescargaNovela(NovelaEnVista);
+            descargando = true;
         }
 
         public bool Puedo_DescargaNovela()
         {
-            return !NovelaEnVista.EstoyCompleta;
+            return !NovelaEnVista.EstoyCompleta & descargando == false;
         }
 
         #endregion
