@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 
-using GetNovelsApp.Core.Utilidades;
 using GetNovelsApp.Core.Modelos;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -11,7 +10,6 @@ using GetNovelsApp.Core.Empaquetadores;
 using GetNovelsApp.Core.Conexiones.DB;
 using GetNovelsApp.Core.GetNovelsApp;
 using System.Linq;
-using Org.BouncyCastle.Math.Field;
 
 namespace GetNovelsApp.Core
 {
@@ -66,9 +64,7 @@ namespace GetNovelsApp.Core
 
         #endregion
 
-
-        #region Publico
-
+        
 
         #region Props
 
@@ -91,9 +87,10 @@ namespace GetNovelsApp.Core
 
 
 
-        #region New
+        #region Queueing a novel
 
         private Queue<INovela> NovelasPorDescargar = new Queue<INovela>();
+
         private bool Descargando = false;
 
         /// <summary>
@@ -126,6 +123,7 @@ namespace GetNovelsApp.Core
             return true;
         }
 
+
         /// <summary>
         /// Registra una novela para ser descargada cuando se pueda.
         /// </summary>
@@ -135,6 +133,7 @@ namespace GetNovelsApp.Core
             ReportePorID.Add(novela.ID, progreso);
         }
 
+
         /// <summary>
         /// Hace lo necesario cuando una novela ha sido descargada.
         /// </summary>
@@ -143,6 +142,7 @@ namespace GetNovelsApp.Core
             ReportePorID.Remove(novelaNueva.ID); //ya no es necesario mantener ref al reporte de una novela que ya no se le reportará nada.
             await RevisaSiQuedanNovelasPorDescargarAsync();
         }
+
 
         /// <summary>
         /// Revisa si hay alguna novela en el Queue. Si la hay, comienza la descarga.
@@ -164,6 +164,10 @@ namespace GetNovelsApp.Core
 
 
         #endregion
+
+
+
+        #region Scraping:
 
 
         /// <summary>
@@ -206,13 +210,12 @@ namespace GetNovelsApp.Core
         }
 
 
-
-        #endregion
-
-
-        #region Scraping:
-
-
+        /// <summary>
+        /// Tiene mucha mierda encima este metodod...
+        /// </summary>
+        /// <param name="ComienzaEn"></param>
+        /// <param name="progreso"></param>
+        /// <returns></returns>
         private async Task ScrapMyNovelaAsync(int ComienzaEn, IProgress<IReporteNovela> progreso)
         {
             //Preparaciones:
@@ -227,39 +230,13 @@ namespace GetNovelsApp.Core
             //------------------------------------------------------------------------------------------------------------------------------
 
             GetNovelsComunicador.Reporta("Comenzando Scrap\n", this);
-
-            //for (int i = 0; i < batches; i++)
-            //{
-            //    int factor = (i * tamañoBatch);
-            //    int xi = ComienzaEn + factor;
-            //    int xf = xi + tamañoBatch - 1;
-
-            //    GetNovelsComunicador.Reporta($"Batch {(i + 1)}/{batches + 1}...", this);
-
-            //    var capitulosCompletos = await ScrapCapitulosAsync(xi, xf);
-
-
-            //    GetNovelsComunicador.Reporta($"... Guardando capitulos...", this);
-
-
-
-            //    Task.Run(() => MyEmpaquetador.EmpaquetaCapitulo(capitulosCompletos, MyNovela, progreso));
-
-            //    GetNovelsComunicador.Reporta($"... {((i + 1) * 100) / (batches + 1)}% de las iteraciones completadas...", this);
-
-            //    //if (i != batches - 1) //Solo espera si no eres el ultimo.
-            //    //{
-            //    //    int segundos = 5;
-            //    //    Comunicador.Reporta($"... Esperando {segundos}s\n", this);
-            //    //    System.Threading.Thread.Sleep(segundos * 1000);
-            //    //}
-            //}
+           
 
             List<Task> Scrappers = new List<Task>();
 
             foreach (var capitulo in DescargaEstosCapitulos)
             {
-                Scrappers.Add(Task.Run(() => ScrapTesting(capitulo, progreso)));
+                Scrappers.Add(Task.Run(() => Scrap(capitulo, progreso)));
             }
 
             await Task.WhenAll(Scrappers);
@@ -267,56 +244,21 @@ namespace GetNovelsApp.Core
             GetNovelsComunicador.ReportaExito("\nFinalizados todos los batchs.", this);
         }        
 
-        private void ScrapTesting(Capitulo capituloPorDescargar, IProgress<IReporteNovela> progress)
+
+
+        private void Scrap(Capitulo capituloPorDescargar, IProgress<IReporteNovela> progress)
         {
-            //encapsula esto en 1 task:
-            //1 baja 1 capitulo
+            //A) baja 1 capitulo
             Capitulo capituloDescargado = MyScraper.CompletaCapitulo(capituloPorDescargar);
 
-            //2 guarda 1 capitulo
+            //B) guarda 1 capitulo
             MyEmpaquetador.EmpaquetaCapitulo(capituloDescargado, MyNovela, progress);
-
         }
 
 
-        /// <summary>
-        /// Probando hacer que el async no haga todos los caps a la vez, sino solo los que se le digan.
-        /// </summary>
-        /// <param name="xi">Donde comienza el Loop.</param>
-        /// <param name="xf">Donde termina el Loop.</param>
-        /// <returns></returns>
-        private async Task<List<Capitulo>> ScrapCapitulosAsync(int xi, int xf)
-        {
-            //Scraping:
-            List<Task<Capitulo>> tareas = new List<Task<Capitulo>>();
-            for (int i = xi; i <= xf; i++)
-            {
-                Capitulo CapIncompleto = null;
-                try
-                {   
-                    CapIncompleto = DescargaEstosCapitulos[i];
-                    tareas.Add(Task.Run(()=> MyScraper.CompletaCapitulo(CapIncompleto)));
-
-                }
-                catch (IndexOutOfRangeException)
-                {
-                    break;
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    break;
-                }
-            }
-            var resultados = await Task.WhenAll(tareas);
-
-            //Ordenando los capitulos:
-            List<Capitulo> CapitulosCompletos = new List<Capitulo>(resultados);
-            CapitulosCompletos.Sort(new ComparerOrdenadorCapitulos());
-            return CapitulosCompletos;
-
-        }
 
         #endregion
+
 
 
         #region Helpers:

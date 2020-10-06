@@ -60,6 +60,7 @@ namespace GetNovelsApp.WPF.ViewModels
             }
         }
 
+
         private void RecordDescarga(INovela novela)
         {
             ReporteNovelaWPF reporteVacio = new ReporteNovelaWPF(novela);
@@ -68,6 +69,7 @@ namespace GetNovelsApp.WPF.ViewModels
             Tarea tarea = new Tarea("Descargando", novela.Titulo, novela.PorcentajeDescarga, novela.ID);
             GetNovelsWPFEvents.Invoke_NotificaTarea(tarea);
         }
+
 
         private void ProgresoNovela_ProgressChanged(object sender, IReporteNovela e)
         {

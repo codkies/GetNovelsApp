@@ -69,7 +69,7 @@ namespace GetNovelsApp.Core.Empaquetadores
                 novela.CapituloFueDescargado(c);
             }
 
-            Archivador.GuardaCapitulos(CapitulosDescargados, novela.ID);
+            Archivador.GuardaCapitulosAsync(CapitulosDescargados, novela.ID);
 
             var nuevo_Reporte = GetNovelsFactory.FabricaReporteNovela(novela.Capitulos.Count, novela.CapitulosDescargados.Count, novela.ID, this);
 
@@ -81,7 +81,7 @@ namespace GetNovelsApp.Core.Empaquetadores
         {
             novela.CapituloFueDescargado(capituloDescargado);
 
-            Archivador.Guarda(capituloDescargado, novela.ID);
+            Archivador.GuardaCapitulosAsync(capituloDescargado, novela.ID);
 
             var nuevo_Reporte = GetNovelsFactory.FabricaReporteNovela(novela.Capitulos.Count, novela.CapitulosDescargados.Count, novela.ID, this);
 

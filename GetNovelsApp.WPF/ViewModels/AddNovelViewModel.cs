@@ -89,7 +89,7 @@ namespace GetNovelsApp.WPF.ViewModels
 
         public void GuardarNovela(Window window)
         {
-            Archivador.MeteNovelaDB(InfoNovela);
+            Archivador.MeteNovelaDBAsync(InfoNovela);
             window.Close();
         }
 

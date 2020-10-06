@@ -17,11 +17,19 @@ namespace GetNovelsApp.Core.Conexiones.DB
     /// </summary>
     public partial class Archivador : IReportero
     {
+        #region fields
         private const string TablaNovelas = "Novelas";
         private const string TablaCapitulos = "Capitulos";
         private const string TablaTags = "Tags";
 
-        public string Nombre => "DB";
+        /// <summary>
+        /// Define si se están guardando capitulos
+        /// </summary>
+        private bool EjecutandoGuardado = false;
+
+        public string Nombre => "DB"; 
+        #endregion
+
 
         #region Core
 
@@ -31,7 +39,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
         /// </summary>
         /// <param name="info"></param>
         /// <returns></returns>
-        public INovela MeteNovelaDB(InformacionNovelaOnline info)
+        public async Task<INovela> MeteNovelaDBAsync(InformacionNovelaOnline info)
         {
             bool YaExiste = NovelaExisteEnDB(info.LinkPrincipal);
             if (!YaExiste)
@@ -42,7 +50,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
 
                 //Capitulos:
                 List<Capitulo> CapitulosNovela = GetNovelsFactory.FabricaCapitulos(info.LinksDeCapitulos);
-                GuardaCapitulos(CapitulosNovela, novDBInfo.ID); //Itera los caps y encuentra su info.
+                await GuardaCapitulosAsync(CapitulosNovela, novDBInfo.ID); //Itera los caps y encuentra su info.
 
                 //Regresando una novela para runtime:
                 INovela nov = GetNovelsFactory.FabricaNovela(CapitulosNovela, novDBInfo);
@@ -55,57 +63,21 @@ namespace GetNovelsApp.Core.Conexiones.DB
             }
         }
 
-        private List<Capitulo> Capitulos = new List<Capitulo>();
+        Dictionary<Capitulo, int> CapitulosAGuardar = new Dictionary<Capitulo, int>();
 
-        public void Guarda(Capitulo capitulo, int novelaID)
+        public async Task GuardaCapitulosAsync(Capitulo capitulo, int novelaID)
         {
-            Capitulos.Add(capitulo);
-            if(Capitulos.Count >= GetNovelsConfig.TamañoBatch)
-            {
-                GuardaCapitulos(Capitulos, novelaID);
-                Capitulos.Clear();
-            }
+            CapitulosAGuardar.Add(capitulo, novelaID);
+            if (EjecutandoGuardado) return;
+            await Task.Run(() => CapitulosAGuardar_Ejecuta());
         }
 
-
-        public void GuardaCapitulos(List<Capitulo> capitulosVacios, int novelaID)
+        public async Task GuardaCapitulosAsync(List<Capitulo> capitulos, int novelaID)
         {
-            using IDbConnection cnn = DataBaseAccess.GetConnection();
-            bool first = false;
-            foreach (Capitulo c in capitulosVacios)
-            {
-                try
-                {                    
-                    var qry = InsertCapitulo_Query(novelaID, c);
-                    cnn.Execute(qry);
-                    first = true;
-                }
-                catch (SQLiteException)
-                {
-                    var updateQry = UpdateCapitulo_Query(novelaID, c);
-                    cnn.Execute(updateQry);
-                }
-                catch (Exception ex)
-                {
-                    GetNovelsComunicador.ReportaError($"Error: {ex.Message}", this);
-                    continue;
-                }
-            }
-
-            if(first)
-            {
-                string Mensaje = $"Links de {capitulosVacios.First().TituloCapitulo} a {capitulosVacios.Last().TituloCapitulo} obtenidos.";
-                GetNovelsComunicador.Reporta(Mensaje, this);
-            }
-            else
-            {
-                string Mensaje = $"Textos de {capitulosVacios.First().TituloCapitulo} a {capitulosVacios.Last().TituloCapitulo} obtenidos.";
-                GetNovelsComunicador.Reporta(Mensaje, this);
-            }
-
-            cnn.Dispose();
+            capitulos.ForEach(x => CapitulosAGuardar.Add(x, novelaID));            
+            if (EjecutandoGuardado) return;
+            await Task.Run(() => CapitulosAGuardar_Ejecuta());
         }
-
 
         /// <summary>
         /// Regresa true or false dependiendo si el link ingresado, corresponde a alguna novela en la DB.
@@ -123,27 +95,6 @@ namespace GetNovelsApp.Core.Conexiones.DB
             return resultados.Any();
         }
 
-
-        public IEnumerable<INovela> ObtenTodasNovelas()
-        {
-            List<INovela> output = new List<INovela>();
-            using IDbConnection cnn = DataBaseAccess.GetConnection();
-
-            //Obteniendo las informaciones de novela:
-            string getThemAll = GetAllNovels_Query();
-            IEnumerable<InformacionNovelaDB> InfosDeNovelas = cnn.Query<InformacionNovelaDB>(getThemAll);
-
-            //Obteniendo los capitulos de todas:
-            foreach (var InfoNov in InfosDeNovelas)
-            {
-                string getThemChapters = GetChaptersOfNovel_Query(InfoNov);
-                var Capitulos = cnn.Query<Capitulo>(getThemChapters);
-                output.Add(GetNovelsFactory.FabricaNovela(Capitulos, InfoNov));
-            }
-
-            cnn.Dispose();
-            return output;
-        }
 
 
         public async Task<List<INovela>> ObtenTodasNovelasAsync()
@@ -171,7 +122,6 @@ namespace GetNovelsApp.Core.Conexiones.DB
 
 
         #endregion
-
 
 
         #region Queries
@@ -279,8 +229,43 @@ namespace GetNovelsApp.Core.Conexiones.DB
         #endregion
 
 
-
         #region Helpers
+
+        /// <summary>
+        /// Usando el Diccionario de CapitulosAGuardar, este metodo ejecutará queries a la DB mientras queden capitulos en el dicc. (Cada vez que guarda 1, lo remueve del dicc).
+        /// </summary>
+        private void CapitulosAGuardar_Ejecuta()
+        {
+            if (CapitulosAGuardar.Count < 1) return;
+            using IDbConnection cnn = DataBaseAccess.GetConnection();
+            EjecutandoGuardado = true;
+            while (CapitulosAGuardar.Count > 0) //Mientras hayan capitulos por guardar...
+            {
+                var key = CapitulosAGuardar.First();
+                int NovelaID = key.Value;
+                Capitulo c = key.Key;
+
+                try
+                {
+                    var qry = InsertCapitulo_Query(NovelaID, c);
+                    cnn.Execute(qry);
+                }
+                catch (SQLiteException)
+                {
+                    var updateQry = UpdateCapitulo_Query(NovelaID, c);
+                    cnn.Execute(updateQry);
+
+                }
+                catch (Exception ex)
+                {
+                    GetNovelsComunicador.ReportaError($"Error: {ex.Message}", this);
+                }
+
+                CapitulosAGuardar.Remove(c);
+            }
+            EjecutandoGuardado = false;
+            cnn.Dispose();
+        }
 
         /// <summary>
         /// Mete los capitulos de una novela en un INovela y mete la dicha INovela en el Locker.

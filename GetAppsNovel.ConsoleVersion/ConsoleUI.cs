@@ -203,7 +203,7 @@ namespace GetAppsNovel.ConsoleVersion
             foreach (Uri uri in Links)
             {
                 Reporta($"\nObteniendo información de ({uri})...", this);
-                INovela novela = archivador.MeteNovelaDB(uri, out _);
+                INovela novela = archivador.Legacy_MeteNovelaDB(uri, out _);
                 ///Confirmando con el usuario:
                 ConfirmaInfoNovelaConUsuario(ref InfoDescarga, novela, folderPath);
                
@@ -245,7 +245,7 @@ namespace GetAppsNovel.ConsoleVersion
                 Reporta("\nObteniendo información de novela...\n", this);
 
                 //1) Pidela a la DB:                
-                INovela novela = archivador.MeteNovelaDB(UriNovela, out _);
+                INovela novela = archivador.Legacy_MeteNovelaDB(UriNovela, out _);
 
                 ///Confirmando con el usuario:
                 ConfirmaInfoNovelaConUsuario(ref InfoDescarga, novela, FolderPathDefined);
