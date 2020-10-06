@@ -93,9 +93,9 @@ namespace GetNovelsApp.WPF.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap DescargaIcon {
+        internal static System.Drawing.Bitmap Descargas {
             get {
-                object obj = ResourceManager.GetObject("DescargaIcon", resourceCulture);
+                object obj = ResourceManager.GetObject("Descargas", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

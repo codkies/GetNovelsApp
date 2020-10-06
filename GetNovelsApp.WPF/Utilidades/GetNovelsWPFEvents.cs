@@ -1,6 +1,6 @@
 ﻿using System;
 using GetNovelsApp.Core.Modelos;
-using Testing;
+using GetNovelsApp.WPF.Models;
 
 namespace GetNovelsApp.WPF.Utilidades
 {
@@ -26,5 +26,27 @@ namespace GetNovelsApp.WPF.Utilidades
         }
 
         #endregion
+
+        #region Comunica una tarea
+
+        public static event Action<ITarea> NotificaTarea;
+
+        public static void Invoke_NotificaTarea(ITarea tarea)
+        {
+            NotificaTarea?.Invoke(tarea);
+        }
+
+
+        public static event Action<int, int, string> ActualizaTarea;
+
+        public static void Invoke_ActualizaTarea(int tareaID, int progreso, string estado)
+        {
+            ActualizaTarea?.Invoke(tareaID, progreso, estado);
+        }
+
+
+        #endregion
     }
+
+
 }

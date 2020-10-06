@@ -118,7 +118,6 @@
     <Compile Include="Empaquetador\CreadorDocumentos\Constructores\ConstructorPDF.cs" />
     <Compile Include="Empaquetador\CreadorDocumentos\Constructores\IConstructor.cs" />
     <Compile Include="Empaquetador\LocalPathManager.cs" />
-    <Compile Include="Reportaje\Descarga.cs" />
     <Compile Include="GetNovelsApp\GetNovelsEvents.cs" />
     <Compile Include="Fabrica\FabricaBasica.cs" />
     <Compile Include="GetNovelsApp\GetNovelsFactory.cs" />
@@ -130,7 +129,9 @@
     <Compile Include="Modelos\INovela.cs" />
     <Compile Include="Reportaje\IComunicador.cs" />
     <Compile Include="Reportaje\IReporte.cs" />
+    <Compile Include="Reportaje\IReporteNovela.cs" />
     <Compile Include="Reportaje\IReportero.cs" />
+    <Compile Include="Reportaje\ProgresoNovela.cs" />
     <Compile Include="Reportaje\ReporteNovelaBasico.cs" />
     <Compile Include="Utilidades\ComparerOrdenadorCapitulos.cs" />
     <Compile Include="Empaquetador\EmpaquetadorNovelas.cs" />

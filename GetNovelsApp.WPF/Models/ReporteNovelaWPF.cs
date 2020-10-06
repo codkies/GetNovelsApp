@@ -19,8 +19,8 @@ namespace GetNovelsApp.WPF.Models
         {
             Identificador = novelaDescargada.ID;
             ObjetoReportado = novelaDescargada;
+            Actual = novelaDescargada.CapitulosDescargados.Count;
             Total = novelaDescargada.Capitulos.Count;
-            Actual = novelaDescargada.CapitulosPorDescargar.Count;
         }
 
         public ReporteNovelaWPF(int capitulosTotales, int capitulosDescargados, int novelaID, IReportero reportero, string mensaje = "", INovela novelaDescargada = null)

@@ -1,4 +1,4 @@
-﻿<Window x:Class="GetNovelsApp.WPF.MainWindow"
+﻿<Window x:Class="GetNovelsApp.WPF.GetNovelsApp.WPF.Models.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -14,7 +14,7 @@
     
     <DockPanel Background="{StaticResource Color3}">
 
-        <Grid DockPanel.Dock="Top" Height="30" Background="{StaticResource Color2}">
+        <Grid DockPanel.Dock="Top" Height="40" Background="{StaticResource Color2}">
             
             <!--Bar columns-->
             <Grid.ColumnDefinitions>
@@ -51,7 +51,7 @@
                     Command="{Binding Command_VeDescargas}"
                     Style="{StaticResource BotonNavMenu}">
                 <Button.Content>
-                    <Image Source="pack://siteoforigin:,,,/Resources/DescargaIcon.png"/>
+                    <Image Source="pack://siteoforigin:,,,/Resources/Descargas.png"/>                    
                 </Button.Content>
             </Button>
 
@@ -71,15 +71,10 @@
             
             <!--Mensajes de la app-->
             <TextBlock Grid.Column="2"
+                       Text="{Binding MensajeDeEstado, UpdateSourceTrigger=PropertyChanged}"
                        TextAlignment="Right"
                        Margin="0 0 10 0"
-                       FontSize="10">                
-                <!--Accion-->
-                <Run Text="Descargando"/>
-                <!--Mensaje-->
-                <Run Text="'Lord of the Flies' (23%)..."/>
-                <!--Cantidad de acciones-->
-                <Run Text="(1/3)"/>                
+                       FontSize="10">       
             </TextBlock>
             
             <!--Nombre App-->

@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Runtime;
-using System.Text;
-using System.Threading.Tasks;
 using GetNovelsApp.Core;
-using GetNovelsApp.Core.Conexiones.DB;
 using GetNovelsApp.Core.Modelos;
 using GetNovelsApp.Core.Reportaje;
 using GetNovelsApp.WPF.Models;
 using GetNovelsApp.WPF.Utilidades;
-using Testing;
 
 namespace GetNovelsApp.WPF.ViewModels
 {
@@ -50,8 +44,7 @@ namespace GetNovelsApp.WPF.ViewModels
 
         private async void GetNovelsWPFEvents_DescargaNovela(INovela novela)
         {
-            ReporteNovelaWPF reporteVacio = new ReporteNovelaWPF(novela);
-            Descargas.Add(reporteVacio);
+            RecordDescarga(novela);
 
             ProgresoNovela progresoNovela = new ProgresoNovela();
 
@@ -59,21 +52,37 @@ namespace GetNovelsApp.WPF.ViewModels
 
             bool exito = await GetNovels.AgregaAlQueue(novela, progresoNovela);
 
-            if(exito == false)
+            if (exito == false)
             {
                 throw new NotImplementedException($"no se pudo agregar {novela.Titulo} a las descargas.");
             }
+        }
+
+        private void RecordDescarga(INovela novela)
+        {
+            ReporteNovelaWPF reporteVacio = new ReporteNovelaWPF(novela);
+            Descargas.Add(reporteVacio);
+
+            Tarea tarea = new Tarea("Descargando", novela.Titulo, novela.PorcentajeDescarga, novela.ID);
+            GetNovelsWPFEvents.Invoke_NotificaTarea(tarea);
         }
 
         private void ProgresoNovela_ProgressChanged(object sender, IReporteNovela e)
         {
             //Encontrando la novela a la que este cambio está notificando.
             var descarga = Descargas.Where(x => x.Identificador == e.Identificador).First();
-            descarga?.ActualizaReporte(e);
             if (descarga == null)
             {
                 throw new Exception("Se intento actualizar el reporte de una descarga del cual no se tiene referencia\n- DescargasViewModel.");
             }
+
+            int tareaID = e.Identificador;
+            int progreso = e.PorcentajeDeCompletado;
+            string estado = e.PorcentajeDeCompletado < 100 ? "Descargando" : "Completado";
+
+            GetNovelsWPFEvents.Invoke_ActualizaTarea(tareaID, progreso, estado);
+
+            descarga?.ActualizaReporte(e);
         }      
 
 
