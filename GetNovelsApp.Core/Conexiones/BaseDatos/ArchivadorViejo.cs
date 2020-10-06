@@ -55,13 +55,13 @@ namespace GetNovelsApp.Core.Conexiones.DB
             infoNov = ManipuladorDeLinks.EncuentraInformacionNovela(LinkNovela);
 
             //Insertando la novela
-            string qry = InsertNovel_Query(infoNov);
+            string qry = Legacy_InsertNovel_Query(infoNov);
             cnn.Execute(qry);
 
             //Insertando las tagas
             string qID = $"select ID from {TablaNovelas} where LinkPrincipal = \"{LinkNovela}\" ";
             int novelID = cnn.Query<int>(qID).First();
-            string qry_tags = InsertTags_Query(infoNov, novelID);
+            string qry_tags = Legacy_InsertTags_Query(infoNov, novelID);
             cnn.Execute(qry_tags);
 
 
@@ -86,13 +86,13 @@ namespace GetNovelsApp.Core.Conexiones.DB
             {
                 try
                 {
-                    var qry = InsertCapitulo_Query(novelaID, c);
+                    var qry = Legacy_InsertCapitulo_Query(novelaID, c);
                     cnn.Execute(qry);
                     first = true;
                 }
                 catch (SQLiteException)
                 {
-                    var updateQry = UpdateCapitulo_Query(novelaID, c);
+                    var updateQry = Legacy_UpdateCapitulo_Query(novelaID, c);
                     cnn.Execute(updateQry);
                 }
                 catch (Exception ex)
@@ -124,13 +124,13 @@ namespace GetNovelsApp.Core.Conexiones.DB
             using IDbConnection cnn = DataBaseAccess.GetConnection();
 
             //Obteniendo las informaciones de novela:
-            string getThemAll = GetAllNovels_Query();
+            string getThemAll = Legacy_GetAllNovels_Query();
             IEnumerable<InformacionNovelaDB> InfosDeNovelas = cnn.Query<InformacionNovelaDB>(getThemAll);
 
             //Obteniendo los capitulos de todas:
             foreach (var InfoNov in InfosDeNovelas)
             {
-                string getThemChapters = GetChaptersOfNovel_Query(InfoNov);
+                string getThemChapters = Legacy_GetChaptersOfNovel_Query(InfoNov);
                 var Capitulos = cnn.Query<Capitulo>(getThemChapters);
                 output.Add(GetNovelsFactory.FabricaNovela(Capitulos, InfoNov));
             }
@@ -140,5 +140,109 @@ namespace GetNovelsApp.Core.Conexiones.DB
         }
 
 
+        #region Legacy Queries
+
+        /// <summary>
+        /// Query para obtener info de una novela en la tabla de novelas.
+        /// </summary>
+        /// <param name="infoDBNovela"></param>
+        /// <returns></returns>
+        private static string Legacy_GetChaptersOfNovel_Query(InformacionNovelaDB infoDBNovela)
+        {
+            return $"select Link, TextoCapitulo, Titulo, Numero, Valor from {TablaCapitulos} where NovelaID = '{infoDBNovela.ID}'";
+        }
+
+
+        /// <summary>
+        /// Query para obtener una InformacionNovelaDB según el ID de la novela.
+        /// </summary>
+        /// <param name="novelID"></param>
+        /// <returns></returns>
+        private static string Legacy_GetNovDBInfoWithID_Query(int novelID)
+        {
+            return $"SELECT n.id, n.Titulo, n.LinkPrincipal, n.Sipnosis, n.Imagen, t.Tags " +
+                                        $"from {TablaNovelas} as n " +
+                                        $"join {TablaClasificacion} as t " +
+                                        $"on n.ID = t.NovelaID and n.id = {novelID}";
+        }
+
+
+        /// <summary>
+        /// Query para obtener todas las novelas en formato de InformacionNovelaDB.
+        /// </summary>
+        /// <returns></returns>
+        private string Legacy_GetAllNovels_Query()
+        {
+            return $"SELECT n.id, n.Titulo, n.LinkPrincipal, n.Sipnosis, n.Imagen, t.Tags " +
+                    $"FROM {TablaNovelas} AS n " +
+                    $"left JOIN {TablaClasificacion} AS t " +
+                        $"on n.ID = t.NovelaID";
+        }
+
+
+        /// <summary>
+        /// Query para obtener el ID de una novela acorde a su Link
+        /// </summary>
+        /// <param name="LinkNovela"></param>
+        /// <returns></returns>
+        private string Legacy_GetIDNovel_Query(Uri LinkNovela)
+        {
+            return $"select n.NovelaID from {i.TNovelas} as n " +
+                $"join {i.TLinks} as l where l.Link = '{LinkNovela}'";
+        }
+
+
+        /// <summary>
+        /// Query para insertar una novela en la DB
+        /// </summary>
+        /// <param name="infoNov"></param>
+        /// <returns></returns>
+        private string Legacy_InsertNovel_Query(InformacionNovelaOnline infoNov)
+        {
+            return $"insert into {i.TNovelas} " +
+                    $"(Titulo, LinkPrincipal, Sipnosis, Imagen) values" +
+                    $"('{infoNov.Titulo}', '{infoNov.LinkPrincipal}', '{infoNov.Sipnosis}', '{infoNov.Imagen}')";
+        }
+
+
+        /// <summary>
+        /// Query para insertar los tags de una novela en la DB.
+        /// </summary>
+        /// <param name="infoNov"></param>
+        /// <param name="ID"></param>
+        /// <returns></returns>
+        private string Legacy_InsertTags_Query(InformacionNovelaOnline infoNov, int ID)
+        {
+            return $"insert into {TablaClasificacion} " +
+                    $"(NovelaID, Tags) values" +
+                    $"('{ID}', '{ManipuladorStrings.TagsEnString(infoNov.Tags)}')";
+        }
+
+
+        /// <summary>
+        /// Toma un capitulo vacio, obtiene su info basica y la mete en la DB.
+        /// </summary>
+        private string Legacy_InsertCapitulo_Query(int novelaID, Capitulo c)
+        {
+            return $"insert into {TablaCapitulos} " +
+                    $"(NovelaID, Link, TextoCapitulo, Numero, Titulo, Valor) values" +
+                    $"('{novelaID}', '{c.Link}', \"{c.Texto}\", '{c.NumeroCapitulo}', '{c.TituloCapitulo}', '{c.Valor}')";
+        }
+
+
+        /// <summary>
+        /// Query para actualizar un capitulo en la DB.
+        /// </summary>
+        /// <param name="novelaID"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        private string Legacy_UpdateCapitulo_Query(int novelaID, Capitulo c)
+        {
+            return $"update {TablaCapitulos} " +
+                    $"set TextoCapitulo = \"{c.Texto}\" " +
+                    $"where NovelaID = '{novelaID}' and Link = '{c.Link}'";
+        }
+
+        #endregion
     }
 }

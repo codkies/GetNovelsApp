@@ -26,6 +26,8 @@ namespace GetNovelsApp.Core.Conexiones.Internet
 
         public string Autor;
 
+        public string Nacionalidad;
+
         public bool HistoriaCompletada;
 
         public bool TraduccionCompletada;

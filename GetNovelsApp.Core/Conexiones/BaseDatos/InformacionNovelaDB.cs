@@ -6,8 +6,6 @@ using iText.Layout.Element;
 
 namespace GetNovelsApp.Core.Conexiones.DB
 {
-    public enum EstadoHistoria { Completa, Incompleta }
-    public enum EstadoTraduccion { Completa, Incompleta }
 
     /// <summary>
     /// Modelo de la informacion de una novela en la DB de tablas Novelas y Tags. (Capitulos y sus links no incluidos).
@@ -16,11 +14,19 @@ namespace GetNovelsApp.Core.Conexiones.DB
     {
         public string Titulo { get; set; }
 
-        public string Autores { get; set; }
+        public string Autor { get; set; }
 
-        public EstadoHistoria EstadoHistoria {get; set;}
+        public string Nacionalidad { get; set; }
 
         public string LinkPrincipal { get; set; }
+
+        public bool TraduccionCompleta { get; set; }
+
+        public bool HistoriaCompleta { get; set; }
+
+        public float Review { get; set; }
+
+        public int CantidadReviews { get; set; }
 
         public int ID { get; set; }
 

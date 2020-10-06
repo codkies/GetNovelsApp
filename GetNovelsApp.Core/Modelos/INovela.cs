@@ -7,12 +7,11 @@ namespace GetNovelsApp.Core.Modelos
     {
         //Main
         string Titulo { get; }
-        List<string> Autores { get; }
+        string Autor { get; }
         bool HistoriaCompleta { get; }
-        float Review { get; }
-        float CantidadReviews { get; }
         bool TraduccionCompleta { get; }
-        int CantidadCapitulosDescargados { get; }
+        float Review { get; }
+        float CantidadReviews { get; }        
         int ID { get; }
         List<Capitulo> Capitulos { get; }
         List<Capitulo> CapitulosDescargados { get; }
@@ -30,6 +29,7 @@ namespace GetNovelsApp.Core.Modelos
         List<Uri> LinksDeCapitulos { get; }
         int PorcentajeDescarga { get; }
         bool TengoCapitulosPorImprimir { get; }
+        int CantidadCapitulosDescargados { get; }
         int CantidadLinks { get; }
 
         //Metodos
