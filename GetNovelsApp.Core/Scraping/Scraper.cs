@@ -90,12 +90,12 @@ namespace GetNovelsApp.Core
         private List<string> ObtenInnerText(HtmlNodeCollection nodes)
         {
             List<string> CapitulosDesordenado = new List<string>();
-
+            bool moreThanOne = nodes.Count > 1;
             foreach (var item in nodes)
             {
                 string entrada = item.InnerText;
                 bool paso = RevisaEntrada(entrada);
-                if (paso) CapitulosDesordenado.Add(entrada);
+                if (paso & moreThanOne) CapitulosDesordenado.Add(entrada);
             }
 
             return CapitulosDesordenado;

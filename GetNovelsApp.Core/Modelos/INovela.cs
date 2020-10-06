@@ -7,6 +7,11 @@ namespace GetNovelsApp.Core.Modelos
     {
         //Main
         string Titulo { get; }
+        List<string> Autores { get; }
+        bool HistoriaCompleta { get; }
+        float Review { get; }
+        float CantidadReviews { get; }
+        bool TraduccionCompleta { get; }
         int CantidadCapitulosDescargados { get; }
         int ID { get; }
         List<Capitulo> Capitulos { get; }
@@ -14,6 +19,7 @@ namespace GetNovelsApp.Core.Modelos
         List<Capitulo> CapitulosImpresos { get; }
         List<Capitulo> CapitulosPorDescargar { get; }
         public List<string> Tags { get; }
+        public List<string> Generos { get; }
         public string Sipnosis { get; }
         public Uri ImagenLink { get; }
 

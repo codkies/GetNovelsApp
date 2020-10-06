@@ -20,7 +20,8 @@ namespace GetNovelsApp.Core.Conexiones.DB
         #region fields
         private const string TablaNovelas = "Novelas";
         private const string TablaCapitulos = "Capitulos";
-        private const string TablaTags = "Tags";
+        private const string TablaClasificacion = "Clasificacion";
+        private const string TablaAutor = "Autores";
 
         /// <summary>
         /// Define si se están guardando capitulos
@@ -78,6 +79,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
             if (EjecutandoGuardado) return;
             await Task.Run(() => CapitulosAGuardar_Ejecuta());
         }
+
 
         /// <summary>
         /// Regresa true or false dependiendo si el link ingresado, corresponde a alguna novela en la DB.
@@ -146,7 +148,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
         {
             return $"SELECT n.id, n.Titulo, n.LinkPrincipal, n.Sipnosis, n.Imagen, t.Tags " +
                                         $"from {TablaNovelas} as n " +
-                                        $"join {TablaTags} as t " +
+                                        $"join {TablaClasificacion} as t " +
                                         $"on n.ID = t.NovelaID and n.id = {novelID}";
         }
 
@@ -159,7 +161,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
         {
             return $"SELECT n.id, n.Titulo, n.LinkPrincipal, n.Sipnosis, n.Imagen, t.Tags " +
                     $"FROM {TablaNovelas} AS n " +
-                    $"left JOIN {TablaTags} AS t " +
+                    $"left JOIN {TablaClasificacion} AS t " +
                         $"on n.ID = t.NovelaID";
         }
 
@@ -196,7 +198,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
         /// <returns></returns>
         private string InsertTags_Query(InformacionNovelaOnline infoNov, int ID)
         {
-            return $"insert into {TablaTags} " +
+            return $"insert into {TablaClasificacion} " +
                     $"(NovelaID, Tags) values" +
                     $"('{ID}', '{ManipuladorStrings.TagsEnString(infoNov.Tags)}')";
         }
@@ -328,6 +330,46 @@ namespace GetNovelsApp.Core.Conexiones.DB
 
 
         #endregion
+    }
+
+
+
+
+
+
+    internal static class Insertador
+    {
+        //enumsish
+        const string TEstadoHistoria = "EstadoHistoria";
+        const string TEstadoTraduccion = "EstadoTraduccion";
+        const string TNaciones = "Naciones";
+        const string TOrdenLinks = "OrdenLinks";
+        const string TTags = "Tags";
+        const string TGeneros = "Generos";
+
+        //novelas
+        const string TAutores = "Autores";
+        const string TEstadoNovela = "EstadoNovelas";
+        const string TLinks = "Links";
+        const string TImagenes = "Imagenes";
+        const string TNovelas = "Novelas";
+        const string TReviews = "ReviewsNovelas";
+        const string TSipnosis = "Sipnosis";
+        const string TGenerosNovela = "GenerosNovela";
+        const string TTagsNovelas = "TagsNovelas";
+
+        const string TCapitulos = "Capitulos";
+        const string TTextosCapitulos = "TextosCapitulos";
+
+        //configs
+        const string TConfiguracion = "Configuracion";
+        const string TWebsites = "Websites";
+        const string TxPathsLinks = "xPathsLinks";
+
+        const string TxPathsTextos = "xPathsTextos";
+        const string TxPathsTitulo = "xPathsTitulo";
+
+
     }
 
 }

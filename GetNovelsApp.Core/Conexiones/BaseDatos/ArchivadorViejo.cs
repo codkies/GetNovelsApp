@@ -68,7 +68,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
             //Obteniendo una referencia de la DB
             string query_ObtenDBInfo = $"SELECT n.id, n.Titulo, n.LinkPrincipal, n.Sipnosis, n.Imagen, t.Tags " +
                                         $"from {TablaNovelas} as n " +
-                                        $"join {TablaTags} as t " +
+                                        $"join {TablaClasificacion} as t " +
                                         $"on n.ID = t.NovelaID and n.id = {novelID}";
 
             InformacionNovelaDB novDBInfo = cnn.Query<InformacionNovelaDB>(query_ObtenDBInfo).First();
