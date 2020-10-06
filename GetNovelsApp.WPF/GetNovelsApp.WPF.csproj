@@ -106,18 +106,6 @@
     <Compile Include="Views\Partes\NovelaEnBibView.xaml.cs">
       <DependentUpon>NovelaEnBibView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\TEst\TEST_AddNovel.xaml.cs">
-      <DependentUpon>TEST_AddNovel.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\TEst\TEST_NovelaEnBib.xaml.cs">
-      <DependentUpon>TEST_NovelaEnBib.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\TEst\Test_NovView1.xaml.cs">
-      <DependentUpon>Test_NovView1.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\TEst\Test_NovView2.xaml.cs">
-      <DependentUpon>Test_NovView2.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\NovelView.xaml.cs">
       <DependentUpon>NovelView.xaml</DependentUpon>
     </Compile>
@@ -158,22 +146,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Partes\NovelaEnBibView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\TEst\TEST_AddNovel.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\TEst\TEST_NovelaEnBib.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\TEst\Test_NovView1.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\TEst\Test_NovView2.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

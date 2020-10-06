@@ -55,6 +55,18 @@ namespace GetNovelsApp.Core.Conexiones.DB
             }
         }
 
+        private List<Capitulo> Capitulos = new List<Capitulo>();
+
+        public void Guarda(Capitulo capitulo, int novelaID)
+        {
+            Capitulos.Add(capitulo);
+            if(Capitulos.Count >= GetNovelsConfig.TamañoBatch)
+            {
+                GuardaCapitulos(Capitulos, novelaID);
+                Capitulos.Clear();
+            }
+        }
+
 
         public void GuardaCapitulos(List<Capitulo> capitulosVacios, int novelaID)
         {

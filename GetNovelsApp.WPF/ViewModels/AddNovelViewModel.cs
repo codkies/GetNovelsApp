@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 using GetNovelsApp.Core.Conexiones.DB;
 using GetNovelsApp.Core.Conexiones.Internet;
 using GetNovelsApp.WPF.Utilidades;

@@ -1,10 +1,10 @@
-﻿<Application x:Class="GetNovelsApp.WPF.GetNovelsApp.WPF.Models.App"
+﻿<Application x:Class="GetNovelsApp.WPF.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:GetNovelsApp.WPF"
-             xmlns:v="clr-namespace:GetNovelsApp.WPF.GetNovelsApp.WPF.Models.Views"
-             xmlns:vm="clr-namespace:GetNovelsApp.WPF.GetNovelsApp.WPF.Models.ViewModels"
-             xmlns:utl="clr-namespace:GetNovelsApp.WPF.GetNovelsApp.WPF.Models.Utilidades"
+             xmlns:v="clr-namespace:GetNovelsApp.WPF.Views"
+             xmlns:vm="clr-namespace:GetNovelsApp.WPF.ViewModels"
+             xmlns:utl="clr-namespace:GetNovelsApp.WPF.Utilidades"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         

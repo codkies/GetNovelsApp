@@ -21,6 +21,7 @@ namespace GetNovelsApp.WPF.ViewModels
 
         #endregion
 
+
         #region Ctors
 
         public DescargasViewModel(GetNovels getNovels)
@@ -31,6 +32,7 @@ namespace GetNovelsApp.WPF.ViewModels
 
 
         #endregion
+
 
         #region Props 
 

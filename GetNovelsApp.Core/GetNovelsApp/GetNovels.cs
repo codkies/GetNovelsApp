@@ -11,7 +11,7 @@ using GetNovelsApp.Core.Empaquetadores;
 using GetNovelsApp.Core.Conexiones.DB;
 using GetNovelsApp.Core.GetNovelsApp;
 using System.Linq;
-
+using Org.BouncyCastle.Math.Field;
 
 namespace GetNovelsApp.Core
 {
@@ -118,11 +118,10 @@ namespace GetNovelsApp.Core
                 return false;
             }
             #endregion
-
             
-            RegistraNovela(novela, progreso);
+            AgregaNovelaQueue(novela, progreso); //Mete novela en Queue
 
-            await RevisaSiQuedanNovelasPorDescargarAsync();
+            await RevisaSiQuedanNovelasPorDescargarAsync(); //Comienza el trigger de las descargas
 
             return true;
         }
@@ -130,7 +129,7 @@ namespace GetNovelsApp.Core
         /// <summary>
         /// Registra una novela para ser descargada cuando se pueda.
         /// </summary>
-        private void RegistraNovela(INovela novela, IProgress<IReporteNovela> progreso)
+        private void AgregaNovelaQueue(INovela novela, IProgress<IReporteNovela> progreso)
         {
             NovelasPorDescargar.Enqueue(novela);            
             ReportePorID.Add(novela.ID, progreso);
@@ -179,7 +178,8 @@ namespace GetNovelsApp.Core
             if (PorcentajeDeDescarga == 100)
             {
                 GetNovelsComunicador.ReportaCambioEstado($"La novela {novelaNueva.Titulo} se encuentra en la base de datos.", this);
-                RevisaSiQuedanNovelasPorDescargarAsync();
+                Descargando = false;
+                await RevisaSiQuedanNovelasPorDescargarAsync();
                 return novelaNueva;
             }
 
@@ -228,35 +228,55 @@ namespace GetNovelsApp.Core
 
             GetNovelsComunicador.Reporta("Comenzando Scrap\n", this);
 
-            for (int i = 0; i < batches; i++)
+            //for (int i = 0; i < batches; i++)
+            //{
+            //    int factor = (i * tamañoBatch);
+            //    int xi = ComienzaEn + factor;
+            //    int xf = xi + tamañoBatch - 1;
+
+            //    GetNovelsComunicador.Reporta($"Batch {(i + 1)}/{batches + 1}...", this);
+
+            //    var capitulosCompletos = await ScrapCapitulosAsync(xi, xf);
+
+
+            //    GetNovelsComunicador.Reporta($"... Guardando capitulos...", this);
+
+
+
+            //    Task.Run(() => MyEmpaquetador.EmpaquetaCapitulo(capitulosCompletos, MyNovela, progreso));
+
+            //    GetNovelsComunicador.Reporta($"... {((i + 1) * 100) / (batches + 1)}% de las iteraciones completadas...", this);
+
+            //    //if (i != batches - 1) //Solo espera si no eres el ultimo.
+            //    //{
+            //    //    int segundos = 5;
+            //    //    Comunicador.Reporta($"... Esperando {segundos}s\n", this);
+            //    //    System.Threading.Thread.Sleep(segundos * 1000);
+            //    //}
+            //}
+
+            List<Task> Scrappers = new List<Task>();
+
+            foreach (var capitulo in DescargaEstosCapitulos)
             {
-                int factor = (i * tamañoBatch);
-                int xi = ComienzaEn + factor;
-                int xf = xi + tamañoBatch - 1;
-
-                GetNovelsComunicador.Reporta($"Batch {(i + 1)}/{batches + 1}...", this);
-
-                var capitulosCompletos = await ScrapCapitulosAsync(xi, xf);
-                
-
-                GetNovelsComunicador.Reporta($"... Guardando capitulos...", this);
-
-                
-
-                Task.Run(() => MyEmpaquetador.EmpaquetaCapitulo(capitulosCompletos, MyNovela, progreso));
-
-                GetNovelsComunicador.Reporta($"... {((i + 1) * 100) / (batches + 1)}% de las iteraciones completadas...", this);
-
-                //if (i != batches - 1) //Solo espera si no eres el ultimo.
-                //{
-                //    int segundos = 5;
-                //    Comunicador.Reporta($"... Esperando {segundos}s\n", this);
-                //    System.Threading.Thread.Sleep(segundos * 1000);
-                //}
+                Scrappers.Add(Task.Run(() => ScrapTesting(capitulo, progreso)));
             }
+
+            await Task.WhenAll(Scrappers);
 
             GetNovelsComunicador.ReportaExito("\nFinalizados todos los batchs.", this);
         }        
+
+        private void ScrapTesting(Capitulo capituloPorDescargar, IProgress<IReporteNovela> progress)
+        {
+            //encapsula esto en 1 task:
+            //1 baja 1 capitulo
+            Capitulo capituloDescargado = MyScraper.CompletaCapitulo(capituloPorDescargar);
+
+            //2 guarda 1 capitulo
+            MyEmpaquetador.EmpaquetaCapitulo(capituloDescargado, MyNovela, progress);
+
+        }
 
 
         /// <summary>

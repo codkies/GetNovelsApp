@@ -77,7 +77,18 @@ namespace GetNovelsApp.Core.Empaquetadores
            
         }
 
-        
+        public void EmpaquetaCapitulo(Capitulo capituloDescargado, INovela novela, IProgress<IReporteNovela> progreso)
+        {
+            novela.CapituloFueDescargado(capituloDescargado);
+
+            Archivador.Guarda(capituloDescargado, novela.ID);
+
+            var nuevo_Reporte = GetNovelsFactory.FabricaReporteNovela(novela.Capitulos.Count, novela.CapitulosDescargados.Count, novela.ID, this);
+
+            progreso.Report(nuevo_Reporte);
+        }
+
+
         #endregion
 
 
