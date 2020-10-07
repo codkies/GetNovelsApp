@@ -54,9 +54,10 @@ namespace GetNovelsApp.WPF.ViewModels
 
         public RelayCommand<string> Ejecuta_BuscaLink { get; private set; }
 
-
+        private string LinkViejo;
         public async void BuscaLink(string link)
         {
+            LinkViejo = link;
             Uri Link = new Uri(link);
             InfoNovela = await Task.Run( ()=> ManipuladorDeLinks.EncuentraInformacionNovela(Link));
 
@@ -75,7 +76,7 @@ namespace GetNovelsApp.WPF.ViewModels
 
         public bool Puede_BuscaLink(string posibleLink)
         {
-            return Uri.TryCreate(posibleLink, uriKind: UriKind.Absolute, out _);
+            return Uri.TryCreate(posibleLink, uriKind: UriKind.Absolute, out _) & !posibleLink.Equals(LinkViejo);
         }
 
 

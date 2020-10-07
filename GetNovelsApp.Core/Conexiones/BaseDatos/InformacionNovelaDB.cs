@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Web.WebSockets;
+using GetNovelsApp.Core.Conexiones.Internet;
 using iText.Layout.Element;
 
 namespace GetNovelsApp.Core.Conexiones.DB
@@ -20,9 +21,9 @@ namespace GetNovelsApp.Core.Conexiones.DB
 
         public string LinkPrincipal { get; set; }
 
-        public bool TraduccionCompleta { get; set; }
+        public EstadoTraduccion TraduccionCompleta { get; set; }
 
-        public bool HistoriaCompleta { get; set; }
+        public EstadoHistoria HistoriaCompleta { get; set; }
 
         public float Review { get; set; }
 

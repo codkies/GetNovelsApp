@@ -94,7 +94,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
         {
             using IDbConnection cnn = DataBaseAccess.GetConnection();
 
-            string qry = $"select NovelaID from {i.TNovelas} as n " +
+            string qry = $"select n.NovelaID from {i.TNovelas} as n " +
                             $"join {i.TLinks} as l " +
                                $"on n.NovelaID = l.NovelaID and l.Link = '{Link}'";
             var resultados = cnn.Query<int>(qry);
@@ -237,7 +237,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
                 else NacID = resultadosNac.First();
 
                 //1.2 inserta el autor
-                string insertAut = InsertAutor_qry(infoNov);
+                string insertAut = InsertAutor_qry(infoNov, NacID);
                 cnn.Execute(insertAut);
                 autorID = cnn.Query<int>(findAuthor).First();
             }
@@ -262,7 +262,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
                     //3.1.1 mete el tag en la DB
                     string insertTag = InsertTag_qry(tag);
                     cnn.Execute(insertTag);
-                    tagID = cnn.Query<int>(insertTag).First();
+                    tagID = cnn.Query<int>(findTag).First();
                 }
                 else tagID = resultadosTag.First();
 
@@ -283,7 +283,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
                     //4.1.1 mete el genero en la DB
                     string insertGen = InsertGenero_qry(genero);
                     cnn.Execute(insertGen);
-                    genID = cnn.Query<int>(insertGen).First();
+                    genID = cnn.Query<int>(findGen).First();
                 }
                 else genID = resultadosGen.First();
 
@@ -293,8 +293,8 @@ namespace GetNovelsApp.Core.Conexiones.DB
             }
 
             //5 estado de historia y traduccion
-            int estadoHistoriaID = infoNov.HistoriaCompletada ? 1 : 2;
-            int estadoTraduccionID = infoNov.TraduccionCompletada ? 1 : 2;
+            int estadoHistoriaID = (int)infoNov.HistoriaCompletada;
+            int estadoTraduccionID = (int)infoNov.TraduccionCompletada;
             string insertRelacionNovEstadoHistoria = InsertEstadoNovela_qry(novID, estadoHistoriaID, estadoTraduccionID);
             cnn.Execute(insertRelacionNovEstadoHistoria);
 
@@ -319,8 +319,13 @@ namespace GetNovelsApp.Core.Conexiones.DB
             {
                 Titulo = infoNov.Titulo,
                 Autor = infoNov.Titulo,
-                ID = novID,
+                Nacionalidad = infoNov.Nacionalidad,
                 LinkPrincipal = infoNov.LinkPrincipal.ToString(),
+                TraduccionCompleta = infoNov.TraduccionCompletada,
+                HistoriaCompleta = infoNov.HistoriaCompletada,
+                Review = infoNov.Review,
+                CantidadReviews = infoNov.CantidadReviews,
+                ID = novID,
                 Sipnosis = infoNov.Sipnosis,
                 Tags = ManipuladorStrings.TagsEnString(infoNov.Tags),
                 Generos = ManipuladorStrings.TagsEnString(infoNov.Generos),
@@ -358,18 +363,19 @@ namespace GetNovelsApp.Core.Conexiones.DB
 
         private static string InsertEstadoNovela_qry(int novID, int estadoHistoriaID, int estadoTraduccionID)
         {
-            return $"insert into {i.TEstadoNovela} (NovelaID, EstadoHistoriaID, EstadoTraduccionID) values " +
-                                                                    $"('{novID}', '{estadoHistoriaID}', '{estadoTraduccionID}')";
+            return $"insert into {i.TEstadoNovela} " +
+                    $"(NovelaID, EstadoHistoriaID, EstadoTraduccionID) values " +
+                    $"('{novID}', '{estadoHistoriaID}', '{estadoTraduccionID}')";
         }
 
         private static string InsertGenero_qry(int novID, int genID)
         {
-            return $"insert into {i.TGenerosNovela} (NoveaID, GeneroID) values ('{novID}', '{genID}')";
+            return $"insert into {i.TGenerosNovela} (NovelaID, GeneroID) values ('{novID}', '{genID}')";
         }
 
         private static string InsertGenero_qry(string genero)
         {
-            return $"insert into {i.TGeneros} Descripcion = '{genero}' ";
+            return $"insert into {i.TGeneros} (Descripcion) values ('{genero}') ";
         }
 
         private static string SelectGenero_qry(string genero)
@@ -379,12 +385,12 @@ namespace GetNovelsApp.Core.Conexiones.DB
 
         private static string InsertRelacionTagNovela_qry(int novID, int tagID)
         {
-            return $"insert into {i.TTagsNovelas} (NoveaID, TagID) values ('{novID}', '{tagID}')";
+            return $"insert into {i.TTagsNovelas} (NovelaID, TagID) values ('{novID}', '{tagID}')";
         }
 
         private static string InsertTag_qry(string tag)
         {
-            return $"insert into {i.TTags} Descripcion = '{tag}' ";
+            return $"insert into {i.TTags} (Descripcion) values ('{tag}') ";
         }
 
         private static string SelectTagID_qry(string tag)
@@ -394,7 +400,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
 
         private static string SelectNovelaID_qry(InformacionNovelaOnline infoNov)
         {
-            return $"select NovelaID frmo {i.TNovelas} where NovelaTitulo = '{infoNov.Titulo}' ";
+            return $"select NovelaID from {i.TNovelas} where NovelaTitulo = '{infoNov.Titulo}' ";
         }
 
         private static string InsertNovela_qry(InformacionNovelaOnline infoNov, int autorID)
@@ -402,9 +408,9 @@ namespace GetNovelsApp.Core.Conexiones.DB
             return $"insert into {i.TNovelas} (AutorID, NovelaTitulo) values ('{autorID}', '{infoNov.Titulo}')";
         }
 
-        private static string InsertAutor_qry(InformacionNovelaOnline infoNov)
+        private static string InsertAutor_qry(InformacionNovelaOnline infoNov, int NacID)
         {
-            return $"insert into {i.TAutores} (Nacionalidad, NombreAutor) values ('{infoNov.Nacionalidad}', '{infoNov.Autor}')";
+            return $"insert into {i.TAutores} (NacionalidadID, NombreAutor) values ('{NacID}', '{infoNov.Autor}')";
         }
 
         private static string InsertNacionalidad_qry(InformacionNovelaOnline infoNov)
@@ -571,7 +577,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
        public const string TReviews = "ReviewsNovelas";
        public const string TSipnosis = "Sipnosis";
        public const string TGenerosNovela = "GenerosNovela";
-       public const string TTagsNovelas = "TagsNovelas";
+       public const string TTagsNovelas = "TagsNovela";
        
        public const string TCapitulos = "Capitulos";
        public const string TTextosCapitulos = "TextosCapitulos";

@@ -267,8 +267,8 @@ namespace GetNovelsApp.Core.Conexiones.Internet
                 Generos = generos,
                 Imagen = linkImagen,
                 Sipnosis = sipnosis,
-                TraduccionCompletada = traduccionCompleta,
-                HistoriaCompletada = historiaCompleta,
+                TraduccionCompletada = traduccionCompleta ? EstadoTraduccion.Completa : EstadoTraduccion.Incompleta,
+                HistoriaCompletada = historiaCompleta ? EstadoHistoria.Completa : EstadoHistoria.Incompleta,
                 Titulo = Titulo,
             };
         }

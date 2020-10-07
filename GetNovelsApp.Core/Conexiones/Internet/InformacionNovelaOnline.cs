@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace GetNovelsApp.Core.Conexiones.Internet
 {
+    public enum EstadoHistoria { NULL, Completa, Incompleta}
+    public enum EstadoTraduccion { NULL, Completa, Incompleta}
+
     /// <summary>
     /// Modelo que utiliza la DB para obtener info acerca de una novela online.
     /// </summary>
@@ -18,9 +21,9 @@ namespace GetNovelsApp.Core.Conexiones.Internet
 
         public string Nacionalidad;
 
-        public bool HistoriaCompletada;
+        public EstadoHistoria HistoriaCompletada;
 
-        public bool TraduccionCompletada;
+        public EstadoTraduccion TraduccionCompletada;
 
         public float Review;
 

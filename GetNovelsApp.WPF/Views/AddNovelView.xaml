@@ -24,7 +24,7 @@
         <!--Boton de busqueda de link-->
         <Button Content="Busca"
                 Name="BuscaLink"
-                Command="{Binding Ejecuta_BuscaLink}"
+                Command="{Binding Ejecuta_BuscaLink, UpdateSourceTrigger=PropertyChanged}"
                 CommandParameter="{Binding ElementName=Link, Path=Text}"
                 Width="60"
                 Margin="5"/>
@@ -79,7 +79,6 @@
             <!--Source="/GetNovelsApp.WPF;component/Resources/NovelHeroTest.jpg"-->
             <TextBox Margin="0 10 0 0"
                      Grid.Column="1" Grid.Row="2"
-                     Height="200"
                      IsReadOnly="True"
                      BorderThickness="0"
                      TextWrapping="Wrap"
@@ -99,7 +98,7 @@
 
             <!--5th row-->
             <Button Content="Guarda Novela"
-                    Command="{Binding Ejecuta_GuardaNovela}"
+                    Command="{Binding Ejecuta_GuardaNovela, UpdateSourceTrigger=PropertyChanged}"
                     CommandParameter="{Binding ElementName=EstaVentana}"
                     Margin="0 40 0 0"
                     Grid.Column="0" Grid.ColumnSpan="2" 
