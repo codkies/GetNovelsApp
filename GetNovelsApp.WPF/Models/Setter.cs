@@ -47,8 +47,7 @@ namespace GetNovelsApp.WPF.Models
                 "//div[@class='text-left']/div/p",
                 "//div[@class='cha-words']/div/div/p",
                 "//div[@class='entry-content content']/p",
-                "//div[@id='divReadContent']/p",
-                "//*[@class = 'desc']/p"
+                "//div[@id='divReadContent']/p"
             };
 
 

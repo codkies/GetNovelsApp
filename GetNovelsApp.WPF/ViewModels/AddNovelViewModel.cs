@@ -29,18 +29,27 @@ namespace GetNovelsApp.WPF.ViewModels
 
         #region backing fields
         private string titulo;
+        private string autor;
+        private string review;
         private int cantidadCapitulos;
         private string sipnosis;
         private List<string> tags;
+        private List<string> generos;
         private Uri linkNovela;
         private string imagenPath;
 
         #endregion
 
         public string Titulo { get => titulo; set => OnPropertyChanged(ref titulo, value); }
+        public string Autor { get => autor; set => OnPropertyChanged(ref autor, value); }
+        public string Review { get => review; set => OnPropertyChanged(ref review, value); }
         public int CantidadCapitulos { get => cantidadCapitulos; set => OnPropertyChanged(ref cantidadCapitulos, value); }
         public string Sipnosis { get => sipnosis; set => OnPropertyChanged(ref sipnosis, value); }
         public List<string> Tags { get => tags; set => OnPropertyChanged(ref tags, value); }
+
+        public List<string> Generos { get => generos; set => OnPropertyChanged(ref generos, value); }
+
+
 
         public Uri LinkNovela { get => linkNovela; set => OnPropertyChanged(ref linkNovela, value); }
 
@@ -71,6 +80,9 @@ namespace GetNovelsApp.WPF.ViewModels
             Sipnosis = InfoNovela.Sipnosis;
             Tags = InfoNovela.Tags;
             LinkNovela = Link;
+            Generos = InfoNovela.Generos;
+            Autor = InfoNovela.Autor;
+            Review = InfoNovela.Review.ToString();
         }
 
 

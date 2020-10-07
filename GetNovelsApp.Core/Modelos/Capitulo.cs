@@ -1,5 +1,6 @@
-﻿using System;
+﻿using System; 
 using System.Security.AccessControl;
+using System.Security.Permissions;
 using GetNovelsApp.Core.Conexiones;
 using GetNovelsApp.Core.Conexiones.Internet;
 
@@ -9,31 +10,26 @@ namespace GetNovelsApp.Core.Modelos
     {
         #region Constructor & setups       
 
-        /// <summary>
-        /// DO NOT DELETE! For the DB!!!
-        /// </summary>
-        /// <param name="Link"></param>
-        /// <param name="TextoCapitulo"></param>
-        /// <param name="Titulo"></param>
-        /// <param name="Numero"></param>
-        /// <param name="Valor"></param>
-        public Capitulo(string Link, string TextoCapitulo = "", string Titulo = "", Int64 Numero = -1, Int64 Valor = -1)
+        public Capitulo(string Link, string Texto, string TituloCapitulo, Int64 NumeroCapitulo, Int64 Valor)
         {
             this.Link = new Uri(Link);
 
-            if (!TextoCapitulo.Equals(""))
+            if(Texto != null)
             {
-                Texto = TextoCapitulo;
+                if (!Texto.Equals(""))
+                {
+                    this.Texto = Texto;
+                }
             }
 
-            if (!Titulo.Equals(""))
+            if (!TituloCapitulo.Equals(""))
             {
-                TituloCapitulo = Titulo;
+                this.TituloCapitulo = TituloCapitulo;
             }
 
-            if (Numero >= 0)
+            if (NumeroCapitulo >= 0)
             {
-                NumeroCapitulo = (float)Numero;
+                this.NumeroCapitulo = (float)NumeroCapitulo;
             }
 
             if (Valor >= 0)
@@ -41,6 +37,7 @@ namespace GetNovelsApp.Core.Modelos
                 this.Valor = (int)Valor;
             }
         }
+
 
         public Capitulo(Uri link)
         {

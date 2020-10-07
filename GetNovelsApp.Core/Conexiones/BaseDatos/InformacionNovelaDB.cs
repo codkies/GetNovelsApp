@@ -21,9 +21,9 @@ namespace GetNovelsApp.Core.Conexiones.DB
 
         public string LinkPrincipal { get; set; }
 
-        public EstadoTraduccion TraduccionCompleta { get; set; }
+        public EstadoTraduccion EstadoTraduccion { get; set; }
 
-        public EstadoHistoria HistoriaCompleta { get; set; }
+        public EstadoHistoria EstadoHistoria { get; set; }
 
         public float Review { get; set; }
 

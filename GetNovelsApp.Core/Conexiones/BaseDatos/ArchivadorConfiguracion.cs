@@ -24,13 +24,13 @@ namespace GetNovelsApp.Core.Conexiones.DB
 
         public IConfig ObtenConfiguracion()
         {
-            string qry = $"Select * from {TablaConfiguracion}";
+            string qry = $"Select * from {i.TConfiguracion}";
             using IDbConnection cnn = DataBaseAccess.GetConnection();
-            var dynamic = new { CarpetaDescargas = "", CapitulosPorDocumento = 0, TamañoBatch = 25 };
+            var dynamic = new { Carpeta = "", CapitulosPorDocumento = 0, TamañoBatch = 25 };
             var resultado = cnn.Query(qry, dynamic).First();
 
 
-            string CarpetasDescarga = GetProperty(resultado, "CarpetaDescargas") as string;
+            string CarpetasDescarga = GetProperty(resultado, "Carpeta") as string;
             int CapitulosPorDocumento = Convert.ToInt32(GetProperty(resultado, "CapitulosPorDocumento"));
             int TamañoBatch = Convert.ToInt32(GetProperty(resultado, "TamañoBatch"));
 
@@ -40,8 +40,8 @@ namespace GetNovelsApp.Core.Conexiones.DB
 
         public void ActualizaConfiguracion(IConfig config)
         {
-            string qry = $"update {TablaConfiguracion} " +
-                            $"set CarpetaDescargas = '{config.FolderPath}', " +
+            string qry = $"update {i.TConfiguracion} " +
+                            $"set Carpeta = '{config.FolderPath}', " +
                             $"TamañoBatch='{config.TamañoBatch}', " +
                             $"CapitulosPorDocumento='{config.CapitulosPorDocumento}' ";
             using IDbConnection cnn = DataBaseAccess.GetConnection();
@@ -162,22 +162,20 @@ namespace GetNovelsApp.Core.Conexiones.DB
         {
 
             //agarrando su ID
-            return $"SELECT WebsiteID FROM {TablaPerfilesWebsites} " +
+            return $"SELECT WebsiteID FROM {i.TWebsites} " +
                                             $"WHERE Dominio = '{Dominio}' ";
         }
 
         private static string InsertaDominio_Query(string Dominio)
         {
-
-            //Guardando el Dominio
-            return $"INSERT INTO {TablaPerfilesWebsites} " +
+            return $"INSERT INTO {i.TWebsites} " +
                                         $"(Dominio) values " +
                                         $"('{Dominio}')";
         }
 
         private static string InsertaXPathLinks_Query(int OrdenID, int WebsiteID, string xPath)
         {
-            return $"INSERT INTO {TablaXPathLinks} " +
+            return $"INSERT INTO {i.TxPathsLinks} " +
                                                 $"(WebsiteID, xPath, OrdenID) values " +
                                                 $"('{WebsiteID}', \"{xPath}\", '{OrdenID}')";
         }

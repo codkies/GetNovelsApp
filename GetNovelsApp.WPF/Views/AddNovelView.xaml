@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:GetNovelsApp.WPF.ViewModels"
         mc:Ignorable="d"
-        Title="Agrega Novela" Height="570" Width="400">
+        Title="Agrega Novela" Height="630" Width="400">
     
     <Window.DataContext>
         <vm:AddNovelViewModel/>
@@ -43,6 +43,8 @@
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
@@ -86,24 +88,53 @@
                      FontStyle="Italic"
                      Text="{Binding Sipnosis}"/>
 
-            <!--4th row, Tags-->
-            <TextBlock Text="Tags"
+            <TextBlock Text="Review"
                        Margin="0 10 0 0"
                        Grid.Column="0" 
                        Grid.Row="3"/>
+            <TextBlock Margin="0 10 0 0"
+                       Grid.Column="1" Grid.Row="3"
+                       FontStyle="Italic"
+                       Text="{Binding Review}"/>
+
+            <!--Generos-->
+            <TextBlock Text="Generos"
+                       Margin="0 10 0 0"
+                       Grid.Column="0" 
+                       Grid.Row="4"/>
             <ComboBox Margin="0 10 0 0"
                       Grid.Column="1"
-                      Grid.Row="3"
+                      Grid.Row="4"
+                      SelectedIndex="0"
+                      ItemsSource="{Binding Generos}"/>
+
+            <!--Tags-->
+            <TextBlock Text="Tags"
+                       Margin="0 10 0 0"
+                       Grid.Column="0" 
+                       Grid.Row="5"/>
+            <ComboBox Margin="0 10 0 0"
+                      Grid.Column="1"
+                      Grid.Row="5"
                       SelectedIndex="0"
                       ItemsSource="{Binding Tags}"/>
 
-            <!--5th row-->
+            <TextBlock Text="Autor"
+                       Margin="0 10 0 0"
+                       Grid.Column="0" 
+                       Grid.Row="6"/>
+            <TextBlock Margin="0 10 0 0"
+                       Grid.Column="1" Grid.Row="6"
+                       FontStyle="Italic"
+                       Text="{Binding Autor}"/>
+
+            <!--final row-->
             <Button Content="Guarda Novela"
                     Command="{Binding Ejecuta_GuardaNovela, UpdateSourceTrigger=PropertyChanged}"
                     CommandParameter="{Binding ElementName=EstaVentana, FallbackValue=''}"
                     Margin="0 40 0 0"
                     Grid.Column="0" Grid.ColumnSpan="2" 
-                    Grid.Row="4"/>
+                    Grid.Row="7"/>
         </Grid>
 
     </StackPanel>
