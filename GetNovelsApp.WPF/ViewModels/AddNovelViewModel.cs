@@ -54,7 +54,7 @@ namespace GetNovelsApp.WPF.ViewModels
 
         public RelayCommand<string> Ejecuta_BuscaLink { get; private set; }
 
-        private string LinkViejo;
+        private string LinkViejo = "";
         public async void BuscaLink(string link)
         {
             LinkViejo = link;
@@ -74,8 +74,9 @@ namespace GetNovelsApp.WPF.ViewModels
         }
 
 
-        public bool Puede_BuscaLink(string posibleLink)
+        public bool Puede_BuscaLink(string v)
         {
+            string posibleLink = v == null ? string.Empty : v;
             return Uri.TryCreate(posibleLink, uriKind: UriKind.Absolute, out _) & !posibleLink.Equals(LinkViejo);
         }
 
