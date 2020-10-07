@@ -100,7 +100,7 @@ namespace GetNovelsApp.Core
         /// Capitulos por pdf.
         /// </summary>
         public static int CapitulosPorPdf => ConfiguracionActual.CapitulosPorDocumento;
-      
+
 
 
         #region Cambia esto luego (NU)
@@ -130,6 +130,41 @@ namespace GetNovelsApp.Core
         public static List<string> xPathsImagen => imagen;
 
         public static List<string> xPathsTags => tags;
+
+
+        public static List<string> xPathsGeneros => generos;  
+        public static List<string> xPathsReview => review;
+        public static List<string> xPathsEstadoHistoria => estadoHistoria;
+        public static List<string> xPathsEstadoTraduccion => estadoTraduccion;
+        public static List<string> xPathsNacionalidad => nacionalidad;
+        public static List<string> xPathsAutor => autor;
+
+       
+        private static readonly List<string> review = new List<string>()
+        {
+            "//span[@class='uvotes']"
+        };
+        private static readonly List<string> estadoHistoria = new List<string>()
+        {
+            "//div[@id='editstatus']"
+        };
+        private static readonly List<string> estadoTraduccion = new List<string>()
+        {
+            "//div[@id='showtranslated']/a"
+        };
+        private static readonly List<string> nacionalidad = new List<string>()
+        {
+            "//div[@id='showlang']/a"
+        };
+        private static readonly List<string> autor = new List<string>()
+        {
+            "//div[@id='showauthors']/a"
+        };
+        private static readonly List<string> generos = new List<string>()
+        {
+            "//div[@id='seriesgenre']/a"
+        };
+
 
         #endregion
 

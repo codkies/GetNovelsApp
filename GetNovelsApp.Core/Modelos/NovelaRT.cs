@@ -153,6 +153,20 @@ namespace GetNovelsApp.Core.Modelos
         /// </summary>
         public int PorcentajeDescarga => CapitulosDescargados.Count * 100 / CantidadLinks;
 
+        public string Autor => throw new NotImplementedException();
+
+        public bool HistoriaCompleta => throw new NotImplementedException();
+
+        public bool TraduccionCompleta => throw new NotImplementedException();
+
+        public float Review => throw new NotImplementedException();
+
+        public float CantidadReviews => throw new NotImplementedException();
+
+        public List<string> Generos => throw new NotImplementedException();
+
+        int INovela.CantidadReviews => throw new NotImplementedException();
+
 
         #endregion
 

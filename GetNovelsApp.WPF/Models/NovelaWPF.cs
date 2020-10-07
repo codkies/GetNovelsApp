@@ -23,7 +23,7 @@ namespace GetNovelsApp.WPF.Models
             ID = dbInfo.ID;
             Titulo = dbInfo.Titulo;
             LinkPrincipal = new Uri(dbInfo.LinkPrincipal);
-            
+
             if (dbInfo.Tags != null)
                 Tags = ManipuladorStrings.TagsEnLista(dbInfo.Tags);
 
@@ -66,7 +66,7 @@ namespace GetNovelsApp.WPF.Models
         private string titulo;
         private string sipnosis;
         private Uri linkPrincipal;
-        private List<string> tags = new List<string>(); 
+        private List<string> tags = new List<string>();
         private Uri imagenLink;
 
         //Caps
@@ -74,6 +74,34 @@ namespace GetNovelsApp.WPF.Models
         private List<Capitulo> capitulosDescargados = new List<Capitulo>();
         private List<Capitulo> capitulosImpresos = new List<Capitulo>();
         private List<Capitulo> capitulosPorDescargar = new List<Capitulo>();
+
+        private string autor;
+        private bool historiaCompleta;
+        private bool traduccionCompleta;
+        private float review;
+        private int cantidadReviews;
+        private List<string> generos;
+        #endregion
+
+        #region new fields
+
+        public string Autor { get => autor; set => OnPropertyChanged(ref titulo, value); }
+
+
+        public bool HistoriaCompleta { get => historiaCompleta; set => OnPropertyChanged(ref historiaCompleta, value); }
+
+
+        public bool TraduccionCompleta { get => traduccionCompleta; set => OnPropertyChanged(ref traduccionCompleta, value); }
+
+
+        public float Review { get => review; set => OnPropertyChanged(ref review, value); }
+
+
+        public int CantidadReviews { get => cantidadReviews; set => OnPropertyChanged(ref cantidadReviews, value); }
+
+
+        public List<string> Generos { get => generos; set => OnPropertyChanged(ref generos, value); }
+
         #endregion
 
         //Info
@@ -197,6 +225,9 @@ namespace GetNovelsApp.WPF.Models
         public int PorcentajeDescarga => CapitulosDescargados.Count * 100 / CantidadLinks;
 
 
+        /// <summary>
+        /// Usado por el XAML. Do not delete.
+        /// </summary>
         public string PathImagen => EncontradorImagen.DescargaImagen(ImagenLink);
 
         #endregion

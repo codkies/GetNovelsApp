@@ -11,7 +11,7 @@ namespace GetNovelsApp.Core.Modelos
         bool HistoriaCompleta { get; }
         bool TraduccionCompleta { get; }
         float Review { get; }
-        float CantidadReviews { get; }        
+        int CantidadReviews { get; }        
         int ID { get; }
         List<Capitulo> Capitulos { get; }
         List<Capitulo> CapitulosDescargados { get; }

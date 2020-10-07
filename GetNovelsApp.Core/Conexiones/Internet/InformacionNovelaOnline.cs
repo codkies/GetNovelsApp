@@ -8,16 +8,6 @@ namespace GetNovelsApp.Core.Conexiones.Internet
     /// </summary>
     public class InformacionNovelaOnline
     {
-        string getNacionalidad = $"select NacionID from Naciones where NacionNombre = x";
-        string insertNacion = $"insert into Naciones (nombreNacion)";
-
-        string getAutor = "select AutorID from Autores where NombreAutor = x";
-        string insertAutor = $"insert into Autores (nombre, nacionalidadID)";
-
-        string getNov = $"";
-        string insertNov = $"insert into Novelas " +
-                    $"(AutorID, NovelaTitulo) values (x, y)";
-
 
         /// <summary>
         /// Titulo de la novela
@@ -34,7 +24,7 @@ namespace GetNovelsApp.Core.Conexiones.Internet
 
         public float Review;
 
-        public float CantidadReviews;
+        public int CantidadReviews;
 
         public List<string> Generos;
 
@@ -58,21 +48,6 @@ namespace GetNovelsApp.Core.Conexiones.Internet
 
         public List<string> Tags;
 
-        public InformacionNovelaOnline(string q, string titulo, string autor, bool historiaCompletada, bool traduccionCompletada, float review, float cantidadReviews, List<string> generos, Uri linkPrincipal, List<Uri> linksDeCapitulos, Uri imagen, string sipnosis, List<string> tags)
-        {
-            this.q = q;
-            Titulo = titulo;
-            Autor = autor;
-            HistoriaCompletada = historiaCompletada;
-            TraduccionCompletada = traduccionCompletada;
-            Review = review;
-            CantidadReviews = cantidadReviews;
-            Generos = generos;
-            LinkPrincipal = linkPrincipal;
-            LinksDeCapitulos = linksDeCapitulos;
-            Imagen = imagen;
-            Sipnosis = sipnosis;
-            Tags = tags;
-        }
+       
     }
 }

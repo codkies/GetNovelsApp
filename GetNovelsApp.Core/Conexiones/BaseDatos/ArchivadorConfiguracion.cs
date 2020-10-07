@@ -107,29 +107,28 @@ namespace GetNovelsApp.Core.Conexiones.DB
 
         public List<IPath> ObtenPerfiles()
         {
-            using IDbConnection cnn1 = DataBaseAccess.GetConnection();
+            using IDbConnection cnn = DataBaseAccess.GetConnection();
 
             //Obteniendo dominio & ID
-            string dominioQry = $"select * from {TablaPerfilesWebsites}";
+            string dominioQry = $"select * from {i.TWebsites}";
             var modeloPerfiles = new { WebsiteID = 0, Dominio = "" };
-            var ListaPerfiles = cnn1.Query(dominioQry, modeloPerfiles).ToList();
+            var ListaPerfiles = cnn.Query(dominioQry, modeloPerfiles).ToList();
 
             List<Website> output = new List<Website>();
 
             foreach (var perfil in ListaPerfiles)
             {
-                using IDbConnection cnn = DataBaseAccess.GetConnection();
                 string Dominio = GetProperty(perfil, "Dominio");
                 int id = Convert.ToInt32(GetProperty(perfil, "WebsiteID"));
 
                 //Obteniendo xPath
-                string TituloQry = $"select xPath from {TablaXPathTitulo} where WebsiteID = '{id}'";
+                string TituloQry = $"select xPath from {i.TxPathsTitulo} where WebsiteID = '{id}'";
 
-                string LinkQry = $"select xPath from {TablaXPathLinks} where WebsiteID = '{id}'";
+                string LinkQry = $"select xPath from {i.TxPathsLinks} where WebsiteID = '{id}'";
 
-                string OrdenQry = $"select OrdenID from {TablaXPathLinks} where WebsiteID = '{id}'";
+                string OrdenQry = $"select OrdenID from {i.TxPathsLinks} where WebsiteID = '{id}'";
 
-                string TextoQry = $"select xPath from {TablaXPathTextos} where WebsiteID = '{id}'";
+                string TextoQry = $"select xPath from {i.TxPathsTextos} where WebsiteID = '{id}'";
 
                 List<string> xPathsTitulo = null;
                 List<string> xPathsLinks = null;

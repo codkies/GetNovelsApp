@@ -94,7 +94,9 @@ namespace GetNovelsApp.Core.Conexiones.DB
         {
             using IDbConnection cnn = DataBaseAccess.GetConnection();
 
-            string qry = Legacy_GetIDNovel_Query(Link);
+            string qry = $"select NovelaID from {i.TNovelas} as n " +
+                            $"join {i.TLinks} as l " +
+                               $"on n.NovelaID = l.NovelaID and l.Link = '{Link}'";
             var resultados = cnn.Query<int>(qry);
             cnn.Dispose();
 
@@ -109,7 +111,6 @@ namespace GetNovelsApp.Core.Conexiones.DB
             List<Task> tareas = new List<Task>();
 
             string findAllNovels = SelectAllNovel_qry();
-
 
             using IDbConnection cnn = DataBaseAccess.GetConnection();
 
@@ -441,110 +442,107 @@ namespace GetNovelsApp.Core.Conexiones.DB
 
         private static string SelectNovel_qry(Uri LinkNovela)
         {
-            return $@"Select 
-	                                nov.NovelaTitulo as Titulo,
-	                                nov.NovelaID as ID,
-	                                au.NombreAutor as Autor,
-	                                nac.NacionNombre as Nacionalidad,
-	                                T.EstadoTraduccionID as TraduccionCompleta,
-	                                H.EstadoHistoriaID as HistoriaCompleta,
-	                                RV.Review as Review,
-	                                RV.CantidadReviews as CantidadReviews,
-	                                S.Texto as Sipnosis,
-	                                L.Link as LinkPrincipal,
-	                                I.Link as Imagen
-                                from Novelas as nov
-                                join Autores as au
-                                    on nov.AutorID = au.AutorID
-                                join Naciones as nac
-                                    on au.AutorID = nac.NacionID
-                                join EstadoNovelas as est
-                                    on nov.NovelaID = est.NovelaID
-                                join EstadoHistoria as H
-                                    on est.EstadoHistoriaID = H.EstadoHistoriaID
-                                join EstadoTraduccion as T
-                                    on est.EstadoTraduccionID = T.EstadoTraduccionID
-                                join ReviewsNovelas as RV
-                                    on nov.NovelaID = RV.NovelaID
-                                join Sipnosis as S
-                                    on S.NovelaID = nov.NovelaID
-                                join Links as L
-                                    on L.NovelaID = nov.NovelaID and L.Link = '{LinkNovela}'
-                                join Imagenes as I
-                                    on I.NovelaID = nov.NovelaID";
+            return $"Select " +
+                    "nov.NovelaTitulo as Titulo," +
+                    "nov.NovelaID as ID, " +
+                    "au.NombreAutor as Autor, " +
+                    "nac.NacionNombre as Nacionalidad, " +
+                    "T.EstadoTraduccionID as TraduccionCompleta, " +
+                    "H.EstadoHistoriaID as HistoriaCompleta, " +
+                    "RV.Review as Review, " +
+                    "RV.CantidadReviews as CantidadReviews, " +
+                    "S.Texto as Sipnosis, " +
+                    "L.Link as LinkPrincipal, " +
+                    "I.Link as Imagen " +
+                    "from Novelas as nov " +
+                    "join Autores as au " +
+                    "on nov.AutorID = au.AutorID " +
+                    "join Naciones as nac " +
+                        "on au.AutorID = nac.NacionID " +
+                    "join EstadoNovelas as est " +
+                        "on nov.NovelaID = est.NovelaID " +
+                    "join EstadoHistoria as H " +
+                        "on est.EstadoHistoriaID = H.EstadoHistoriaID " +
+                    "join EstadoTraduccion as T " +
+                        "on est.EstadoTraduccionID = T.EstadoTraduccionID " +
+                    "join ReviewsNovelas as RV " +
+                        "on nov.NovelaID = RV.NovelaID " +
+                    "join Sipnosis as S " +
+                        "on S.NovelaID = nov.NovelaID " +
+                    "join Links as L " +
+                        $"on L.NovelaID = nov.NovelaID' and L.Link = \"{LinkNovela}\" " +
+                    "join Imagenes as I " +
+                        "on I.NovelaID = nov.NovelaID";
         }
 
         private static string SelectAllNovel_qry()
         {
-            return $@"Select 
-	                                nov.NovelaTitulo as Titulo,
-	                                nov.NovelaID as ID,
-	                                au.NombreAutor as Autor,
-	                                nac.NacionNombre as Nacionalidad,
-	                                T.EstadoTraduccionID as TraduccionCompleta,
-	                                H.EstadoHistoriaID as HistoriaCompleta,
-	                                RV.Review as Review,
-	                                RV.CantidadReviews as CantidadReviews,
-	                                S.Texto as Sipnosis,
-	                                L.Link as LinkPrincipal,
-	                                I.Link as Imagen
-                                from Novelas as nov
-                                join Autores as au
-                                    on nov.AutorID = au.AutorID
-                                join Naciones as nac
-                                    on au.AutorID = nac.NacionID
-                                join EstadoNovelas as est
-                                    on nov.NovelaID = est.NovelaID
-                                join EstadoHistoria as H
-                                    on est.EstadoHistoriaID = H.EstadoHistoriaID
-                                join EstadoTraduccion as T
-                                    on est.EstadoTraduccionID = T.EstadoTraduccionID
-                                join ReviewsNovelas as RV
-                                    on nov.NovelaID = RV.NovelaID
-                                join Sipnosis as S
-                                    on S.NovelaID = nov.NovelaID
-                                join Links as L
-                                    on L.NovelaID = nov.NovelaID'
-                                join Imagenes as I
-                                    on I.NovelaID = nov.NovelaID";
+            return $"Select " +
+                    "nov.NovelaTitulo as Titulo," +
+                    "nov.NovelaID as ID, " +
+                    "au.NombreAutor as Autor, " +
+                    "nac.NacionNombre as Nacionalidad, " +
+                    "T.EstadoTraduccionID as TraduccionCompleta, " +
+                    "H.EstadoHistoriaID as HistoriaCompleta, " +
+                    "RV.Review as Review, " +
+                    "RV.CantidadReviews as CantidadReviews, " +
+                    "S.Texto as Sipnosis, " +
+                    "L.Link as LinkPrincipal, " +
+                    "I.Link as Imagen " +
+                    "from Novelas as nov " +
+                    "join Autores as au " +
+                    "on nov.AutorID = au.AutorID " +
+                    "join Naciones as nac " +
+                        "on au.AutorID = nac.NacionID " +
+                    "join EstadoNovelas as est " +
+                        "on nov.NovelaID = est.NovelaID " +
+                    "join EstadoHistoria as H " +
+                        "on est.EstadoHistoriaID = H.EstadoHistoriaID " +
+                    "join EstadoTraduccion as T " +
+                        "on est.EstadoTraduccionID = T.EstadoTraduccionID " +
+                    "join ReviewsNovelas as RV " +
+                        "on nov.NovelaID = RV.NovelaID " +
+                    "join Sipnosis as S " +
+                        "on S.NovelaID = nov.NovelaID " +
+                    "join Links as L " +
+                        "on L.NovelaID = nov.NovelaID' " +
+                    "join Imagenes as I " +
+                        "on I.NovelaID = nov.NovelaID";
         }
 
 
         private static string SelectCaps_qry(InformacionNovelaDB infoDBNovela)
         {
-            return $@"select 
-                          c.Link as Link,
-	                      t.Texto as Texto, 
-	                      c.Titulo as TituloCapitulo,
-	                      c.Numero as NumeroCapitulo,
-	                      c.Valor as Valor
-                      from Capitulos as c
-                      left join TextosCapitulos as t
-                       on c.CapituloID = t.CapituloID 
-                          and c.NovelaID = '{infoDBNovela.ID}'";
+            return  $"select " +
+                        "c.Link as Link, " +
+                        "t.Texto as Texto,  " +
+                        "c.Titulo as TituloCapitulo, "+
+                        "c.Numero as NumeroCapitulo, " +
+                        "c.Valor as Valor " +
+                    "from Capitulos as c "+
+                    "left join TextosCapitulos as t " +
+                        "on c.CapituloID = t.CapituloID  " +
+                        $"and c.NovelaID = '{infoDBNovela.ID}'";
         }
 
         private static string SelectGeneros_qry(InformacionNovelaDB infoDBNovela)
         {
-            return $@"select 
-	                                g.Descripcion
-                                from GenerosNovela as gn
-                                join Generos as g
-	                                on g.GeneroID = gn.GeneroID and 
-                                       gn.NovelaID = '{infoDBNovela.ID}' ";
+            return $"select " +
+                   "    g.Descripcion " +
+                   "from GenerosNovela as gn" +
+                   "join Generos as g " +
+                    "on g.GeneroID = gn.GeneroID and " +
+                    $"gn.NovelaID = '{infoDBNovela.ID}'";
         }
 
         private static string SelectTags_qry(InformacionNovelaDB infoDBNovela)
         {
-
-
-            //Encuentra los tags
-            return $@"select 
-	                                t.Descripcion
-                                from TagsNovela as tn
-                                join Tags as t
-	                                on t.TagID = tn.TagID and 
-                                       tn.NovelaID = '{infoDBNovela.ID}' ";
+            return $"select " +
+                   "t.Descripcion "+
+                   "from TagsNovela as tn" +
+                   "join Tags as t " +
+                   "on t.TagID = tn.TagID and" +
+                   $"tn.NovelaID = '{infoDBNovela.ID}' ";
         } 
         #endregion
     }

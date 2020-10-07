@@ -8,6 +8,7 @@ using GetNovelsApp.Core.Conexiones.DB;
 using GetNovelsApp.Core.Reportaje;
 using HtmlAgilityPack;
 using iText.Kernel.Pdf.Tagutils;
+using Microsoft.SqlServer.Server;
 
 namespace GetNovelsApp.Core.Conexiones.Internet
 {
@@ -153,15 +154,15 @@ namespace GetNovelsApp.Core.Conexiones.Internet
             string Titulo = ObtenInnerText(nodosTitulo);
 
             //Buscando info en NovelUpdates
-            BuscaNovelaEnNovelUpdates(Titulo, conector, out string Sipnosis, out List<string> Tags, out Uri LinkImagen);
+            BuscaNovelaEnNovelUpdates(Titulo, conector, out InformacionNovelaOnline info);
 
             //Links:
             HtmlNodeCollection nodosLinksCapitulos = htmlNodes[1];
             List<Uri> LinksDeCapitulos = ObtenLinks(nodosLinksCapitulos, orden);
 
-
-            //Ordeanando la información:
-            InformacionNovelaOnline info = new InformacionNovelaOnline(Titulo, LinkPaginaPrincipal, LinksDeCapitulos, LinkImagen, Sipnosis, Tags);
+            info.LinkPrincipal = LinkPaginaPrincipal;
+            info.LinksDeCapitulos = LinksDeCapitulos;
+            
 
             return info;
         }
@@ -178,7 +179,7 @@ namespace GetNovelsApp.Core.Conexiones.Internet
         /// <param name="Sipnosis"></param>
         /// <param name="Tags"></param>
         /// <param name="LinkImagen"></param>
-        private static void BuscaNovelaEnNovelUpdates(string Titulo, Conector conector, out string Sipnosis, out List<string> Tags, out Uri LinkImagen)
+        private static void BuscaNovelaEnNovelUpdates(string Titulo, Conector conector, out InformacionNovelaOnline info)
         {
             //Conexion
             Uri DirNovelUpdates = ObtenNovelUpdatesWebpage(Titulo);
@@ -187,7 +188,15 @@ namespace GetNovelsApp.Core.Conexiones.Internet
             {
                 GetNovelsConfig.xPathsSipnosis,
                 GetNovelsConfig.xPathsImagen,
-                GetNovelsConfig.xPathsTags
+                GetNovelsConfig.xPathsTags,
+
+                GetNovelsConfig.xPathsGeneros,
+                GetNovelsConfig.xPathsAutor,
+                GetNovelsConfig.xPathsNacionalidad,
+                GetNovelsConfig.xPathsEstadoTraduccion,
+                GetNovelsConfig.xPathsEstadoHistoria,
+                GetNovelsConfig.xPathsReview,
+
             };
             List<HtmlNodeCollection> infoEnNU = conector.IntenaVariosNodos(DirNovelUpdates, xPaths);
 
@@ -196,24 +205,72 @@ namespace GetNovelsApp.Core.Conexiones.Internet
             HtmlNode nodoImagen = infoEnNU[1].First();
             HtmlNodeCollection nodosTags = infoEnNU[2];
 
+            HtmlNodeCollection nodosGenero = infoEnNU[3];
+            HtmlNode nodoAutor = infoEnNU[4].First();
+            HtmlNode nodoNacionalidad = infoEnNU[5].First();
+            HtmlNode nodoTraduccion = infoEnNU[6].First();
+            HtmlNode nodoHistoria = infoEnNU[7].First();
+            HtmlNode nodoReview = infoEnNU[8].First();
+
             //Fitlrando sipnosis
-            Sipnosis = string.Empty;
+            var sipnosis = string.Empty;
             foreach (HtmlNode nodo in nodosSipnosis)
             {
-                Sipnosis += ObtenInnerText(nodo);
+                var texto = ObtenInnerText(nodo);
+                sipnosis += $"{texto}\n";
             }
 
             //Filtrando imagen
-            LinkImagen = new Uri(nodoImagen.Attributes["src"].Value);
+            var linkImagen = new Uri(nodoImagen.Attributes["src"].Value);
 
             //Tags
-            Tags = new List<string>();
+            var tags = new List<string>();
             foreach (HtmlNode node in nodosTags)
             {
                 string _ = node.InnerText;
-                Tags.Add(_);
+                tags.Add(_);
             }
 
+            //Genero
+            var generos = new List<string>();
+            foreach (HtmlNode node in nodosGenero)
+            {
+                string _ = node.InnerText;
+                generos.Add(_);
+            }
+
+            //Autor
+            string autor = nodoAutor.InnerText;
+
+            //Nacionalidad
+            string nacionalidad = nodoNacionalidad.InnerText;
+
+            //Traduccion
+            bool traduccionCompleta = nodoTraduccion.InnerText.ToLower().Equals("yes");
+
+            //Historia
+            bool historiaCompleta = nodoHistoria.InnerText.ToLower().Contains("completed");
+
+            //Review
+            string todoElReview = nodoReview.InnerText.ToLower();
+            string review = todoElReview.Substring(1, 3);
+
+            string cantidad = todoElReview.Substring(12).Replace("votes)", "");
+
+            info = new InformacionNovelaOnline()
+            {
+                Autor = autor,
+                Nacionalidad = nacionalidad,
+                CantidadReviews = int.Parse(cantidad),
+                Review = float.Parse(review),
+                Tags = tags,
+                Generos = generos,
+                Imagen = linkImagen,
+                Sipnosis = sipnosis,
+                TraduccionCompletada = traduccionCompleta,
+                HistoriaCompletada = historiaCompleta,
+                Titulo = Titulo,
+            };
         }
 
 

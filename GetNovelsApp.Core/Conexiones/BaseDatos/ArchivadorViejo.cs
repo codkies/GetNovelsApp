@@ -7,6 +7,7 @@ using Dapper;
 using GetNovelsApp.Core.Conexiones.Internet;
 using GetNovelsApp.Core.Modelos;
 using GetNovelsApp.Core.Reportaje;
+using GetNovelsApp.Core.Utilidades;
 
 namespace GetNovelsApp.Core.Conexiones.DB
 {

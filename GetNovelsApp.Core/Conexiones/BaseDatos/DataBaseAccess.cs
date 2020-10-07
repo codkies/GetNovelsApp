@@ -8,7 +8,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
     {
         static SQLiteConnection LastConecction;
 
-        private static string GetConnectionString(string id = "Default")
+        private static string GetConnectionString(string id = "New")
         {
             return ConfigurationManager.ConnectionStrings[id].ConnectionString;
         }

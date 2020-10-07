@@ -23,7 +23,7 @@ namespace GetNovelsApp.WPF.ViewModels
             GetNovelsEvents.NovelaAgregadaADB += GetNovelsEvents_NovelaAgregadaADB;
             Command_VerNovela = new RelayCommand<NovelaWPF>(VerNovela, Puedo_VerNovela);
             Command_AgregarNovela = new RelayCommand(AgregarNovela, Puedo_AgregarNovela);
-            if (novelasVisibles == null) ObtenNovelasDB();
+            if (NovelasVisibles == null & isExecuting == false) ObtenNovelasDB();
         }
 
         /// <summary>
