@@ -1,15 +1,17 @@
 ﻿using System;
+using System.Security.Cryptography.X509Certificates;
 
 namespace GetNovelsApp.Core.Reportaje
 {
     /// <summary>
     /// Clase para saber el progreso de una novela
     /// </summary>
-    public class ProgresoNovela : Progress<IReporteNovela>
+    public class Progreso : Progress<IReporte>
     {
-        public ProgresoNovela()
+        public Progreso()
         {
+           
         }
-    }
+    }    
 
 }

@@ -61,29 +61,13 @@ namespace GetNovelsApp.Core.Empaquetadores
 
         }
 
-
-        public void EmpaquetaCapitulo(List<Capitulo> CapitulosDescargados, INovela novela, IProgress<IReporteNovela> progreso)
-        {
-            foreach (Capitulo c in CapitulosDescargados)
-            {
-                novela.CapituloFueDescargado(c);
-            }
-
-            Archivador.GuardaCapitulosAsync(CapitulosDescargados, novela.ID);
-
-            var nuevo_Reporte = GetNovelsFactory.FabricaReporteNovela(novela.Capitulos.Count, novela.CapitulosDescargados.Count, novela.ID, this);
-
-            progreso.Report(nuevo_Reporte);
-           
-        }
-
-        public void EmpaquetaCapitulo(Capitulo capituloDescargado, INovela novela, IProgress<IReporteNovela> progreso)
+        public void EmpaquetaCapitulo(Capitulo capituloDescargado, INovela novela, IProgress<IReporte> progreso)
         {
             novela.CapituloFueDescargado(capituloDescargado);
 
             Archivador.GuardaCapitulosAsync(capituloDescargado, novela.ID);
 
-            var nuevo_Reporte = GetNovelsFactory.FabricaReporteNovela(novela.Capitulos.Count, novela.CapitulosDescargados.Count, novela.ID, this);
+            var nuevo_Reporte = GetNovelsFactory.FabricaReporteNovela(novela.Capitulos.Count, novela.CapitulosDescargados.Count, "Descargando", this, novela.Titulo);
 
             progreso.Report(nuevo_Reporte);
         }

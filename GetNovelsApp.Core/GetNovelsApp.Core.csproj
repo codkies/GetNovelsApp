@@ -129,10 +129,9 @@
     <Compile Include="Modelos\INovela.cs" />
     <Compile Include="Reportaje\IComunicador.cs" />
     <Compile Include="Reportaje\IReporte.cs" />
-    <Compile Include="Reportaje\IReporteNovela.cs" />
     <Compile Include="Reportaje\IReportero.cs" />
-    <Compile Include="Reportaje\ProgresoNovela.cs" />
-    <Compile Include="Reportaje\ReporteNovelaBasico.cs" />
+    <Compile Include="Reportaje\Progreso.cs" />
+    <Compile Include="Reportaje\Reporte.cs" />
     <Compile Include="Utilidades\ComparerOrdenadorCapitulos.cs" />
     <Compile Include="Empaquetador\EmpaquetadorNovelas.cs" />
     <Compile Include="Modelos\NovelaRT.cs" />

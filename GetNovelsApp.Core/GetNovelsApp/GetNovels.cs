@@ -47,6 +47,7 @@ namespace GetNovelsApp.Core
         #endregion
 
 
+
         #region Constructores & Setup
 
         public GetNovels(IFabrica Fabrica, IComunicador comunicador)
@@ -91,15 +92,17 @@ namespace GetNovelsApp.Core
 
         private Queue<INovela> NovelasPorDescargar = new Queue<INovela>();
 
+
         private bool Descargando = false;
+
 
         /// <summary>
         /// Une el reporte con el ID de la novela.
         /// </summary>
-        private Dictionary<int, IProgress<IReporteNovela>> ReportePorID = new Dictionary<int, IProgress<IReporteNovela>>();
+        private Dictionary<int, IProgress<IReporte>> ReportePorID = new Dictionary<int, IProgress<IReporte>>();
 
 
-        public async Task<bool> AgregaAlQueue(INovela novela, IProgress<IReporteNovela> progreso)
+        public async Task<bool> AgregaAlQueue(INovela novela, IProgress<IReporte> progreso)
         {            
             #region Checks
             //no puede estar en la DB al 100%
@@ -115,32 +118,13 @@ namespace GetNovelsApp.Core
                 return false;
             }
             #endregion
-            
-            AgregaNovelaQueue(novela, progreso); //Mete novela en Queue
+
+            NovelasPorDescargar.Enqueue(novela);
+            ReportePorID.Add(novela.ID, progreso);
 
             await RevisaSiQuedanNovelasPorDescargarAsync(); //Comienza el trigger de las descargas
 
             return true;
-        }
-
-
-        /// <summary>
-        /// Registra una novela para ser descargada cuando se pueda.
-        /// </summary>
-        private void AgregaNovelaQueue(INovela novela, IProgress<IReporteNovela> progreso)
-        {
-            NovelasPorDescargar.Enqueue(novela);            
-            ReportePorID.Add(novela.ID, progreso);
-        }
-
-
-        /// <summary>
-        /// Hace lo necesario cuando una novela ha sido descargada.
-        /// </summary>
-        private async Task NovelaDescargadaAsync(INovela novelaNueva)
-        {
-            ReportePorID.Remove(novelaNueva.ID); //ya no es necesario mantener ref al reporte de una novela que ya no se le reportará nada.
-            await RevisaSiQuedanNovelasPorDescargarAsync();
         }
 
 
@@ -167,7 +151,7 @@ namespace GetNovelsApp.Core
 
 
 
-        #region Scraping:
+        #region Scraping
 
 
         /// <summary>
@@ -192,61 +176,39 @@ namespace GetNovelsApp.Core
             PreparaNovelaNueva(novelaNueva);
             GetNovelsComunicador.ReportaCambioEstado($"La novela {MyNovela.Titulo} tiene un porcentaje de descarga de {MyNovela.PorcentajeDescarga}%.", this);
 
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
 
-            IProgress<IReporteNovela> Reporte = ReportePorID[novelaNueva.ID];
-            await ScrapMyNovelaAsync(ComienzaEn, Reporte);
+            IProgress<IReporte> progresoDeNovela = ReportePorID[novelaNueva.ID];
 
-            stopwatch.Stop();
+            List<Task> Scrappers = new List<Task>();
 
-            //Reportando:            
-            GetNovelsComunicador.ReportaExito($"Se han finalizado todas las iteraciones. Tiempo tomado: {stopwatch.ElapsedMilliseconds / (60 * 1000)}min.", this);
+            foreach (var capitulo in DescargaEstosCapitulos)
+            {
+                Scrappers.Add(Task.Run(() => Scrap(capitulo, progresoDeNovela)));
+            }
+
+            await Task.WhenAll(Scrappers);
+
 
             Descargando = false;
-            await NovelaDescargadaAsync(novelaNueva);
+            await NovelaFueDescargadAsync(novelaNueva);
 
             return MyNovela;
         }
 
 
         /// <summary>
-        /// Tiene mucha mierda encima este metodod...
+        /// Hace lo necesario cuando una novela ha sido descargada.
         /// </summary>
-        /// <param name="ComienzaEn"></param>
-        /// <param name="progreso"></param>
-        /// <returns></returns>
-        private async Task ScrapMyNovelaAsync(int ComienzaEn, IProgress<IReporteNovela> progreso)
+        private async Task NovelaFueDescargadAsync(INovela novelaNueva)
         {
-            //Preparaciones:
-            int tamañoBatch = GetNovelsConfig.TamañoBatch;
-            int cantidadDeLinksAUtilizar = MyNovela.CapitulosPorDescargar.Count - ComienzaEn;
-            int batches = DivideYRedondeaUp(cantidadDeLinksAUtilizar, tamañoBatch);
-
-            GetNovelsComunicador.ReportaEspecial($"{MyNovela.Titulo} tiene {MyNovela.CapitulosPorDescargar.Count} capitulos por descargar. Se empezará desde: {MyNovela.CapitulosPorDescargar[ComienzaEn].TituloCapitulo}\n" +
-                                                $"Se realizarán {batches+1} iteraciones."
-                                                , this);
-
-            //------------------------------------------------------------------------------------------------------------------------------
-
-            GetNovelsComunicador.Reporta("Comenzando Scrap\n", this);
-           
-
-            List<Task> Scrappers = new List<Task>();
-
-            foreach (var capitulo in DescargaEstosCapitulos)
-            {
-                Scrappers.Add(Task.Run(() => Scrap(capitulo, progreso)));
-            }
-
-            await Task.WhenAll(Scrappers);
-
-            GetNovelsComunicador.ReportaExito("\nFinalizados todos los batchs.", this);
-        }        
+            ReportePorID.Remove(novelaNueva.ID); //ya no es necesario mantener ref al reporte de una novela que ya no se le reportará nada.
+            await RevisaSiQuedanNovelasPorDescargarAsync();
+        }
 
 
 
-        private void Scrap(Capitulo capituloPorDescargar, IProgress<IReporteNovela> progress)
+
+        private void Scrap(Capitulo capituloPorDescargar, IProgress<IReporte> progress)
         {
             //A) baja 1 capitulo
             Capitulo capituloDescargado = MyScraper.CompletaCapitulo(capituloPorDescargar);
@@ -261,20 +223,7 @@ namespace GetNovelsApp.Core
 
 
 
-        #region Helpers:
-
-
-        /// <summary>
-        /// Divide 2 int como decimales y redonda hacia arriba.
-        /// </summary>
-        /// <param name="num1"></param>
-        /// <param name="num2"></param>
-        /// <returns></returns>
-        private int DivideYRedondeaUp(int num1, int num2)
-        {
-            decimal x = (decimal)num1 / num2;
-            return (int)Math.Ceiling(x);
-        }
+        #region Helpers
 
 
         /// <summary>

@@ -66,11 +66,12 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AppViewModel.cs" />
+    <Compile Include="ManagerTareas.cs" />
     <Compile Include="Models\ITarea.cs" />
     <Compile Include="Models\ComunicadorWPF.cs" />
     <Compile Include="Models\FactoryWPF.cs" />
     <Compile Include="Models\NovelaWPF.cs" />
-    <Compile Include="Models\ReporteNovelaWPF.cs" />
+    <Compile Include="Models\ReporteWPF.cs" />
     <Compile Include="Models\Setter.cs" />
     <Compile Include="Models\Tarea.cs" />
     <Compile Include="Utilidades\DefaultStrings.cs" />

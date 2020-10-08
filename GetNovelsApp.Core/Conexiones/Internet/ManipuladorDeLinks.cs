@@ -297,6 +297,10 @@ namespace GetNovelsApp.Core.Conexiones.Internet
                 }
             }
 
+            if (direccionEnNU.Contains("’"))
+            {
+                direccionEnNU.Remove(direccionEnNU.IndexOf("’"), 1);
+            }
             return new Uri(direccionEnNU);
         }
 

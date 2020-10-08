@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SQLite;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using Dapper;
 using GetNovelsApp.Core.Conexiones.Internet;
@@ -45,22 +46,24 @@ namespace GetNovelsApp.Core.Conexiones.DB
         /// </summary>
         /// <param name="info"></param>
         /// <returns></returns>
-        public async Task<INovela> MeteNovelaDBAsync(InformacionNovelaOnline info)
+        public async Task<INovela> MeteNovelaDBAsync(InformacionNovelaOnline info, IProgress<IReporte> progress)
         {
             bool YaExiste = NovelaExisteEnDB(info.LinkPrincipal);
             if (!YaExiste)
             {
                 using IDbConnection cnn = DataBaseAccess.GetConnection();
                 //Obteniendo toda la info de la web y metiendola en la DB:
-                InformacionNovelaDB novDBInfo = InsertaNovelaEnDB(info, cnn);
+                InformacionNovelaDB novDBInfo = InsertaNovelaEnDB(info, cnn, progress);
 
                 //Capitulos:
                 List<Capitulo> CapitulosNovela = GetNovelsFactory.FabricaCapitulos(info.LinksDeCapitulos);
-                await GuardaCapitulosAsync(CapitulosNovela, novDBInfo.ID); //Itera los caps y encuentra su info.
+                await GuardaCapitulosAsync(CapitulosNovela, novDBInfo.ID, progress); //Itera los caps y encuentra su info.
+                
 
                 //Regresando una novela para runtime:
                 INovela nov = GetNovelsFactory.FabricaNovela(CapitulosNovela, novDBInfo);
                 cnn.Dispose();
+                GetNovelsEvents.Invoke_NovelaAgregadaADB();
                 return nov;
             }
             else
@@ -78,11 +81,11 @@ namespace GetNovelsApp.Core.Conexiones.DB
         }
 
 
-        public async Task GuardaCapitulosAsync(List<Capitulo> capitulos, int novelaID)
+        public async Task GuardaCapitulosAsync(List<Capitulo> capitulos, int novelaID, IProgress<IReporte> progress)
         {
             capitulos.ForEach(x => CapitulosAGuardar.Add(x, novelaID));
             if (EjecutandoGuardado) return;
-            await Task.Run(() => CapitulosAGuardar_Ejecuta());
+            await Task.Run(() => CapitulosAGuardar_Ejecuta(progress));
         }
 
 
@@ -106,10 +109,9 @@ namespace GetNovelsApp.Core.Conexiones.DB
 
 
 
-        public async Task<List<INovela>> ObtenTodasNovelasAsync()
+        public List<INovela> ObtenTodasNovelasAsync()
         {
             List<INovela> output = new List<INovela>();
-            List<Task> tareas = new List<Task>();
 
             string findAllNovels = SelectAllNovel_qry();
 
@@ -128,16 +130,12 @@ namespace GetNovelsApp.Core.Conexiones.DB
 
             foreach (InformacionNovelaDB infoNov in novels)
             {
-                tareas.Add(Task.Run(() =>
-                {
-                    EncuentraGenerosYTags(cnn, infoNov);
-                    string getThemChapters = SelectCaps_qry(infoNov);
-                    var Capitulos = cnn.Query<Capitulo>(getThemChapters);
-                    output.Add(GetNovelsFactory.FabricaNovela(Capitulos, infoNov));
-                }));
+                EncuentraGenerosYTags(cnn, infoNov);
+                string getThemChapters = SelectCaps_qry(infoNov);
+                var Capitulos = cnn.Query<Capitulo>(getThemChapters);
+                output.Add(GetNovelsFactory.FabricaNovela(Capitulos, infoNov));
             }
 
-            await Task.WhenAll(tareas);
             cnn.Dispose();
             return output;
         }
@@ -153,17 +151,26 @@ namespace GetNovelsApp.Core.Conexiones.DB
         /// <summary>
         /// Usando el Diccionario de CapitulosAGuardar, este metodo ejecutará queries a la DB mientras queden capitulos en el dicc. (Cada vez que guarda 1, lo remueve del dicc).
         /// </summary>
-        private void CapitulosAGuardar_Ejecuta()
+        private void CapitulosAGuardar_Ejecuta(IProgress<IReporte> progress = null)
         {
             if (CapitulosAGuardar.Count < 1) return;
             using IDbConnection cnn = DataBaseAccess.GetConnection();
             EjecutandoGuardado = true;
+
+            int contador = 9;
+            int tope = CapitulosAGuardar.Count;
+            string nombreNovela = "";            
+            if(progress != null)
+            {
+                nombreNovela = cnn.Query<string>($"select NovelaTitulo from {i.TNovelas} where NovelaID = '{CapitulosAGuardar.First().Value}'").First();
+            }
+
             while (CapitulosAGuardar.Count > 0) //Mientras hayan capitulos por guardar...
             {
                 var key = CapitulosAGuardar.First();
                 int NovelaID = key.Value;
+                
                 Capitulo c = key.Key;
-
                 try
                 {
                     var insertCap = InsertCap_qry(NovelaID, c);
@@ -179,10 +186,22 @@ namespace GetNovelsApp.Core.Conexiones.DB
                 {
                     string findCapID = SelectCapID_qry(c);
                     int capID = cnn.Query<int>(findCapID).First();
-                    string insertTxt = UpdateText_qry(c, capID);
-                    cnn.Execute(insertTxt);
+                    string insertTxt = InsertTextoCapitulo_qry(c, capID);
+                    try
+                    {
+                        cnn.Execute(insertTxt);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"Exception. No se pudo meter texto del capitulo {c.Link}. " + $" ---> {ex.Message}");
+                    }
                 }
 
+                contador++;
+                if(progress != null)
+                {               
+                    progress.Report(GetNovelsFactory.FabricaReporteNovela(tope, contador, "Guardando", this, nombreNovela));
+                }
                 CapitulosAGuardar.Remove(c);
             }
             EjecutandoGuardado = false;
@@ -203,9 +222,6 @@ namespace GetNovelsApp.Core.Conexiones.DB
             string qryCapitlos = SelectCaps_qry(infoDBNovela);
             List<Capitulo> Capitulos = cnn.Query<Capitulo>(qryCapitlos).ToList();
             EncuentraGenerosYTags(cnn, infoDBNovela);
-
-
-            //Construye la Inovela
             cnn.Dispose();
             return GetNovelsFactory.FabricaNovela(Capitulos, infoDBNovela);
         }
@@ -225,8 +241,9 @@ namespace GetNovelsApp.Core.Conexiones.DB
         }
 
 
-        private InformacionNovelaDB InsertaNovelaEnDB(InformacionNovelaOnline infoNov, IDbConnection cnn)
+        private InformacionNovelaDB InsertaNovelaEnDB(InformacionNovelaOnline infoNov, IDbConnection cnn, IProgress<IReporte> progress)
         {
+            int tope = infoNov.LinksDeCapitulos.Count;
             //1, obten el autor
             string findAuthor = SelectAutorID_qry(infoNov);
             var resultados = cnn.Query<int>(findAuthor);
@@ -252,6 +269,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
                 autorID = cnn.Query<int>(findAuthor).First();
             }
             else autorID = resultados.First();
+            progress.Report(GetNovelsFactory.FabricaReporteNovela(tope, 1, "Guardando", this, infoNov.Titulo));
 
             //2 inserta la novela (titulo)
             string insertNov = InsertNovela_qry(infoNov, autorID);
@@ -259,6 +277,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
             //2.1 toma el ID de la novela
             string findNov = SelectNovelaID_qry(infoNov);
             int novID = cnn.Query<int>(findNov).First();
+            progress.Report(GetNovelsFactory.FabricaReporteNovela(tope, 2, "Guardando", this, infoNov.Titulo));
 
             //3 relacionado tags con novela
             //3.1 hallando tags id
@@ -281,6 +300,8 @@ namespace GetNovelsApp.Core.Conexiones.DB
                 cnn.Execute(relacionaTags);
             }
 
+            progress.Report(GetNovelsFactory.FabricaReporteNovela(tope, 3, "Guardando", this, infoNov.Titulo));
+
             //4 relacionando generos con novela
             //4.1 hallando tags id
             foreach (string genero in infoNov.Generos)
@@ -302,28 +323,35 @@ namespace GetNovelsApp.Core.Conexiones.DB
                 cnn.Execute(relacionaGenero);
             }
 
+            progress.Report(GetNovelsFactory.FabricaReporteNovela(tope, 4, "Guardando", this, infoNov.Titulo));
+
             //5 estado de historia y traduccion
             int estadoHistoriaID = (int)infoNov.HistoriaCompletada;
             int estadoTraduccionID = (int)infoNov.TraduccionCompletada;
             string insertRelacionNovEstadoHistoria = InsertEstadoNovela_qry(novID, estadoHistoriaID, estadoTraduccionID);
             cnn.Execute(insertRelacionNovEstadoHistoria);
 
+            progress.Report(GetNovelsFactory.FabricaReporteNovela(tope, 5, "Guardando", this, infoNov.Titulo));
+
             //6 reviews
             string insertReviews = InsertReviews_qry(infoNov, novID);
             cnn.Execute(insertReviews);
+            progress.Report(GetNovelsFactory.FabricaReporteNovela(tope, 6, "Guardando", this, infoNov.Titulo));
 
             //7 Imágen
             string insertImagen = InsertImagen_qry(infoNov, novID);
             cnn.Execute(insertImagen);
+            progress.Report(GetNovelsFactory.FabricaReporteNovela(tope, 7, "Guardando", this, infoNov.Titulo));
 
             //8 Sipnosis
             string insertSipnosis = InsertSipnosis_qry(infoNov, novID);
             cnn.Execute(insertSipnosis);
+            progress.Report(GetNovelsFactory.FabricaReporteNovela(tope, 8, "Guardando", this, infoNov.Titulo));
 
             //9 Link
             string insertLink = InsertLink_qry(infoNov, novID);
             cnn.Execute(insertLink);
-
+            progress.Report(GetNovelsFactory.FabricaReporteNovela(tope, 9, "Guardando", this, infoNov.Titulo));
 
             InformacionNovelaDB novDBInfo = new InformacionNovelaDB()
             {
@@ -340,9 +368,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
                 Tags = ManipuladorStrings.TagsEnString(infoNov.Tags),
                 Generos = ManipuladorStrings.TagsEnString(infoNov.Generos),
                 Imagen = infoNov.Imagen.ToString()
-            };
-
-            GetNovelsEvents.Invoke_NovelaAgregadaADB();
+            };            
             return novDBInfo;
         }
 
@@ -439,11 +465,11 @@ namespace GetNovelsApp.Core.Conexiones.DB
         }
 
 
-        private  string UpdateText_qry(Capitulo c, int capID)
+        private string InsertTextoCapitulo_qry(Capitulo c, int capID)
         {
-            return      $"UPDATE {i.TTextosCapitulos} " +
-                        $"SET Texto = \"{c.Texto}\" " +
-                        $"WHERE CapituloID = '{capID}' ";
+            return $"INSERT INTO {i.TTextosCapitulos} " +
+                        $"(Texto, CapituloID) values " +
+                        $"(\"{c.Texto}\", \"{capID}\") ";
         }
 
         private string SelectCapID_qry(Capitulo c)
@@ -530,16 +556,16 @@ namespace GetNovelsApp.Core.Conexiones.DB
 
         private string SelectCaps_qry(InformacionNovelaDB infoDBNovela)
         {
-            return  $"select " +
+            return $"select " +
                         "c.Link as Link, " +
                         "t.Texto as Texto,  " +
-                        "c.Titulo as TituloCapitulo, "+
+                        "c.Titulo as TituloCapitulo, " +
                         "c.Numero as NumeroCapitulo, " +
                         "c.Valor as Valor " +
-                    "from Capitulos as c "+
+                    "from Capitulos as c " +
                     "left join TextosCapitulos as t " +
                         "on c.CapituloID = t.CapituloID  " +
-                        $"and c.NovelaID = '{infoDBNovela.ID}'";
+                     $"where c.NovelaID = '{infoDBNovela.ID}' ";
         }
 
         private static string SelectGeneros_qry(InformacionNovelaDB infoDBNovela)

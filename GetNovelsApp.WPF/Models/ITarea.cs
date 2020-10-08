@@ -1,20 +1,16 @@
 ﻿namespace GetNovelsApp.WPF.Models
 {
-    public interface ITarea
+    public interface ITarea 
     {
-        int ID { get; }
-
-
         string Estado { get; } //Descargando, guardando, etc...
 
 
-        string Item { get; } //Nombre de novela, cap, etc...
-
+        string NombreItem { get; } //Nombre de novela, cap, etc...
 
         int PorcentajeTarea { get; }
 
 
-        bool ActualizaProgreso(int tareaID, int progreso, string estado);
+        void ActualizaProgreso(int progreso, string estado);
 
     }
 }

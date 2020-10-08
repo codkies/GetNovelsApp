@@ -29,7 +29,7 @@
                        Grid.Column="1"
                        VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center"
                        Panel.ZIndex="1">
-                <Run Text="{Binding Novela.CapitulosPorDescargar.Count, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <Run Text="{Binding Novela.CapitulosDescargados.Count, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <Run Text="{Binding Novela.Capitulos.Count, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <Run Text="capitulos."/>
 

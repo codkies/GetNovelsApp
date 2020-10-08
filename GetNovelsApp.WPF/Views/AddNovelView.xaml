@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:GetNovelsApp.WPF.ViewModels"
         mc:Ignorable="d"
-        Title="Agrega Novela" Height="630" Width="400">
+        Title="Agrega Novela" Height="670" Width="400">
     
     <Window.DataContext>
         <vm:AddNovelViewModel/>
@@ -22,7 +22,7 @@
         </DockPanel>
 
         <!--Boton de busqueda de link-->
-        <Button Content="Busca"
+        <Button Content="{Binding ContenidoBotonBusqueda, FallbackValue=Busca, UpdateSourceTrigger=PropertyChanged, TargetNullValue=Busca}"
                 Name="BuscaLink"
                 Command="{Binding Ejecuta_BuscaLink, UpdateSourceTrigger=PropertyChanged}"
                 CommandParameter="{Binding ElementName=Link, Path=Text}"
@@ -47,7 +47,12 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
+                
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
@@ -129,12 +134,19 @@
                        Text="{Binding Autor}"/>
 
             <!--final row-->
-            <Button Content="Guarda Novela"
+            <Button Content="{Binding ContenidoBotonGuardado, UpdateSourceTrigger=PropertyChanged, FallbackValue='Guarda Novela', TargetNullValue='Guarda Novela'}"
                     Command="{Binding Ejecuta_GuardaNovela, UpdateSourceTrigger=PropertyChanged}"
-                    CommandParameter="{Binding ElementName=EstaVentana, FallbackValue=''}"
+                    CommandParameter="{Binding ElementName=EstaVentana, FallbackValue='', UpdateSourceTrigger=PropertyChanged}"
                     Margin="0 40 0 0"
                     Grid.Column="0" Grid.ColumnSpan="2" 
                     Grid.Row="7"/>
+            
+            <!--Barra de progreso de agregar-->
+            <ProgressBar Value="{Binding Progreso, UpdateSourceTrigger=PropertyChanged}"
+                         Grid.Row="8"
+                         Height="10"
+                         Margin="5"
+                         Grid.Column="0" Grid.ColumnSpan="2"/>
         </Grid>
 
     </StackPanel>

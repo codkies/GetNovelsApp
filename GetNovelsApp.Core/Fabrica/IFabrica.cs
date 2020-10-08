@@ -22,7 +22,7 @@ namespace GetNovelsApp.Core.GetNovelsApp
 
         public IPath FabricaWebsite(string dominio, List<string> xpathsLinks, List<string> xpathsTextos, List<string> xpathsTitulo, OrdenLinks OrdenLinks);
 
-        public IReporteNovela FabricaReporteNovela(int capitulosTotales, int capitulosDescargados, IReportero reportero, int novelaID, string mensaje, INovela objetoDescargado);
+        public IReporte FabricaReporteNovela(int total, int actual, string estado, int identificador, IReportero reportero, string nombreItem);
 
 
         //public IReporte<INovela> FabricaReporteCapitulo(int capitulosTotales, int capitulosDescargados, int novelaID, string mensaje, object objetoDescargado);

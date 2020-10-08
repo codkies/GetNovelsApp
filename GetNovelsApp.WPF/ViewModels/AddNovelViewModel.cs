@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
+using GetNovelsApp.Core;
 using GetNovelsApp.Core.Conexiones.DB;
 using GetNovelsApp.Core.Conexiones.Internet;
+using GetNovelsApp.Core.Reportaje;
+using GetNovelsApp.WPF.Models;
 using GetNovelsApp.WPF.Utilidades;
 
 
@@ -12,8 +15,10 @@ namespace GetNovelsApp.WPF.ViewModels
     /// <summary>
     /// Controlador de la vista para agregar una novela nueva.
     /// </summary>
-    public class AddNovelViewModel : ObservableObject
+    public class AddNovelViewModel : ObservableObject, IReportero
     {
+        public string Nombre => "AddNovelView";
+
         public AddNovelViewModel()
         {
             Archivador = new Archivador();
@@ -37,6 +42,8 @@ namespace GetNovelsApp.WPF.ViewModels
         private List<string> generos;
         private Uri linkNovela;
         private string imagenPath;
+        private string contenidoBotonGuardado;
+        private string contenidoBotonBusqueda;
 
         #endregion
 
@@ -49,13 +56,14 @@ namespace GetNovelsApp.WPF.ViewModels
 
         public List<string> Generos { get => generos; set => OnPropertyChanged(ref generos, value); }
 
-
-
         public Uri LinkNovela { get => linkNovela; set => OnPropertyChanged(ref linkNovela, value); }
 
         public string PathImagenNovela { get => imagenPath; set => OnPropertyChanged(ref imagenPath, value); }
 
+        public int Progreso { get => progreso; set => OnPropertyChanged(ref progreso, value); }
 
+        public string ContenidoBotonGuardado { get => contenidoBotonGuardado; set => OnPropertyChanged(ref contenidoBotonGuardado, value); }
+        public string ContenidoBotonBusqueda { get => contenidoBotonGuardado; set => OnPropertyChanged(ref contenidoBotonGuardado, value); }
         #endregion
 
 
@@ -64,12 +72,17 @@ namespace GetNovelsApp.WPF.ViewModels
         public RelayCommand<string> Ejecuta_BuscaLink { get; private set; }
 
         private string LinkViejo = "";
+        private int progreso;
+
         public async void BuscaLink(string link)
         {
+            ContenidoBotonBusqueda = "Buscando";
             LinkViejo = link;
             Uri Link = new Uri(link);
-            InfoNovela = await Task.Run( ()=> ManipuladorDeLinks.EncuentraInformacionNovela(Link));
 
+            InfoNovela = await Task.Run(() => ManipuladorDeLinks.EncuentraInformacionNovela(Link));
+
+            ContenidoBotonBusqueda = "Busca";
             //Descarga imagen
             Task.Run(() => ActualizaImagen(InfoNovela.Imagen.ToString()));
             //Revisa si esta novela está en la DB.
@@ -100,23 +113,53 @@ namespace GetNovelsApp.WPF.ViewModels
 
         public RelayCommand<Window> Ejecuta_GuardaNovela { get; private set; }
 
-
-        public void GuardarNovela(Window window)
+        bool Ejecutando = false;
+        public async void GuardarNovela(Window window)
         {
-            Archivador.MeteNovelaDBAsync(InfoNovela);
-            window.Close();
+            IReporte r = GetNovelsFactory.FabricaReporteNovela(0, 0, "Guardando", this, InfoNovela.Titulo);
+            
+            ManagerTareas.MuestraReporte(r);
+            Progreso progresoGuardado = new Progreso();
+            progresoGuardado.ProgressChanged += ProgresoGuardado_ProgressChanged;
+            ContenidoBotonGuardado = "Guardando...";
+            Ejecutando = true;
+            Task.Run( ()=> FinProceso(progresoGuardado));
+            //window.Close();
+        }
+
+        private async Task FinProceso(Progreso progresoGuardado)
+        {
+            await Archivador.MeteNovelaDBAsync(InfoNovela, progresoGuardado);
+            Ejecutando = false;
+            Titulo = "";
+            Review = "";
+            Autor = "";
+            Progreso = 0;
+            PathImagenNovela = string.Empty;
+            LinkNovela = null;
+            Generos = new List<string>();
+            Tags = new List<string>();
+            Sipnosis = "";
+            CantidadCapitulos = 0;
+            ContenidoBotonGuardado = "Guarda Novela";
+        }
+
+        private void ProgresoGuardado_ProgressChanged(object sender, IReporte e)
+        {
+            ManagerTareas.ActualizaReporte(e);
+            Progreso = e.PorcentajeDeCompletado;
         }
 
 
         public bool Puede_GuardarNovela(Window window)
         {
-            return (!NovelaYaEstaEnDB) & (InfoNovela != null) ;
+            return (!NovelaYaEstaEnDB) & (InfoNovela != null) & !Ejecutando;
         }
 
 
         #endregion
 
-    
+
 
         /// <summary>
         /// Actualiza la imagen a mostrar.
@@ -125,7 +168,7 @@ namespace GetNovelsApp.WPF.ViewModels
         {
             PathImagenNovela = EncontradorImagen.DescargaImagen(url);
         }
-
-
     }
+
+
 }

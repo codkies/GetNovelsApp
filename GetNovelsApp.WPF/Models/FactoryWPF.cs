@@ -87,9 +87,9 @@ namespace GetNovelsApp.WPF.Models
 
         #region Reporte
 
-        public IReporteNovela FabricaReporteNovela(int capitulosTotales, int capitulosDescargados, IReportero reportero, int novelaID, string mensaje, INovela novelaDescargada)
+        public IReporte FabricaReporteNovela(int total, int actual, string estado, int identificador, IReportero reportero, string nombreItem)
         {
-            return new ReporteNovelaWPF(capitulosTotales, capitulosDescargados, novelaID, reportero, mensaje, novelaDescargada as NovelaWPF);
+            return new ReporteWPF(total , actual, estado, identificador, reportero, nombreItem);
         }
 
         #endregion
