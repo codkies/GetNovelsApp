@@ -69,8 +69,9 @@ namespace GetNovelsApp.Core
             {
                 Console.WriteLine(direccion + "Nulo");
                 Console.ReadLine();
+                return null;
             }
-            string Texto = OrdenaTextoRaw(textosRaw);
+            string Texto = OrdenarCapitulos(textosRaw);
             return Texto;
         }
 
@@ -102,16 +103,26 @@ namespace GetNovelsApp.Core
         }
 
 
-        private string OrdenaTextoRaw(List<string> capituloDesordenado)
+        private string OrdenarCapitulos(List<string> capituloDesordenado)
         {
             string capituloOrdenado = string.Empty;
-            foreach (string entrada in capituloDesordenado)
+            
+            if(capituloDesordenado.Count == 1)
             {
-                var x = HttpUtility.HtmlDecode(entrada);
-                if (x.Equals(string.Empty)) continue;
-                capituloOrdenado += $"{x}\n\n";
+                return capituloDesordenado[0].Trim();
             }
-            return capituloOrdenado;
+            else
+            {
+                foreach (string entrada in capituloDesordenado)
+                {
+                    var x = HttpUtility.HtmlDecode(entrada);
+                    if (string.IsNullOrEmpty(x)) continue;
+                    capituloOrdenado += $"{x}\n\n";
+                }
+                return capituloOrdenado;
+            }
+
+            
         }
 
 

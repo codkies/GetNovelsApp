@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using Dapper;
 using GetNovelsApp.Core.ConfiguracionApp;
 using GetNovelsApp.Core.ConfiguracionApp.xPaths;
+using GetNovelsApp.Core.Reportaje;
 
 namespace GetNovelsApp.Core.Conexiones.DB
 {
@@ -59,8 +62,9 @@ namespace GetNovelsApp.Core.Conexiones.DB
             return output.Any();
         }
 
+        
 
-        public void GuardaPerfil(IPath Website)
+        public void GuardaPerfil(IPath Website, IProgress<IReporte> progreso = null)
         {
             //Tomando referencias.
             string Dominio = Website.Dominio;
@@ -102,6 +106,155 @@ namespace GetNovelsApp.Core.Conexiones.DB
             }
 
             GetNovelsEvents.Invoke_WebsitesCambiaron();
+        }
+
+
+        public bool ActualizaPerfil(IPath perfilNuevo, IPath perfilViejo, IProgress<IReporte> progreso = null)
+        {
+            //indexGenericoDeActualizacionDePerfil
+            int IDprogreso = -10;
+            int totalDePasos = 4;
+            using IDbConnection cnn = DataBaseAccess.GetConnection();
+            if(progreso != null) progreso.Report(new Reporte(totalDePasos, 0, "Actualizando perfil", IDprogreso, this, perfilViejo.Dominio));
+
+            //Hayando el ID del Perfil en la DB
+            string encuentraPerfilViejo = $"select WebsiteID from {i.TWebsites} WHERE Dominio = '{perfilViejo.Dominio}'";
+            int websiteID = cnn.Query<int>(encuentraPerfilViejo).First();
+            if(progreso != null) progreso.Report(new Reporte(totalDePasos, 1, "Actualizando perfil", IDprogreso, this, perfilViejo.Dominio));
+
+            //Condiciones
+            bool linksCambiaron = perfilNuevo.xPathsLinks.Except(perfilViejo.xPathsLinks).Any() | perfilViejo.xPathsLinks.Except(perfilNuevo.xPathsLinks).Any();
+            bool ordenCambio = perfilNuevo.OrdenLinks != perfilViejo.OrdenLinks;
+            bool textosCambiaron = perfilNuevo.xPathsTextos.Except(perfilViejo.xPathsTextos).Any() | perfilViejo.xPathsTextos.Except(perfilNuevo.xPathsTextos).Any();
+            bool titulosCambiaron = perfilNuevo.xPathsTitulo.Except(perfilViejo.xPathsTitulo).Any() | perfilViejo.xPathsTitulo.Except(perfilNuevo.xPathsTitulo).Any();
+
+            //Tabla de Links
+            if (linksCambiaron)
+            {
+                cnn.Open();
+                using (var transaction = cnn.BeginTransaction())
+                {
+                    //Borrando los viejos
+                    string updateLinks = $"DELETE from {i.TxPathsLinks} WHERE WebsiteID = '{websiteID}' ";
+                    cnn.Execute(updateLinks);
+
+                    //Metiendo los nuevos
+                    foreach (string xpath in perfilNuevo.xPathsLinks)
+                    {
+                        string query = $"insert into {i.TxPathsLinks} (WebsiteID, xPath, OrdenID) " +
+                                        $"values ('{websiteID}', '{xpath}', '{(int)perfilNuevo.OrdenLinks}') ";
+                        try
+                        {
+                            cnn.Execute(query);
+                        }
+                        catch (Exception ex)
+                        {
+                            GetNovelsComunicador.ReportaErrorMayor($"No se pudo actualizar el perfil {perfilViejo.Dominio}\n" +
+                                $"Error: {ex.Message}", this);
+                            return false;
+                        }
+
+                    }
+                    //Finalizando transaccion
+                    transaction.Commit();
+                }
+            }
+            else if (ordenCambio)
+            {
+                cnn.Open();
+                using (var transaction = cnn.BeginTransaction())
+                {
+                    //Metiendo los nuevos
+                    foreach (string xpath in perfilNuevo.xPathsLinks)
+                    {
+                        string query = $"UPDATE {i.TxPathsLinks} set OrdenID = '{(int)perfilNuevo.OrdenLinks}') " +
+                                        $"WHERE xPath = '{xpath}'";
+                        try
+                        {
+                            cnn.Execute(query);
+                        }
+                        catch (Exception ex)
+                        {
+                            GetNovelsComunicador.ReportaErrorMayor($"No se pudo actualizar el perfil {perfilViejo.Dominio}\n" +
+                                $"Error: {ex.Message}", this);
+                            return false;
+                        }
+
+                    }
+                    //Finalizando transaccion
+                    transaction.Commit();
+                }
+            }
+            if (progreso != null) progreso.Report(new Reporte(totalDePasos, 2, "Actualizando perfil", IDprogreso, this, perfilViejo.Dominio));
+
+            //Tabla de textos
+            if (textosCambiaron)
+            {
+                cnn.Open();
+                using (var transaction = cnn.BeginTransaction())
+                {
+                    //Borrando los viejos
+                    string updateLinks = $"DELETE from {i.TxPathsTextos} WHERE WebsiteID = '{websiteID}' ";
+                    cnn.Execute(updateLinks);
+
+                    //Metiendo los nuevos
+                    foreach (string xpath in perfilNuevo.xPathsTextos)
+                    {
+                        string query = $"insert into {i.TxPathsTextos} (WebsiteID, xPath) " +
+                                        $"values ('{websiteID}', '{xpath}')";
+                        try
+                        {
+                            cnn.Execute(query);
+                        }
+                        catch (Exception ex)
+                        {
+                            GetNovelsComunicador.ReportaErrorMayor($"No se pudo actualizar el perfil {perfilViejo.Dominio}\n" +
+                                $"Error: {ex.Message}", this);
+                            return false;
+                        }
+
+                    }
+                    //Finalizando transaccion
+                    transaction.Commit();
+                }
+            }
+            if (progreso != null) progreso.Report(new Reporte(totalDePasos, 3, "Actualizando perfil", -IDprogreso, this, perfilViejo.Dominio));
+
+            //Tabla de Titulos
+            if (titulosCambiaron)
+            {
+                cnn.Open();
+                using (var transaction = cnn.BeginTransaction())
+                {
+                    //Borrando los viejos
+                    string updateLinks = $"DELETE from {i.TxPathsTitulo} WHERE WebsiteID = '{websiteID}' ";
+                    cnn.Execute(updateLinks);
+
+                    //Metiendo los nuevos
+                    foreach (string xpath in perfilNuevo.xPathsTitulo)
+                    {
+                        string query = $"insert into {i.TxPathsTitulo} (WebsiteID, xPath) " +
+                                        $"values ('{websiteID}', \"{xpath}\")";
+                        try
+                        {
+                            cnn.Execute(query);
+                        }
+                        catch (Exception ex)
+                        {
+                            GetNovelsComunicador.ReportaErrorMayor($"No se pudo actualizar el perfil {perfilViejo.Dominio}\n" +
+                                $"Error: {ex.Message}", this);
+                            return false;
+                        }
+
+                    }
+                    //Finalizando transaccion
+                    transaction.Commit();
+                }
+            }
+            if (progreso != null) progreso.Report(new Reporte(totalDePasos, 4, "Actualizando perfil", IDprogreso, this, perfilViejo.Dominio));
+
+            GetNovelsEvents.Invoke_WebsitesCambiaron();
+            return true;
         }
 
 
@@ -186,6 +339,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
                     $"(WebsiteID, xPath) values " +
                     $"('{WebsiteID}', \"{xPath}\")";
         }
+
 
         #endregion
 

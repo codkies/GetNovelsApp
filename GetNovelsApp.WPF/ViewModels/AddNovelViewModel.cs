@@ -142,7 +142,7 @@ namespace GetNovelsApp.WPF.ViewModels
 
         public async void GuardarNovela(Window window)
         {
-            IReporte r = GetNovelsFactory.FabricaReporteNovela(0, 0, "Guardando", this, InfoNovela.Titulo);
+            IReporte r = GetNovelsFactory.FabricaReporteNovela(100, 0, "Guardando", this, InfoNovela.Titulo);
 
             ManagerTareas.MuestraReporte(r);
             Progreso progresoGuardado = new Progreso();

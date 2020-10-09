@@ -12,14 +12,21 @@
         <DataTemplate DataType="{x:Type vm:BibliotecaViewModel}">
             <v:BibliotecaView/>
         </DataTemplate>
+        
         <DataTemplate DataType="{x:Type vm:ConfiguracionViewModel}">
             <v:ConfiguracionView/>
         </DataTemplate>
+        
         <DataTemplate DataType="{x:Type vm:NovelViewModel}">
             <v:NovelView/>
         </DataTemplate>
+        
         <DataTemplate DataType="{x:Type vm:DescargasViewModel}">
             <v:DescargasView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:EditPefilViewModel}">
+            <v:EditPerfilView/>
         </DataTemplate>
 
         
@@ -39,11 +46,17 @@
         <x:Static x:Key="SipnosisStock" Member="utl:DefaultStrings.SipnosisDefault" />
 
         <!--Templates-->
+        <!--Botones-->
         <Style x:Key="BotonNavMenu" TargetType="Button">
             <Setter Property="Background" Value="{StaticResource Color2}"/>
             <Setter Property="Height" Value="35"/>
             <Setter Property="Width" Value="35"/>
             <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+        
+        <!--Datagrids-->
+        <Style x:Key="DataGridCenterCol" TargetType="DataGridColumnHeader">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
         </Style>
     </Application.Resources>
 </Application>

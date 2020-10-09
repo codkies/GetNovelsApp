@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using GetNovelsApp.Core;
 using GetNovelsApp.Core.Conexiones.DB;
 using GetNovelsApp.Core.ConfiguracionApp;
+using GetNovelsApp.Core.ConfiguracionApp.xPaths;
 using GetNovelsApp.WPF.Utilidades;
 using GetNovelsApp.WPF.Views;
 
@@ -29,8 +32,10 @@ namespace GetNovelsApp.WPF.ViewModels
             CapitulosPorDocumento = configDefault.CapitulosPorDocumento.ToString();
             TamañoBatchDescarga = configDefault.TamañoBatch.ToString();
 
+            //Botones
             Command_SalvaCambios = new RelayCommand(SalvaCambios, Puede_SalvaCambios);
             Command_AggPerfil = new RelayCommand(AggPerfil, Puede_AggPerfil);
+            Command_EditPerfil = new RelayCommand<string>(EditPerfil);
             GetNovelsEvents.WebsitesCambiaron += ObtenWebsitesSoportados;
 
         }
@@ -38,8 +43,8 @@ namespace GetNovelsApp.WPF.ViewModels
         private void ObtenWebsitesSoportados()
         {
             WebsitesSoportados = new List<string>();
-            var perfiles = ar.ObtenPerfiles();
-            foreach (var perfil in perfiles)
+            Perfiles = ar.ObtenPerfiles();
+            foreach (var perfil in Perfiles)
             {
                 WebsitesSoportados.Add(perfil.Dominio);
             }
@@ -53,6 +58,8 @@ namespace GetNovelsApp.WPF.ViewModels
         private string capitulosPorDocumento;
         private string carpeta;
         private string tamañoBatchDescarga;
+
+        private List<IPath> Perfiles = new List<IPath>();
 
         public List<string> WebsitesSoportados { get => websitesSoportados; set => OnPropertyChanged(ref websitesSoportados, value); }
 
@@ -106,15 +113,16 @@ namespace GetNovelsApp.WPF.ViewModels
                 return cambioBatch | cambioCarpeta | cambioCaps;
             } 
         }
-        
+
         #endregion
 
 
+        #region Comando Agrega Perfil
         public RelayCommand Command_AggPerfil { get; set; }
 
         public void AggPerfil()
         {
-            AddWebsiteView websiteView = new AddWebsiteView();            
+            AddWebsiteView websiteView = new AddWebsiteView();
             websiteView.Show();
         }
 
@@ -122,6 +130,34 @@ namespace GetNovelsApp.WPF.ViewModels
         {
             return true;
         }
+        #endregion
+
+
+        #region Comando Edita Perfil
+
+        public RelayCommand<string> Command_EditPerfil { get; set; }
+
+        public void EditPerfil(string dominio)
+        {            
+            IPath Perfil;
+            try
+            {
+                Perfil = Perfiles.Where(x => x.Dominio.Equals(dominio)).First();
+                EditPefilViewModel editPefilViewModel = new EditPefilViewModel(Perfil);
+                GetNovelsWPFEvents.Invoke_Cambia(editPefilViewModel);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Exception intentando editar un perfil:\n {ex.Message}");
+            }
+            finally
+            {
+                
+            }
+
+        }
+
+        #endregion
 
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Resources;
 using System.Runtime;
+using System.Threading;
 using System.Windows.Documents;
 using GetNovelsApp.Core;
 using GetNovelsApp.Core.Reportaje;
@@ -36,21 +37,31 @@ namespace GetNovelsApp.WPF
             {
                 if(tarea.NombreItem.ToLower().Trim() == reporte.NombreItem.ToLower().Trim())
                 {
-                    if(reporte.PorcentajeDeCompletado >= 100 & Tareas.Count >= 2)
-                    {
-                        Tareas.Remove(tarea);
-                        TareaEnPantalla = Tareas.First();
-                    }
-                    else
-                    {
-                        tarea.ActualizaProgreso(reporte.PorcentajeDeCompletado, reporte.Estado);
-                        TareaEnPantalla = tarea;
-                    }                    
+                    tarea.ActualizaProgreso(reporte.PorcentajeDeCompletado, reporte.Estado);
+                    TareaEnPantalla = tarea;
                     ActualizaMensaje();
+                    RevisaSiEsUltimaTarea();
                     return;
                 }
             }
             throw new Exception("Se actualizó un reporte que no existia en el manager.");
+        }
+
+        private static void RevisaSiEsUltimaTarea()
+        {
+            bool esUltima = Tareas.IndexOf(TareaEnPantalla) == Tareas.Count - 1;
+            if (esUltima & TareaEnPantalla.PorcentajeTarea >= 100)
+            {                
+                //Muestra por 5s el mensaje
+                ActualizaMensaje($"Todas las tareas terminadas.");                
+                Thread.Sleep(5 * 1000);
+                //Borra el mensaje en pantalla
+                ActualizaMensaje($"");        
+                //Elimina referencia a tarea en pantalla.
+                TareaEnPantalla = null;
+                Tareas.Clear();
+                return;
+            }
         }
 
 
@@ -58,9 +69,17 @@ namespace GetNovelsApp.WPF
 
         public static string Mensaje;
 
-        private static void ActualizaMensaje()
+        private static void ActualizaMensaje(string mensajeEspecial = null)
         {
-            Mensaje = $"{EstadoTareas} '{Item}' ({PorcentajeTareaCorriendo}%)... ({IndexTareaCorriendo}/{TotalTareas})";
+            if (TareaEnPantalla == null) return;
+            if(mensajeEspecial == null)
+            {
+                Mensaje = $"{EstadoTareas} '{Item}' ({PorcentajeTareaCorriendo}%)... ({IndexTareaCorriendo}/{TotalTareas})";
+            }
+            else
+            {
+                Mensaje = null;
+            }
             GetNovelsWPFEvents.Invoke_TareasCambio();
         }
 
