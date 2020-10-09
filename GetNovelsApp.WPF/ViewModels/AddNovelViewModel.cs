@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using GetNovelsApp.Core;
 using GetNovelsApp.Core.Conexiones.DB;
 using GetNovelsApp.Core.Conexiones.Internet;
+using GetNovelsApp.Core.Modelos;
 using GetNovelsApp.Core.Reportaje;
 using GetNovelsApp.WPF.Models;
 using GetNovelsApp.WPF.Utilidades;
@@ -44,6 +48,7 @@ namespace GetNovelsApp.WPF.ViewModels
         private string imagenPath;
         private string contenidoBotonGuardado;
         private string contenidoBotonBusqueda;
+        private ObservableCollection<string> links = new ObservableCollection<string>();
 
         #endregion
 
@@ -63,7 +68,18 @@ namespace GetNovelsApp.WPF.ViewModels
         public int Progreso { get => progreso; set => OnPropertyChanged(ref progreso, value); }
 
         public string ContenidoBotonGuardado { get => contenidoBotonGuardado; set => OnPropertyChanged(ref contenidoBotonGuardado, value); }
-        public string ContenidoBotonBusqueda { get => contenidoBotonGuardado; set => OnPropertyChanged(ref contenidoBotonGuardado, value); }
+        public string ContenidoBotonBusqueda { get => contenidoBotonBusqueda; set => OnPropertyChanged(ref contenidoBotonBusqueda, value); }
+
+        public ObservableCollection<string> Links { get => links;
+
+            set
+            {
+                OnPropertyChanged(ref links, value);
+                ActualizaCantidadLinks();
+            }
+        }
+
+        
         #endregion
 
 
@@ -73,36 +89,45 @@ namespace GetNovelsApp.WPF.ViewModels
 
         private string LinkViejo = "";
         private int progreso;
-
+        private bool Buscando = false;
         public async void BuscaLink(string link)
         {
-            ContenidoBotonBusqueda = "Buscando";
+            ContenidoBotonBusqueda = "Buscando";            
+            Buscando = true;
             LinkViejo = link;
             Uri Link = new Uri(link);
 
             InfoNovela = await Task.Run(() => ManipuladorDeLinks.EncuentraInformacionNovela(Link));
 
             ContenidoBotonBusqueda = "Busca";
+            Buscando = false;
             //Descarga imagen
             Task.Run(() => ActualizaImagen(InfoNovela.Imagen.ToString()));
             //Revisa si esta novela está en la DB.
             Task.Run(() => NovelaYaEstaEnDB = Archivador.NovelaExisteEnDB(Link));
 
-            Titulo = InfoNovela.Titulo;
-            CantidadCapitulos = InfoNovela.LinksDeCapitulos.Count;
+            Titulo = InfoNovela.Titulo;            
             Sipnosis = InfoNovela.Sipnosis;
             Tags = InfoNovela.Tags;
             LinkNovela = Link;
             Generos = InfoNovela.Generos;
             Autor = InfoNovela.Autor;
             Review = InfoNovela.Review.ToString();
+
+            var x = new List<string>();
+            foreach (Uri uri in InfoNovela.LinksDeCapitulos)
+            {
+                x.Add(uri.ToString());
+            }
+            Links = new ObservableCollection<string>(x);
+            
         }
 
 
         public bool Puede_BuscaLink(string v)
         {
             string posibleLink = v == null ? string.Empty : v;
-            return Uri.TryCreate(posibleLink, uriKind: UriKind.Absolute, out _) & !posibleLink.Equals(LinkViejo);
+            return Uri.TryCreate(posibleLink, uriKind: UriKind.Absolute, out _) & !posibleLink.Equals(LinkViejo) & !Buscando;
         }
 
 
@@ -113,22 +138,30 @@ namespace GetNovelsApp.WPF.ViewModels
 
         public RelayCommand<Window> Ejecuta_GuardaNovela { get; private set; }
 
-        bool Ejecutando = false;
+        bool Ejecutando = false;        
+
         public async void GuardarNovela(Window window)
         {
             IReporte r = GetNovelsFactory.FabricaReporteNovela(0, 0, "Guardando", this, InfoNovela.Titulo);
-            
+
             ManagerTareas.MuestraReporte(r);
             Progreso progresoGuardado = new Progreso();
             progresoGuardado.ProgressChanged += ProgresoGuardado_ProgressChanged;
             ContenidoBotonGuardado = "Guardando...";
             Ejecutando = true;
-            Task.Run( ()=> FinProceso(progresoGuardado));
+            Task.Run(() => FinProceso(progresoGuardado));
             //window.Close();
         }
 
         private async Task FinProceso(Progreso progresoGuardado)
         {
+            var x = new List<Uri>();
+            foreach (var link in Links)
+            {
+                x.Add(new Uri(link));
+            }
+            InfoNovela.LinksDeCapitulos = x;            
+
             await Archivador.MeteNovelaDBAsync(InfoNovela, progresoGuardado);
             Ejecutando = false;
             Titulo = "";
@@ -142,6 +175,7 @@ namespace GetNovelsApp.WPF.ViewModels
             Sipnosis = "";
             CantidadCapitulos = 0;
             ContenidoBotonGuardado = "Guarda Novela";
+            Links.Clear();
         }
 
         private void ProgresoGuardado_ProgressChanged(object sender, IReporte e)
@@ -167,6 +201,11 @@ namespace GetNovelsApp.WPF.ViewModels
         private void ActualizaImagen(string url)
         {
             PathImagenNovela = EncontradorImagen.DescargaImagen(url);
+        }
+
+        private void ActualizaCantidadLinks()
+        {
+            CantidadCapitulos = Links.Count;
         }
     }
 

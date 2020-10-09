@@ -48,13 +48,13 @@ namespace GetNovelsApp.Core.Conexiones.DB
             cnn.Execute(qry);
 
             GetNovelsEvents.Invoke_ConfiguracionCambio();
-        }
+        } 
 
 
         public bool PerfilExiste(string dominio)
         {
             using IDbConnection cnn = DataBaseAccess.GetConnection();
-            string qry = $"select * from {TablaPerfilesWebsites} where Dominio = '{dominio}'";
+            string qry = $"select * from {i.TWebsites} where Dominio = '{dominio}'";
             var output = cnn.Query(qry);
             return output.Any();
         }

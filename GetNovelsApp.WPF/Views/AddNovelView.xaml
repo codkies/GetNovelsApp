@@ -6,85 +6,96 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:GetNovelsApp.WPF.ViewModels"
         mc:Ignorable="d"
-        Title="Agrega Novela" Height="670" Width="400">
+        Title="Agrega Novela" Height="670" Width="900">
     
     <Window.DataContext>
         <vm:AddNovelViewModel/>
     </Window.DataContext>
 
-    <StackPanel>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
 
-        <!--Input link novela-->
-        <DockPanel Margin="5">
-            <TextBlock>Link:</TextBlock>
-            <TextBox Name="Link"
+
+        <StackPanel>
+
+            <!--Input link novela-->
+            <DockPanel Margin="5">
+                <TextBlock>Link:</TextBlock>
+                <TextBox Name="Link"
                      Margin="10 0 0 0"/>
-        </DockPanel>
+            </DockPanel>
 
-        <!--Boton de busqueda de link-->
-        <Button Content="{Binding ContenidoBotonBusqueda, FallbackValue=Busca, UpdateSourceTrigger=PropertyChanged, TargetNullValue=Busca}"
+            <!--Boton de busqueda de link-->
+            <Button Content="{Binding ContenidoBotonBusqueda, FallbackValue=Busca, UpdateSourceTrigger=PropertyChanged, TargetNullValue=Busca}"
                 Name="BuscaLink"
                 Command="{Binding Ejecuta_BuscaLink, UpdateSourceTrigger=PropertyChanged}"
                 CommandParameter="{Binding ElementName=Link, Path=Text}"
                 Width="60"
                 Margin="5"/>
 
-        <!--Barra de descarga-->
-        <ProgressBar Background="DarkGreen" 
+            <!--Barra de descarga-->
+            <ProgressBar Background="DarkGreen" 
                      Height="10"/>
 
 
-        <!--Resultados-->
-        <Grid Margin="10">
-            
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="2*"/>
-            </Grid.ColumnDefinitions>
+            <!--Resultados-->
+            <Grid Margin="10">
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
 
-            <!--1st row-->
-            <TextBlock Text="Titulo"
+                <!--1st row-->
+                <TextBlock Text="Titulo"
                        Grid.Column="0" 
                        Grid.Row="0"/>
-            <TextBlock Grid.Column="1"
+                <TextBlock Grid.Column="1"
                        Grid.Row="0"
                        Text="{Binding Titulo}"
                        FontStyle="Italic"/>
 
-            <!--2nd row-->
-            <TextBlock Text="Cantidad de links"
+                <!--2nd row-->
+                <TextBlock Text="Cantidad de links"
                        Margin="0 10 0 0"
                        Grid.Column="0" 
                        Grid.Row="1"/>
-            <TextBlock Margin="0 10 0 0"
+                <!--<TextBlock Margin="0 10 0 0"
                        Grid.Column="1" Grid.Row="1"
                        FontStyle="Italic"
-                       Text="{Binding CantidadCapitulos}"/>
+                       Text="{Binding CantidadCapitulos, UpdateSourceTrigger=PropertyChanged}"/>-->
+                <TextBlock Margin="0 10 0 0"
+                       Grid.Column="1" Grid.Row="1"
+                       FontStyle="Italic"
+                       Text="{Binding ElementName=DataGridLinks, Path=Items.Count, UpdateSourceTrigger=PropertyChanged}"/>
 
-            <!--3rd row, Sipnosis-->
-            <Image Height="80"                    
+                <!--3rd row, Sipnosis-->
+                <Image Height="80"                    
                    Source="{Binding PathImagenNovela}" 
                    Margin="0 10 0 0"
                    Grid.Column="0" 
                    Grid.Row="2"/>
-            <!--Source="/GetNovelsApp.WPF;component/Resources/NovelHeroTest.jpg"-->
-            <TextBox Margin="0 10 0 0"
+                <!--Source="/GetNovelsApp.WPF;component/Resources/NovelHeroTest.jpg"-->
+                <TextBox Margin="0 10 0 0"
                      Grid.Column="1" Grid.Row="2"
                      IsReadOnly="True"
                      Height="300"
@@ -93,61 +104,76 @@
                      FontStyle="Italic"
                      Text="{Binding Sipnosis}"/>
 
-            <TextBlock Text="Review"
+                <TextBlock Text="Review"
                        Margin="0 10 0 0"
                        Grid.Column="0" 
                        Grid.Row="3"/>
-            <TextBlock Margin="0 10 0 0"
+                <TextBlock Margin="0 10 0 0"
                        Grid.Column="1" Grid.Row="3"
                        FontStyle="Italic"
                        Text="{Binding Review}"/>
 
-            <!--Generos-->
-            <TextBlock Text="Generos"
+                <!--Generos-->
+                <TextBlock Text="Generos"
                        Margin="0 10 0 0"
                        Grid.Column="0" 
                        Grid.Row="4"/>
-            <ComboBox Margin="0 10 0 0"
+                <ComboBox Margin="0 10 0 0"
                       Grid.Column="1"
                       Grid.Row="4"
                       SelectedIndex="0"
                       ItemsSource="{Binding Generos}"/>
 
-            <!--Tags-->
-            <TextBlock Text="Tags"
+                <!--Tags-->
+                <TextBlock Text="Tags"
                        Margin="0 10 0 0"
                        Grid.Column="0" 
                        Grid.Row="5"/>
-            <ComboBox Margin="0 10 0 0"
+                <ComboBox Margin="0 10 0 0"
                       Grid.Column="1"
                       Grid.Row="5"
                       SelectedIndex="0"
                       ItemsSource="{Binding Tags}"/>
 
-            <TextBlock Text="Autor"
+                <TextBlock Text="Autor"
                        Margin="0 10 0 0"
                        Grid.Column="0" 
                        Grid.Row="6"/>
-            <TextBlock Margin="0 10 0 0"
+                <TextBlock Margin="0 10 0 0"
                        Grid.Column="1" Grid.Row="6"
                        FontStyle="Italic"
                        Text="{Binding Autor}"/>
 
-            <!--final row-->
-            <Button Content="{Binding ContenidoBotonGuardado, UpdateSourceTrigger=PropertyChanged, FallbackValue='Guarda Novela', TargetNullValue='Guarda Novela'}"
+                <!--final row-->
+                <Button Content="{Binding ContenidoBotonGuardado, UpdateSourceTrigger=PropertyChanged, FallbackValue='Guarda Novela', TargetNullValue='Guarda Novela'}"
                     Command="{Binding Ejecuta_GuardaNovela, UpdateSourceTrigger=PropertyChanged}"
                     CommandParameter="{Binding ElementName=EstaVentana, FallbackValue='', UpdateSourceTrigger=PropertyChanged}"
                     Margin="0 40 0 0"
                     Grid.Column="0" Grid.ColumnSpan="2" 
                     Grid.Row="7"/>
-            
-            <!--Barra de progreso de agregar-->
-            <ProgressBar Value="{Binding Progreso, UpdateSourceTrigger=PropertyChanged}"
+
+                <!--Barra de progreso de agregar-->
+                <ProgressBar Value="{Binding Progreso, UpdateSourceTrigger=PropertyChanged}"
                          Grid.Row="8"
                          Height="10"
                          Margin="5"
                          Grid.Column="0" Grid.ColumnSpan="2"/>
-        </Grid>
+            </Grid>
 
-    </StackPanel>
+        </StackPanel>
+
+        <DataGrid Grid.Column="1"
+                  Name="DataGridLinks"
+                  ItemsSource="{Binding Links, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                  AutoGenerateColumns="False"
+                  Margin="5">
+            
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding}"
+                                    Header="Links"
+                                    Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+
 </Window>

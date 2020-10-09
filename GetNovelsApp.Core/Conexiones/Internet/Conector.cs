@@ -197,8 +197,6 @@ namespace GetNovelsApp.Core.Conexiones.Internet
 
         private HtmlNodeCollection ObtenNodes(HtmlDocument doc, List<string> xPaths)
         {
-            //Mensajero.MuestraNotificacion("Conector --> Buscando nodes...");
-            HtmlNodeCollection posibleColeccion = null;
             HtmlNodeCollection Coleccion = null;
             int tamaño = 0;
 
@@ -207,7 +205,8 @@ namespace GetNovelsApp.Core.Conexiones.Internet
 
             foreach (string xPath in xPaths)
             {
-                posibleColeccion = doc.DocumentNode.SelectNodes(xPath);
+                //Mensajero.MuestraNotificacion("Conector --> Buscando nodes...");
+                HtmlNodeCollection posibleColeccion = doc.DocumentNode.SelectNodes(xPath);
                 if (posibleColeccion == null) continue;
                 if (posibleColeccion.Count > tamaño)
                 {

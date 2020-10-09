@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SQLite;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Dapper;
@@ -100,7 +101,8 @@ namespace GetNovelsApp.Core.Conexiones.DB
 
             string qry = $"select n.NovelaID from {i.TNovelas} as n " +
                             $"join {i.TLinks} as l " +
-                               $"on n.NovelaID = l.NovelaID and l.Link = '{Link}'";
+                               $"on n.NovelaID = l.NovelaID and l.Link = '{Link}'";            
+            
             var resultados = cnn.Query<int>(qry);
             cnn.Dispose();
 
