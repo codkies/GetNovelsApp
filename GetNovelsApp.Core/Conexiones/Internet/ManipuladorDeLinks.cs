@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using GetNovelsApp.Core.Conexiones.DB;
 using GetNovelsApp.Core.Reportaje;
 using HtmlAgilityPack;
 using iText.Kernel.Pdf.Tagutils;
+using iText.Svg.Renderers.Impl;
 using Microsoft.SqlServer.Server;
 
 namespace GetNovelsApp.Core.Conexiones.Internet
@@ -281,26 +283,34 @@ namespace GetNovelsApp.Core.Conexiones.Internet
         /// <returns></returns>
         private static Uri ObtenNovelUpdatesWebpage(string Titulo)
         {
-            var tituloSeparado = Titulo.Split();
-            string direccionEnNU = "https://www.novelupdates.com/series/";
+            string titulo = "";
+            var x = Titulo.Split();
 
-            for (int i = 0; i < tituloSeparado.Length; i++)
+            for (int i = 0; i < x.Length; i++)
             {
-                string p = tituloSeparado[i];
-                if (i == tituloSeparado.Length - 1)
+                string palabra = x[i];
+
+                palabra = Regex.Replace(palabra, "’", "%27");
+                if(i == x.Length - 1)
                 {
-                    direccionEnNU += $"{p}/";
+                    titulo += $"{palabra}&";
                 }
                 else
                 {
-                    direccionEnNU += $"{p}-";
+                    titulo += $"{palabra}+";
                 }
             }
+            string dirrecionXI = "https://www.novelupdates.com/?s=";
+            string dirrecionXF = "post_type=seriesplans";
+            Uri direccionDeBusqueda = new Uri(dirrecionXI + titulo + dirrecionXF);
 
-            if (direccionEnNU.Contains("’"))
-            {
-                direccionEnNU.Remove(direccionEnNU.IndexOf("’"), 1);
-            }
+
+            Conector conector = new Conector(60 * 2); //2 minutos.
+            HtmlNodeCollection nodes = conector.IntentaNodos(direccionDeBusqueda, GetNovelsConfig.xPathsNU);
+
+            string direccionEnNU = nodes.First().Attributes["href"].Value;
+
+
             return new Uri(direccionEnNU);
         }
 
