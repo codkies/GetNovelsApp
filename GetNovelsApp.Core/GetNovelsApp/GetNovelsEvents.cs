@@ -23,14 +23,14 @@ namespace GetNovelsApp.Core
 
 
         #region Imprime novela
-        public static event Action<INovela, TiposDocumentos> ImprimeNovela;
+        public static event Action<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>, TiposDocumentos> ImprimeNovela;
 
         /// <summary>
         /// Llamado cuando se desea que se imprima una novela.
         /// </summary>
         /// <param name="novela"></param>
         /// <param name="tipo"></param>
-        public static void Invoke_ImprimeNovela(INovela novela, TiposDocumentos tipo)
+        public static void Invoke_ImprimeNovela(INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela, TiposDocumentos tipo)
         {
             ImprimeNovela?.Invoke(novela, tipo);
         }

@@ -40,7 +40,7 @@ namespace GetNovelsApp.Core
         /// <summary>
         /// Novela que esta instancia del GetNovels está obteniendo.
         /// </summary>
-        private INovela MyNovela;
+        private INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> MyNovela;
 
 
 
@@ -90,7 +90,7 @@ namespace GetNovelsApp.Core
 
         #region Queueing a novel
 
-        private Queue<INovela> NovelasPorDescargar = new Queue<INovela>();
+        private Queue<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>> NovelasPorDescargar = new Queue<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>>();
 
 
         private bool Descargando = false;
@@ -102,7 +102,7 @@ namespace GetNovelsApp.Core
         private Dictionary<int, IProgress<IReporte>> ReportePorID = new Dictionary<int, IProgress<IReporte>>();
 
 
-        public async Task<bool> AgregaAlQueue(INovela novela, IProgress<IReporte> progreso)
+        public async Task<bool> AgregaAlQueue(INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela, IProgress<IReporte> progreso)
         {            
             #region Checks
             //no puede estar en la DB al 100%
@@ -140,7 +140,7 @@ namespace GetNovelsApp.Core
                    if (Descargando == false & NovelasPorDescargar.Any())
                    {
                        //no la espero porque solo esperamos por el check, no por toda la descarga.
-                       INovela novelaADescargar = NovelasPorDescargar.Dequeue();
+                       INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novelaADescargar = NovelasPorDescargar.Dequeue();
                        GetNovelAsync(novelaADescargar);
                    }
                });
@@ -157,7 +157,7 @@ namespace GetNovelsApp.Core
         /// <summary>
         /// Obtiene capitulos de una novela en el formato establecido y los coloca en la carpeta de la configuracion.
         /// </summary>
-        public async Task<INovela> GetNovelAsync(INovela novelaNueva, int ComienzaEn = 0)
+        public async Task<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>> GetNovelAsync(INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novelaNueva, int ComienzaEn = 0)
         {
             Descargando = true;
 
@@ -199,7 +199,7 @@ namespace GetNovelsApp.Core
         /// <summary>
         /// Hace lo necesario cuando una novela ha sido descargada.
         /// </summary>
-        private async Task NovelaFueDescargadAsync(INovela novelaNueva)
+        private async Task NovelaFueDescargadAsync(INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novelaNueva)
         {
             ReportePorID.Remove(novelaNueva.ID); //ya no es necesario mantener ref al reporte de una novela que ya no se le reportará nada.
             await RevisaSiQuedanNovelasPorDescargarAsync();
@@ -230,7 +230,7 @@ namespace GetNovelsApp.Core
         /// Organiza los capitulos que se deben descargar y toma referencias necesarias.
         /// </summary>
         /// <param name="novelaNueva"></param>
-        private void PreparaNovelaNueva(INovela novelaNueva)
+        private void PreparaNovelaNueva(INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novelaNueva)
         {
             MyNovela = novelaNueva;
 
@@ -246,7 +246,7 @@ namespace GetNovelsApp.Core
         /// <summary>
         /// Obteniendo informacion de las iteraciones anteriores.
         /// </summary>
-        private void RecolectaInformacion(INovela novela, TiposDocumentos tipo)
+        private void RecolectaInformacion(INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela, TiposDocumentos tipo)
         {
             if (MyEmpaquetador == null | MyScraper == null) return;
             DocumentosCreados += MyEmpaquetador.DocumentosCreados;

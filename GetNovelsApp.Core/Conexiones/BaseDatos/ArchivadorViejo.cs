@@ -21,7 +21,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
         /// </summary>
         /// <param name="infoNov"></param>
         /// <returns></returns>
-        public INovela Legacy_MeteNovelaDB(Uri LinkNovela, out bool YaExiste)
+        public INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> Legacy_MeteNovelaDB(Uri LinkNovela, out bool YaExiste)
         {
             YaExiste = NovelaExisteEnDB(LinkNovela);
             if (!YaExiste)
@@ -36,7 +36,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
                 Legacy_GuardaCapitulos(CapitulosNovela, novDBInfo.ID); //Itera los caps y encuentra su info.
 
                 //Regresando una novela para runtime:
-                INovela nov = GetNovelsFactory.FabricaNovela(CapitulosNovela, novDBInfo);
+                INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> nov = GetNovelsFactory.FabricaNovela(CapitulosNovela, novDBInfo);
                 cnn.Dispose();
                 return nov;
             }
@@ -119,9 +119,9 @@ namespace GetNovelsApp.Core.Conexiones.DB
 
 
 
-        public IEnumerable<INovela> Legacy_ObtenTodasNovelas()
+        public IEnumerable<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>> Legacy_ObtenTodasNovelas()
         {
-            List<INovela> output = new List<INovela>();
+            List<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>> output = new List<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>>();
             using IDbConnection cnn = DataBaseAccess.GetConnection();
 
             //Obteniendo las informaciones de novela:

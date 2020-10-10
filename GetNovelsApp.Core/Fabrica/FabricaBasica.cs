@@ -48,7 +48,7 @@ namespace GetNovelsApp.Core.GetNovelsApp
 
         #region Constructores
 
-        public IConstructor FabricaConstructor(INovela novela, TiposDocumentos tipo, int capsPorPDF, string direccion, string titulo, NotificaCapituloImpreso notCapImpreso, NotificaDocumentoCreado notDocCreado)
+        public IConstructor FabricaConstructor(INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela, TiposDocumentos tipo, int capsPorPDF, string direccion, string titulo, NotificaCapituloImpreso notCapImpreso, NotificaDocumentoCreado notDocCreado)
         {
             switch (tipo)
             {
@@ -64,7 +64,7 @@ namespace GetNovelsApp.Core.GetNovelsApp
 
         #region Novelas
 
-        public INovela FabricaNovela(List<Capitulo> capitulos, InformacionNovelaDB dbInfo)
+        public INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> FabricaNovela(List<Capitulo> capitulos, InformacionNovelaDB dbInfo)
         {
             return new NovelaRT(capitulos, dbInfo);
         }

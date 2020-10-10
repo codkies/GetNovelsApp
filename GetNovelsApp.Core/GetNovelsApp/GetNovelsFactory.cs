@@ -53,14 +53,14 @@ namespace GetNovelsApp.Core
         /// </summary>
         /// <param name="tipo"></param>
         /// <returns></returns>
-        public static IConstructor FabricaConstructor(INovela novela, TiposDocumentos tipo, int capsPorPDF, string direccion, string titulo, NotificaCapituloImpreso notCapImpreso, NotificaDocumentoCreado notDocCreado)
+        public static IConstructor FabricaConstructor(INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela, TiposDocumentos tipo, int capsPorPDF, string direccion, string titulo, NotificaCapituloImpreso notCapImpreso, NotificaDocumentoCreado notDocCreado)
         {
             return Fabrica.FabricaConstructor(novela, tipo, capsPorPDF, direccion, titulo, notCapImpreso, notDocCreado);
         }
 
 
 
-        public static INovela FabricaNovela(IEnumerable<Capitulo> capitulos, InformacionNovelaDB info)
+        public static INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> FabricaNovela(IEnumerable<Capitulo> capitulos, InformacionNovelaDB info)
         {
             List<Capitulo> _ = new List<Capitulo>(capitulos);
             return Fabrica.FabricaNovela(_, info);

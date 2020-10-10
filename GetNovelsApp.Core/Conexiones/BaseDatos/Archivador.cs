@@ -47,7 +47,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
         /// </summary>
         /// <param name="info"></param>
         /// <returns></returns>
-        public async Task<INovela> MeteNovelaDBAsync(InformacionNovelaOnline info, IProgress<IReporte> progress)
+        public async Task<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>> MeteNovelaDBAsync(InformacionNovelaOnline info, IProgress<IReporte> progress)
         {
             bool YaExiste = NovelaExisteEnDB(info.LinkPrincipal);
             if (!YaExiste)
@@ -59,10 +59,10 @@ namespace GetNovelsApp.Core.Conexiones.DB
                 //Capitulos:
                 List<Capitulo> CapitulosNovela = GetNovelsFactory.FabricaCapitulos(info.LinksDeCapitulos);
                 await GuardaCapitulosAsync(CapitulosNovela, novDBInfo.ID, progress); //Itera los caps y encuentra su info.
-                
+
 
                 //Regresando una novela para runtime:
-                INovela nov = GetNovelsFactory.FabricaNovela(CapitulosNovela, novDBInfo);
+                INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> nov = GetNovelsFactory.FabricaNovela(CapitulosNovela, novDBInfo);
                 cnn.Dispose();
                 GetNovelsEvents.Invoke_NovelaAgregadaADB();
                 return nov;
@@ -111,9 +111,9 @@ namespace GetNovelsApp.Core.Conexiones.DB
 
 
 
-        public List<INovela> ObtenTodasNovelasAsync()
+        public List<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>> ObtenTodasNovelasAsync()
         {
-            List<INovela> output = new List<INovela>();
+            List<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>> output = new List<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>>();
 
             string findAllNovels = SelectAllNovel_qry();
 
@@ -211,7 +211,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
         }
 
 
-        private INovela SacaNovelaDB(Uri LinkNovela) //Debe ir privada.
+        private INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> SacaNovelaDB(Uri LinkNovela) //Debe ir privada.
         {
             using IDbConnection cnn = DataBaseAccess.GetConnection();
 

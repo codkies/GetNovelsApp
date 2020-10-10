@@ -12,9 +12,9 @@ namespace GetNovelsApp.Core.GetNovelsApp
 {
     public interface IFabrica
     {
-        public INovela FabricaNovela(List<Capitulo> capitulos, InformacionNovelaDB dbInfo);
+        public INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> FabricaNovela(List<Capitulo> capitulos, InformacionNovelaDB dbInfo);
 
-        public IConstructor FabricaConstructor(INovela novela, TiposDocumentos tipo, int capsPorPDF, string direccion, string titulo, NotificaCapituloImpreso notCapImpreso, NotificaDocumentoCreado notDocCreado);
+        public IConstructor FabricaConstructor(INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela, TiposDocumentos tipo, int capsPorPDF, string direccion, string titulo, NotificaCapituloImpreso notCapImpreso, NotificaDocumentoCreado notDocCreado);
 
         public IConfig FabricaConfiguracion(string Path, int TamañoBatch, int CapsPorDoc);
 

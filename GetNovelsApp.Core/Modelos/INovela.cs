@@ -3,7 +3,16 @@ using System.Collections.Generic;
 
 namespace GetNovelsApp.Core.Modelos
 {
-    public interface INovela
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T">IEnumerable de capitulos</typeparam>
+    /// <typeparam name="Y">IEnumerable de strings</typeparam>
+    /// <typeparam name="R">IEnumerable de Uri</typeparam>
+    public interface INovela<out T, out Y, out R> 
+        where T : IEnumerable<Capitulo>
+        where Y : IEnumerable<string>
+        where R : IEnumerable<Uri>
     {
         //Main
         string Titulo { get; }
@@ -13,12 +22,12 @@ namespace GetNovelsApp.Core.Modelos
         float Review { get; }
         int CantidadReviews { get; }        
         int ID { get; }
-        List<Capitulo> Capitulos { get; }
-        List<Capitulo> CapitulosDescargados { get; }
-        List<Capitulo> CapitulosImpresos { get; }
-        List<Capitulo> CapitulosPorDescargar { get; }
-        public List<string> Tags { get; }
-        public List<string> Generos { get; }
+        T Capitulos { get; }
+        T CapitulosDescargados { get; }
+        T CapitulosImpresos { get; }
+        T CapitulosPorDescargar { get; }
+        public Y Tags { get; }
+        public Y Generos { get; }
         public string Sipnosis { get; }
         public Uri ImagenLink { get; }
 
@@ -26,7 +35,7 @@ namespace GetNovelsApp.Core.Modelos
         //Estado de la clase
         bool EstoyCompleta { get; }        
         Uri LinkPrincipal { get; }
-        List<Uri> LinksDeCapitulos { get; }
+        R LinksDeCapitulos { get; }
         int PorcentajeDescarga { get; }
         bool TengoCapitulosPorImprimir { get; }
         int CantidadCapitulosDescargados { get; }

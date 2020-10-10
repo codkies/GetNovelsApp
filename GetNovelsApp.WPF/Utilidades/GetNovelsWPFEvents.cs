@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using GetNovelsApp.Core.Modelos;
-using GetNovelsApp.WPF.Models;
 
 namespace GetNovelsApp.WPF.Utilidades
 {
@@ -18,9 +18,9 @@ namespace GetNovelsApp.WPF.Utilidades
 
         #region AgregaDescarga
 
-        public static event Action<INovela> DescargaNovela;
+        public static event Action<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>> DescargaNovela;
 
-        public static void Invoke_DescargaNovela(INovela novela)
+        public static void Invoke_DescargaNovela(INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela)
         {
             DescargaNovela?.Invoke(novela);
         }

@@ -31,7 +31,7 @@ namespace GetAppsNovel.ConsoleVersion
             //Ver control.            
             SetupApp();
 
-            Dictionary<INovela, int> InfoNovelas = ConsoleUI.PidePathTXTusuario(configuracion.FolderPath);
+            Dictionary<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>, int> InfoNovelas = ConsoleUI.PidePathTXTusuario(configuracion.FolderPath);
 
             //Diagnostics:
             var stopwatch = new Stopwatch();
@@ -59,7 +59,7 @@ namespace GetAppsNovel.ConsoleVersion
             //Ver control.            
             SetupApp();
 
-            Dictionary<INovela, int> InfoNovelas = ConsoleUI.PideInfoUsuario(configuracion.FolderPath);
+            Dictionary<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>, int> InfoNovelas = ConsoleUI.PideInfoUsuario(configuracion.FolderPath);
 
             //Diagnostics:
             var stopwatch = new Stopwatch();
@@ -92,16 +92,16 @@ namespace GetAppsNovel.ConsoleVersion
         /// </summary>
         /// <param name="InfoNovelas"></param>
         /// <returns></returns>
-        private static async Task RunProgram(Dictionary<INovela, int> InfoDescargas)
+        private static async Task RunProgram(Dictionary<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>, int> InfoDescargas)
         {
-            foreach (KeyValuePair<INovela, int> item in InfoDescargas)
+            foreach (KeyValuePair<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>, int> item in InfoDescargas)
             {
-                INovela novelaRT = item.Key;
+                INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novelaRT = item.Key;
                 int ComienzaEn = item.Value;
 
                 ConsoleUI.ReportaEspecial($"Buscando \"{novelaRT.Titulo}\"...", ConsoleUI);
 
-                INovela novela = await getNovels.GetNovelAsync(novelaRT, ComienzaEn); //Hardcoeando aqui el pdf.
+                INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela = await getNovels.GetNovelAsync(novelaRT, ComienzaEn); //Hardcoeando aqui el pdf.
 
                 ConsoleUI.ReportaEspecial($"Encontrada novela \"{novela.Titulo}\".", ConsoleUI);
 

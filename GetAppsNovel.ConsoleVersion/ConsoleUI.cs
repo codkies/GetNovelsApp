@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using GetNovelsApp.Core.Conexiones.Internet;
 using GetNovelsApp.Core.GetNovelsApp;
 using GetNovelsApp.Core.ConfiguracionApp;
+using System.Linq;
 
 namespace GetAppsNovel.ConsoleVersion
 {
@@ -169,9 +170,9 @@ namespace GetAppsNovel.ConsoleVersion
         }
 
 
-        internal Dictionary<INovela, int> PidePathTXTusuario(string folderPath)
+        internal Dictionary<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>, int> PidePathTXTusuario(string folderPath)
         {
-            Dictionary<INovela, int> InfoDescarga = new Dictionary<INovela, int>();
+            Dictionary<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>, int> InfoDescarga = new Dictionary<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>, int>();
 
             //string path = PideInput($"Introduce path del txt file", this);
             //path = path.Replace(@"\\", @"\\\\");
@@ -203,12 +204,12 @@ namespace GetAppsNovel.ConsoleVersion
             foreach (Uri uri in Links)
             {
                 Reporta($"\nObteniendo información de ({uri})...", this);
-                INovela novela = archivador.Legacy_MeteNovelaDB(uri, out _);
+                INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela = archivador.Legacy_MeteNovelaDB(uri, out _);
                 ///Confirmando con el usuario:
                 ConfirmaInfoNovelaConUsuario(ref InfoDescarga, novela, folderPath);
                
             }
-            TerminaInput(new List<INovela>(InfoDescarga.Keys));
+            TerminaInput(new List<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>>(InfoDescarga.Keys));
             return InfoDescarga;
         }
 
@@ -219,10 +220,10 @@ namespace GetAppsNovel.ConsoleVersion
         /// </summary>
         /// <param name="xPaths"></param>
         /// <param name="Novelas"></param>
-        internal Dictionary<INovela, int> PideInfoUsuario(string FolderPathDefined)
+        internal Dictionary<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>, int> PideInfoUsuario(string FolderPathDefined)
         {
             //Preps:
-            Dictionary<INovela, int> InfoDescarga = new Dictionary<INovela, int>();
+            Dictionary<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>, int> InfoDescarga = new Dictionary<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>, int>();
             bool InputFinalizado = false;
             Archivador archivador = new Archivador();
             ReportaEspecial("\nInformacion de novelas:", this);
@@ -245,7 +246,7 @@ namespace GetAppsNovel.ConsoleVersion
                 Reporta("\nObteniendo información de novela...\n", this);
 
                 //1) Pidela a la DB:                
-                INovela novela = archivador.Legacy_MeteNovelaDB(UriNovela, out _);
+                INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela = archivador.Legacy_MeteNovelaDB(UriNovela, out _);
 
                 ///Confirmando con el usuario:
                 ConfirmaInfoNovelaConUsuario(ref InfoDescarga, novela, FolderPathDefined);
@@ -254,7 +255,7 @@ namespace GetAppsNovel.ConsoleVersion
                 InputFinalizado = PreguntaPorOtraNovela(InputFinalizado);
 
                 if (!InputFinalizado) continue;
-                List<INovela> TodasLasNovelasAObtener = new List<INovela>(InfoDescarga.Keys);
+                List<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>> TodasLasNovelasAObtener = new List<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>>(InfoDescarga.Keys);
                 TerminaInput(TodasLasNovelasAObtener);
             }
 
@@ -262,7 +263,7 @@ namespace GetAppsNovel.ConsoleVersion
         }
 
 
-        internal string PreguntaSiSeImprime(INovela novela)
+        internal string PreguntaSiSeImprime(INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela)
         {
             return PideInput($"Imprimir \"{novela.Titulo}\"? (Y/N)", this);
         }
@@ -306,7 +307,7 @@ namespace GetAppsNovel.ConsoleVersion
         }
 
 
-        private void TerminaInput(List<INovela> novelasRT)
+        private void TerminaInput(List<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>> novelasRT)
         {
             string mensaje = $"\nSe obtendrán {novelasRT.Count} novelas:";
             for (int i = 0; i < novelasRT.Count; i++)
@@ -339,17 +340,17 @@ namespace GetAppsNovel.ConsoleVersion
         }
 
 
-        private void ConfirmaInfoNovelaConUsuario(ref Dictionary<INovela, int> InfoDescarga, INovela nov, string PathCarpeta)
+        private void ConfirmaInfoNovelaConUsuario(ref Dictionary<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>, int> InfoDescarga, INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> nov, string PathCarpeta)
         {
             Reporta($"Titulo: {nov.Titulo}\n" +     
                                                         $"Link: {nov.LinkPrincipal}\n" +
                                                         $"Tiene {nov.CantidadLinks} links.\n" +
                                                         $"Existen {nov.CantidadCapitulosDescargados} capitulos en la base de datos.\n" +
-                                                        $"Se tienen que descargar {nov.CapitulosPorDescargar.Count} capitulos.\n" +
+                                                        $"Se tienen que descargar {nov.CapitulosPorDescargar.ToList().Count} capitulos.\n" +
                                                         $"Carpeta: {PathCarpeta}",
                                                         this);
             int comienzo = 0;
-            if (nov.CapitulosPorDescargar.Count > 0)
+            if (nov.CapitulosPorDescargar.ToList().Count > 0)
             {
                 comienzo = PidePorElComienzo();
             }

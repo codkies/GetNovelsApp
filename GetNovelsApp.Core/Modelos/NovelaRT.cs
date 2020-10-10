@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Web.WebSockets;
 using GetNovelsApp.Core.Conexiones.DB;
 using GetNovelsApp.Core.Utilidades;
-using iText.Layout.Borders;
-using iText.StyledXmlParser.Jsoup.Select;
-using Org.BouncyCastle.Asn1.Mozilla;
 
 namespace GetNovelsApp.Core.Modelos
 {
     /// <summary>
     /// Modelo que utiliza la app para conseguir capitulos y ordenarlos.
     /// </summary>
-    public class NovelaRT : INovela
+    public class NovelaRT : INovela< List<Capitulo>, List<string>, List<Uri> >
     {
         #region Setup
 
@@ -161,11 +157,10 @@ namespace GetNovelsApp.Core.Modelos
 
         public float Review => throw new NotImplementedException();
 
-        public float CantidadReviews => throw new NotImplementedException();
+        public int CantidadReviews => throw new NotImplementedException();
 
         public List<string> Generos => throw new NotImplementedException();
 
-        int INovela.CantidadReviews => throw new NotImplementedException();
 
 
         #endregion

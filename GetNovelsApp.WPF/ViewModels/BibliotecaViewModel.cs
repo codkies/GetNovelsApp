@@ -47,7 +47,7 @@ namespace GetNovelsApp.WPF.ViewModels
             var novelasEnDB = await Task.Run( ()=> ar.ObtenTodasNovelasAsync());
 
             List<NovelaWPF> Novelas = new List<NovelaWPF>();
-            foreach (INovela novela in novelasEnDB)
+            foreach (INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela in novelasEnDB)
             {
                 Novelas.Add((NovelaWPF)novela);
             }

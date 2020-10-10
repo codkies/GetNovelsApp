@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Remoting.Services;
@@ -48,9 +49,9 @@ namespace GetNovelsApp.WPF.ViewModels
 
         #region Metodos
 
-        private async void GetNovelsWPFEvents_DescargaNovela(INovela novela)
+        private async void GetNovelsWPFEvents_DescargaNovela(INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela)
         {
-            ReporteWPF reporte = (ReporteWPF)GetNovelsFactory.FabricaReporteNovela(novela.LinksDeCapitulos.Count, novela.CapitulosPorDescargar.Count, "Descargando", this, novela.Titulo);
+            ReporteWPF reporte = (ReporteWPF)GetNovelsFactory.FabricaReporteNovela(novela.LinksDeCapitulos.ToList().Count, novela.CapitulosPorDescargar.ToList().Count, "Descargando", this, novela.Titulo);
 
             ManagerTareas.MuestraReporte(reporte);
             

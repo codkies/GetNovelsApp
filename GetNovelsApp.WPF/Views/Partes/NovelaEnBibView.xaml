@@ -50,34 +50,38 @@
                 </TextBlock>
             </StackPanel>
 
-            <!--Tags-->
-            <StackPanel Orientation="Horizontal"
-                                Margin="0 4 0 0">
-                <TextBlock Text="Accion"
-                                   Foreground="White"
-                                   Margin="5 0"
+            
+           <!--Genres-->
+            <ListBox ItemsSource="{Binding Generos}"
+                     Height="25"
+                     Background="Transparent"
+                     BorderThickness="0">
+                
+                <!--Template-->
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding }"
+                                   Foreground="White"    
+                                   FontSize="10"
+                                   Padding="1 0 4 1"
+                                   TextAlignment="Left"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
                                    Background="{StaticResource Color2}"
-                                   Padding="5 0 5 1"
                                    />
-                <TextBlock Text="Comedia"
-                                   Foreground="White"
-                                   Margin="5 0"
-                                   Background="{StaticResource Color2}"
-                                   Padding="5 0 5 1"
-                                   />
-                <TextBlock Text="Aventura"
-                                   Foreground="White"
-                                   Margin="5 0"
-                                   Background="{StaticResource Color2}"
-                                   Padding="5 0 5 1"
-                                   />
-                <TextBlock Text="Fantasia"
-                                   Foreground="White"
-                                   Margin="5 0"
-                                   Background="{StaticResource Color2}"
-                                   Padding="5 0 5 1"
-                                   />
-            </StackPanel>
+                    </DataTemplate>
+                <!--Configuracion del list box-->
+                </ListBox.ItemTemplate>
+                
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"
+                                    VerticalAlignment="Center"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+
+
+            </ListBox>           
 
             <!--Sipnosis-->
             <TextBox TextWrapping="Wrap"

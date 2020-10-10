@@ -6,6 +6,7 @@ using GetNovelsApp.Core.Reportaje;
 using GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores;
 using GetNovelsApp.Core.Empaquetador;
 using GetNovelsApp.Core.Conexiones.DB;
+using System.Linq;
 
 namespace GetNovelsApp.Core.Empaquetadores
 {
@@ -61,13 +62,13 @@ namespace GetNovelsApp.Core.Empaquetadores
 
         }
 
-        public void EmpaquetaCapitulo(Capitulo capituloDescargado, INovela novela, IProgress<IReporte> progreso)
+        public void EmpaquetaCapitulo(Capitulo capituloDescargado, INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela, IProgress<IReporte> progreso)
         {
             novela.CapituloFueDescargado(capituloDescargado);
 
             Archivador.GuardaCapitulosAsync(capituloDescargado, novela.ID);
 
-            var nuevo_Reporte = GetNovelsFactory.FabricaReporteNovela(novela.Capitulos.Count, novela.CapitulosDescargados.Count, "Descargando", this, novela.Titulo);
+            var nuevo_Reporte = GetNovelsFactory.FabricaReporteNovela(novela.Capitulos.ToList().Count, novela.CapitulosDescargados.ToList().Count, "Descargando", this, novela.Titulo);
 
             progreso.Report(nuevo_Reporte);
         }
@@ -78,7 +79,7 @@ namespace GetNovelsApp.Core.Empaquetadores
 
         #region Imprimiendo novelas.
 
-        private void ImprimeNovela(INovela novela, TiposDocumentos tipo)
+        private void ImprimeNovela(INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela, TiposDocumentos tipo)
         {
             string Path = LocalPathManager.DefinePathNovela(novela);
             IConstructor Constructor = GetNovelsFactory.FabricaConstructor(novela, tipo, GetNovelsConfig.CapitulosPorPdf, Path, novela.Titulo, CapituloImpreso, DocumentoCreado);
@@ -97,7 +98,7 @@ namespace GetNovelsApp.Core.Empaquetadores
         /// El constructor llama este metodo para notificar que un capitulo fue colocado en el documento.
         /// </summary>
         /// <param name="capitulo"></param>
-        private void CapituloImpreso(Capitulo capitulo, INovela novela)
+        private void CapituloImpreso(Capitulo capitulo, INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela)
         {
             novela.CapituloFueImpreso(capitulo);
         }

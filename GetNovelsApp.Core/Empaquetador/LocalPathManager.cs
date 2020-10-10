@@ -1,4 +1,6 @@
-﻿using GetNovelsApp.Core.Modelos;
+﻿using System;
+using System.Collections.Generic;
+using GetNovelsApp.Core.Modelos;
 
 namespace GetNovelsApp.Core.Empaquetador
 {
@@ -7,7 +9,7 @@ namespace GetNovelsApp.Core.Empaquetador
     /// </summary>
     public static class LocalPathManager
     {
-        public static string DefinePathNovela(INovela novela, bool Subdirectorio = false)
+        public static string DefinePathNovela(INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela, bool Subdirectorio = false)
         {
             if (Subdirectorio)
             {

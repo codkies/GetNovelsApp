@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GetNovelsApp.Core.Modelos;
 
 namespace GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores
 {
-    public delegate void NotificaCapituloImpreso(Capitulo cap, INovela novela);
+    public delegate void NotificaCapituloImpreso(Capitulo cap, INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela);
     public delegate void NotificaDocumentoCreado(string tituloDocumento);
 
     /// <summary>
