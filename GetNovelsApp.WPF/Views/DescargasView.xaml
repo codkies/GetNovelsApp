@@ -7,7 +7,7 @@
              xmlns:p="clr-namespace:GetNovelsApp.WPF.Views.Partes"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Background="{StaticResource Color3}">
+    <Grid Background="{StaticResource BackgroundDark}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*"/>
             <ColumnDefinition Width="*"/>
@@ -16,7 +16,7 @@
         <DataGrid Grid.Row="1" 
                   ItemsSource="{Binding DescargasNovelas, UpdateSourceTrigger=PropertyChanged}" 
                   AutoGenerateColumns="False" 
-                  Background="{StaticResource Color3}" 
+                  Background="Transparent" 
                   SelectedItem="{Binding EntradaSeleccionada, Mode=TwoWay}"  
                   SelectionMode="Extended" 
                   SelectionUnit="CellOrRowHeader">

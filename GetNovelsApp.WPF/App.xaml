@@ -42,13 +42,33 @@
         <SolidColorBrush x:Key="Color3" Color="#EFF28D"/>
         <SolidColorBrush x:Key="Color4" Color="#F29F05"/>
         <SolidColorBrush x:Key="Color5" Color="#F24405"/>
+        
+        <!--Real-->
+        <SolidColorBrush x:Key="BackgroundLight" Color="#F2ECE9"/>
+        <SolidColorBrush x:Key="BackgroundMedium" Color="#383732"/>
+        <SolidColorBrush x:Key="BackgroundDark" Color="#01080D"/>
+
+        <SolidColorBrush x:Key="MenuLight" Color="#F2E6D8"/>
+        <SolidColorBrush x:Key="MenuMedium" Color="#737272"/>
+        <SolidColorBrush x:Key="MenuDark" Color="#01080D"/> 
+
+        <SolidColorBrush x:Key="Accent" Color="#03A688"/>
+
+        <SolidColorBrush x:Key="LettersLight" Color="#F2ECE9"/>
+        <SolidColorBrush x:Key="LettersMedium" Color="#353F40"/>
+        <SolidColorBrush x:Key="LettersDark" Color="Black"/>
+        
+        
+        
+        
 
         <x:Static x:Key="SipnosisStock" Member="utl:DefaultStrings.SipnosisDefault" />
 
         <!--Templates-->
         <!--Botones-->
         <Style x:Key="BotonNavMenu" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource Color2}"/>
+            <Setter Property="Background" Value="{StaticResource MenuLight}"/>
+            <Setter Property="Foreground" Value="{StaticResource LettersDark}"/>
             <Setter Property="Height" Value="35"/>
             <Setter Property="Width" Value="35"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -57,6 +77,23 @@
         <!--Datagrids-->
         <Style x:Key="DataGridCenterCol" TargetType="DataGridColumnHeader">
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        </Style>
+        
+        <!--Palabras en la barra-->
+        <Style x:Key="WordBarra" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource LettersLight}"/>
+        </Style>
+
+        <!--Generos-->
+        <Style x:Key="Generos" TargetType="TextBlock">
+            <Setter Property="Background" Value="{StaticResource BackgroundMedium}"/>
+            <Setter Property="Foreground" Value="{StaticResource LettersLight}"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="FontWeight" Value="DemiBold"/>
+            <Setter Property="Padding" Value="1 0 4 1"/>
+            <Setter Property="TextAlignment" Value="Left"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>            
         </Style>
     </Application.Resources>
 </Application>

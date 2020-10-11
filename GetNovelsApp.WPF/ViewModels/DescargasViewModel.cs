@@ -51,7 +51,7 @@ namespace GetNovelsApp.WPF.ViewModels
 
         private async void GetNovelsWPFEvents_DescargaNovela(INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela)
         {
-            ReporteWPF reporte = (ReporteWPF)GetNovelsFactory.FabricaReporteNovela(novela.LinksDeCapitulos.ToList().Count, novela.CapitulosPorDescargar.ToList().Count, "Descargando", this, novela.Titulo);
+            ReporteWPF reporte = (ReporteWPF)GetNovelsFactory.FabricaReporteNovela(novela.LinksDeCapitulos.ToList().Count, novela.CapitulosDescargados.ToList().Count, "Descargando", this, novela.Titulo);
 
             ManagerTareas.MuestraReporte(reporte);
             

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Org.BouncyCastle.Math.EC.Rfc7748;
 
 namespace GetNovelsApp.Core.Modelos
 {

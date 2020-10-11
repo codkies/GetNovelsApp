@@ -6,10 +6,10 @@
              xmlns:local="clr-namespace:GetNovelsApp.WPF"
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="1000">
-    <Grid Background="{StaticResource Color2}"> 
+    <Grid Background="{StaticResource BackgroundMedium}"> 
         
         <!--Grid de configuraciones-->
-        <Grid Background="WhiteSmoke"
+        <Grid Background="{StaticResource BackgroundLight}"
               Margin="100">
 
             <Grid.ColumnDefinitions>

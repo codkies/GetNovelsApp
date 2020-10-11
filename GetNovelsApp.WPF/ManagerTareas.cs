@@ -33,12 +33,12 @@ namespace GetNovelsApp.WPF
 
         public static void ActualizaReporte(IReporte reporte)
         {
-            bool found = false; 
+            //bool found = false; 
             foreach (ITarea tarea in Tareas)
             {
                 if(tarea.NombreItem.ToLower().Trim() == reporte.NombreItem.ToLower().Trim())
                 {
-                    found = true;
+                    //found = true;
                     tarea.ActualizaProgreso(reporte.PorcentajeDeCompletado, reporte.Estado);
                     TareaEnPantalla = tarea;
                     ActualizaMensaje();
@@ -46,7 +46,7 @@ namespace GetNovelsApp.WPF
                     return;
                 }
             }
-            if(found == false) throw new Exception("Se actualizó un reporte que no existia en el manager.");
+            //if(found == false) throw new Exception("Se actualizó un reporte que no existia en el manager.");
         }
 
         private static void RevisaSiEsUltimaTarea()

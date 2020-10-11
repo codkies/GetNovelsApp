@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="1000">
     <!--Background-->
-    <Grid Background="{StaticResource Color3}">
+    <Grid Background="{StaticResource BackgroundLight}">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*"/>
@@ -62,24 +62,18 @@
                     <!--Tags seleccionadas-->
                     <StackPanel Orientation="Horizontal" Margin="0 4">
                         <TextBlock Text="Accion"
-                                   Background="{StaticResource Color5}"
-                                   Margin="3 0"
-                                   Foreground="White"
-                                   Padding="4 0"
+                                   Style="{StaticResource Generos}"
+                                    Margin="0 0 5 0"
                                    />
 
                         <TextBlock Text="Comedia"
-                                   Background="{StaticResource Color5}"
-                                   Margin="3 0"
-                                   Foreground="White"
-                                   Padding="4 0"
+                                   Style="{StaticResource Generos}"
+                                   Margin="0 0 5 0"
                                    />
 
                         <TextBlock Text="Drama"
-                                   Background="{StaticResource Color5}"
-                                   Margin="3 0"
-                                   Foreground="White"
-                                   Padding="4 0"
+                                   Style="{StaticResource Generos}"
+                                   Margin="0 0 5 0"
                                    />
                     </StackPanel>
                     
@@ -95,9 +89,11 @@
             <!--Boton para añadir novela nueva-->
             <Button Grid.Row="4" VerticalAlignment="Bottom"
                     Margin="20"
+                    Width="85"
                     Command="{Binding Command_AgregarNovela}"
-                    Background="{StaticResource Color1}"                    
-                    Content="Añadir novela nueva"/>
+                    Background="{StaticResource Accent}"     
+                    Foreground="{StaticResource LettersMedium}"
+                    Content="Añadir Novela"/>
 
         </Grid>
         

@@ -10,7 +10,7 @@
                        VerticalAlignment="Center"
                        HorizontalAlignment="Left"                       
                        Margin="10 5 0 0"
-                       Background="{StaticResource Color3}">
+                       Background="Transparent">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -35,17 +35,20 @@
                     Margin="5 0 0 0"
                     Width="600"
                     Background="Transparent"                           
+                    Foreground="{StaticResource LettersDark}"
                     FontSize="17"/>
 
             <!--Stats-->
             <StackPanel Orientation="Horizontal"
                                 Margin="0 4 0 0">
-                <TextBlock Margin="5 0">
+                <TextBlock Margin="5 0"
+                           Foreground="{StaticResource LettersDark}">
                     <Run Text="{Binding Capitulos.Count, Mode=OneWay, FallbackValue=XX}"/>
                     <Run Text="capitulos"/>
                 </TextBlock>
-                <TextBlock Margin="5 0">
-                    <Run Text="{Binding PorcentajeDescarga, Mode=OneWay, FallbackValue=YY}"/>
+                <TextBlock Margin="5 0"
+                           Foreground="{StaticResource LettersDark}">
+                    <Run Text="{Binding PorcentajeDescarga, Mode=OneWay, FallbackValue=YY, UpdateSourceTrigger=PropertyChanged}"/>
                     <Run Text="% descargada"/>
                 </TextBlock>
             </StackPanel>
@@ -61,14 +64,7 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding }"
-                                   Foreground="White"    
-                                   FontSize="10"
-                                   Padding="1 0 4 1"
-                                   TextAlignment="Left"
-                                   HorizontalAlignment="Left"
-                                   VerticalAlignment="Center"
-                                   Background="{StaticResource Color2}"
-                                   />
+                                   Style="{StaticResource Generos}"/>
                     </DataTemplate>
                 <!--Configuracion del list box-->
                 </ListBox.ItemTemplate>
@@ -91,6 +87,7 @@
                      Width="600"
                      BorderThickness="0"
                      IsReadOnly="True"
+                     Foreground="{StaticResource LettersMedium}"
                      Text="{Binding Sipnosis, FallbackValue='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque et mauris eget est suscipit pharetra. Donec et convallis lorem. Integer blandit lacus non rutrum convallis. Pellentesque et porta quam, id fringilla ex. Cras rutrum mi imperdiet ligula imperdiet pharetra. Nunc hendrerit diam vel ex maximus auctor. Pellentesque egestas in justo sed finibus. Phasellus vehicula neque turpis, eget hendrerit justo laoreet in. Cras felis lectus, pretium eget leo ac, vehicula hendrerit ipsum. Maecenas eleifend ultrices ex quis imperdiet.'}"/>
 
         </StackPanel>

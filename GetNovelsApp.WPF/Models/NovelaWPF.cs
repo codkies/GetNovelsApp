@@ -98,6 +98,7 @@ namespace GetNovelsApp.WPF.Models
         private bool traduccionCompleta;
         private float review;
         private int cantidadReviews;
+        private int porcentajeDescarga;
         private ObservableCollection<string> generos;
         #endregion
 
@@ -118,7 +119,10 @@ namespace GetNovelsApp.WPF.Models
         public ObservableCollection<Capitulo> CapitulosDescargados
         {
             get => capitulosDescargados;
-            set => OnPropertyChanged(ref capitulosDescargados, value);
+            set
+            {
+                OnPropertyChanged(ref capitulosDescargados, value);
+            }
         }
 
         public ObservableCollection<Capitulo> CapitulosImpresos
@@ -130,13 +134,19 @@ namespace GetNovelsApp.WPF.Models
         public ObservableCollection<Capitulo> CapitulosPorDescargar
         {
             get => capitulosPorDescargar;
-            set => OnPropertyChanged(ref capitulosPorDescargar, value);
+            set
+            {
+                OnPropertyChanged(ref capitulosPorDescargar, value);
+            }
         }
 
         public ObservableCollection<Uri> LinksDeCapitulos
         {
             get => linksDeCapitulos;
-            set => OnPropertyChanged(ref linksDeCapitulos, value);
+            set
+            {
+                OnPropertyChanged(ref linksDeCapitulos, value);
+            }
         }
 
 
@@ -237,7 +247,7 @@ namespace GetNovelsApp.WPF.Models
         /// <summary>
         /// Define el % de descarga de la novela.
         /// </summary>
-        public int PorcentajeDescarga => CapitulosDescargados.Count * 100 / CantidadLinks;
+        public int PorcentajeDescarga => LinksDeCapitulos.Count > 0 ? CapitulosDescargados.Count * 100 / LinksDeCapitulos.Count : 0;
 
 
         /// <summary>

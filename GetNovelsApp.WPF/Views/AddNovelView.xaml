@@ -12,7 +12,7 @@
         <vm:AddNovelViewModel/>
     </Window.DataContext>
 
-    <Grid>
+    <Grid Background="{StaticResource BackgroundLight}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="3*"/>
@@ -37,7 +37,7 @@
                 Margin="5"/>
 
             <!--Barra de descarga-->
-            <ProgressBar Background="DarkGreen" 
+            <ProgressBar Background="{StaticResource Accent}" 
                      Height="10"/>
 
 
@@ -164,6 +164,7 @@
 
         <DataGrid Grid.Column="1"
                   Name="DataGridLinks"
+                  Background="Transparent"
                   ItemsSource="{Binding Links, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                   AutoGenerateColumns="False"
                   Margin="5">

@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="690" d:DesignWidth="1000">
 
-    <Grid Background="{StaticResource Color3}"
+    <Grid Background="{StaticResource BackgroundLight}"
           Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -57,9 +57,10 @@
                     <!--Cantidad Caps-->
                     <TextBlock FontSize="15"
                                 FontFamily="{StaticResource MainFont}">
-                           <Run Text="{Binding NovelaEnVista.PorcentajeDescarga,
-                                           Mode=OneWay,
-                                           FallbackValue=xx}"/>
+                           <Run Text="{Binding NovelaEnVista.PorcentajeDescarga, 
+                               UpdateSourceTrigger=PropertyChanged,
+                               Mode=OneWay,
+                               FallbackValue=xx}"/>
                            <Run Text="% descargado."/>
                     </TextBlock>
 
@@ -79,7 +80,7 @@
                          FontSize="16"
                          TextAlignment="Left"
                          BorderThickness="0"
-                         Background="{StaticResource Color3}"
+                         Background="Transparent"
                          Text="{Binding NovelaEnVista.Sipnosis, 
                     FallbackValue=' With the rising tide of steam power and machinery, who can come close to being a Beyonder? Shrouded in the fog of history and darkness, who or what is the lurking evil that murmurs into our ears? Waking up to be faced with a string of mysteries, Zhou Mingrui finds himself reincarnated as Klein Moretti in an alternate Victorian era world where he sees a world filled with machinery, cannons, dreadnoughts, airships, difference machines, as well as Potions, Divination, Hexes, Tarot Cards, Sealed Artifacts… The Light continues to shine but mystery has never gone far. Follow Klein as he finds himself entangled with the Churches of the world—both orthodox and unorthodox—while he slowly develops newfound powers thanks to the Beyonder potions. Like the corresponding tarot card, The Fool, which is numbered 0—a number of unlimited potential—this is the legend of The Fool.' }"
                          TextWrapping="Wrap"/>
@@ -109,7 +110,7 @@
                           x:Name="Capitulos"
                           ItemsSource="{Binding NovelaEnVista.Capitulos}" 
                           AutoGenerateColumns="False" 
-                          Background="{StaticResource Color3}" 
+                          Background="Transparent" 
                           SelectedItem="{Binding EntradaSeleccionada, Mode=TwoWay}"  
                           SelectionMode="Extended" 
                           SelectionUnit="CellOrRowHeader">

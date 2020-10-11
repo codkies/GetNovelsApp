@@ -219,7 +219,7 @@ namespace GetNovelsApp.Core.Conexiones.Internet
             foreach (HtmlNode nodo in nodosSipnosis)
             {
                 var texto = ObtenInnerText(nodo);
-                sipnosis += $"{texto}\n";
+                sipnosis += $"{texto.Trim()}\n";
             }
 
             //Filtrando imagen

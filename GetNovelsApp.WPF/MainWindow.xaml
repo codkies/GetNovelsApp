@@ -6,16 +6,16 @@
         xmlns:local="clr-namespace:GetNovelsApp.WPF"
         mc:Ignorable="d"
         Title="MainWindow" Height="700" Width="1100">
-    
+
     <!--Dandole contexto a la vista principal-->
     <Window.DataContext>
         <local:AppViewModel/>
     </Window.DataContext>
-    
-    <DockPanel Background="{StaticResource Color3}">
 
-        <Grid DockPanel.Dock="Top" Height="40" Background="{StaticResource Color2}">
-            
+    <DockPanel Background="{StaticResource BackgroundLight}">
+
+        <Grid DockPanel.Dock="Top" Height="40" Background="{StaticResource MenuLight}">
+
             <!--Bar columns-->
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -34,7 +34,7 @@
                     Style="{StaticResource BotonNavMenu}">
                 <Button.Content>
                     <Image Source="pack://siteoforigin:,,,/Resources/Bib.png"/>
-                </Button.Content>                
+                </Button.Content>
             </Button>
 
             <Button Grid.Column="1" 
@@ -51,7 +51,7 @@
                     Command="{Binding Command_VeDescargas}"
                     Style="{StaticResource BotonNavMenu}">
                 <Button.Content>
-                    <Image Source="pack://siteoforigin:,,,/Resources/Descargas.png"/>                    
+                    <Image Source="pack://siteoforigin:,,,/Resources/Descargas.png"/>
                 </Button.Content>
             </Button>
 
@@ -59,45 +59,53 @@
 
         </Grid>
 
-         <!--Barra de estado-->
+        <!--Barra de estado-->
         <Grid DockPanel.Dock="Bottom"
-                    Background="{StaticResource Color4}">
+              Height="20"
+                    Background="{StaticResource MenuDark}">
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="239*"/>
+                <ColumnDefinition Width="125*"/>
+                <ColumnDefinition Width="364*"/>
+                <ColumnDefinition Width="364*"/>
             </Grid.ColumnDefinitions>
-            
+
             <!--Mensajes de la app-->
-            <TextBlock Grid.Column="2"
+            <TextBlock Grid.Column="3"
                        Text="{Binding MensajeDeEstado, UpdateSourceTrigger=PropertyChanged}"
                        TextAlignment="Right"
+                       VerticalAlignment="Center"
+                       Style="{StaticResource WordBarra}"
                        Margin="0 0 10 0"
-                       FontSize="10">       
+                       FontSize="10">
             </TextBlock>
-            
+
             <!--Nombre App-->
-            <TextBlock Grid.Column="1"
+            <TextBlock Grid.Column="2"
                        TextAlignment="Center"
+                       VerticalAlignment="Center"
+                       Style="{StaticResource WordBarra}"
                        Margin="0 0 10 0"
                        FontSize="10">  
                 <Run Text="GetNovels"/>
             </TextBlock>
-            
+
             <!--Lugar donde te encuentras-->
             <TextBlock Grid.Column="0"
                        TextAlignment="Left"
+                       VerticalAlignment="Center"
                        Margin="10 0 0 0"
-                       FontSize="10">                
+                       Style="{StaticResource WordBarra}"
+                       FontSize="10" Grid.ColumnSpan="2">                
                 <!--Carpeta 1-->
                 <Run Text="Biblioteca >"/>
                 <!--Carpeta 2-->
                 <Run Text="Lord of the Mysteries"/>
             </TextBlock>
-            
+
         </Grid>
-        
+
         <!--Views-->
         <Grid DockPanel.Dock="Bottom">
             <ContentControl Content="{Binding CurrentView}"/>
