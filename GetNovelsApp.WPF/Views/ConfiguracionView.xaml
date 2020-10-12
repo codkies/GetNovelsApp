@@ -27,7 +27,7 @@
             </Grid.RowDefinitions>
         
             <!--CarpetaDescarga, Row 0-->
-            <TextBlock Text="Carpeta de descargas:"
+            <TextBlock Text="Carpeta de guardado:"
                        Grid.Row="0"
                        Grid.Column="0"
                        VerticalAlignment="Center"
@@ -139,9 +139,9 @@
                 
                     <!--Agrega website-->
                     <Button Grid.Column="1"
+                            Style="{StaticResource BotonEspecial}"
                             Content="Salvar cambios"
                             Command="{Binding Command_SalvaCambios}"
-                            Height="20"
                             Width="90"/>
                 </Grid>
 

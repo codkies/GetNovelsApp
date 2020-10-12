@@ -75,19 +75,12 @@
         </Style>
 
 
-        <!--<Button Grid.Row="4" VerticalAlignment="Bottom"
-                    Margin="20"
-                    Width="85"
-                    Command="{Binding Command_AgregarNovela}"
-                    Background="{StaticResource Accent}"     
-                    Foreground="{StaticResource LettersMedium}"
-                    Content="Añadir Novela"/>-->
-
         <Style x:Key="BotonEspecial" TargetType="Button">            
             <Setter Property="Height" Value="20"/>            
-            <Setter Property="BorderThickness" Value="0"/>            
+            <Setter Property="BorderThickness" Value="0.5"/>
+            <Setter Property="Padding" Value="0 0 0 1"/>
             <Setter Property="Background" Value="{StaticResource Accent}"/>
-            <Setter Property="Foreground" Value="{StaticResource LettersMedium}"/>            
+            <Setter Property="Foreground" Value="{StaticResource LettersLight}"/>            
         </Style>
 
         <!--Datagrids-->

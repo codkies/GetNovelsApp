@@ -87,12 +87,12 @@
 
             <!--Parte inferior-->
             <!--Boton para añadir novela nueva-->
-            <Button Grid.Row="4" VerticalAlignment="Bottom"
+            <Button Grid.Row="4" 
+                    Style="{StaticResource BotonEspecial}"
+                    VerticalAlignment="Bottom"
                     Margin="20"
                     Width="85"
                     Command="{Binding Command_AgregarNovela}"
-                    Background="{StaticResource Accent}"     
-                    Foreground="{StaticResource LettersMedium}"
                     Content="Añadir Novela"/>
 
         </Grid>

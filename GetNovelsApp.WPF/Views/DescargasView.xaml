@@ -21,8 +21,13 @@
                   SelectionMode="Extended" 
                   SelectionUnit="CellOrRowHeader">
 
-            <DataGrid.Columns>
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="IsHitTestVisible" Value="False"/>
+                </Style>
+            </DataGrid.RowStyle>
 
+            <DataGrid.Columns>
                 <!--first col, Nombre novela-->
                 <DataGridTemplateColumn Header="Novela" Width="*">
 
@@ -142,7 +147,7 @@
             <Button Content="Descargar biblioteca"
                     FontSize="10"
                     VerticalAlignment="Center"
-                    Grid.Row="7"                    
+                    Grid.Row="7"                                  
                     Width="100"
                     Command="{Binding Command_DescargarBib, UpdateSourceTrigger=PropertyChanged}"
                     Style="{StaticResource BotonEspecial}"/>
