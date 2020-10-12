@@ -19,26 +19,14 @@
                   Background="Transparent" 
                   SelectedItem="{Binding EntradaSeleccionada, Mode=TwoWay}"  
                   SelectionMode="Extended" 
-                  SelectionUnit="CellOrRowHeader">
-
-            <DataGrid.RowStyle>
-                <Style TargetType="DataGridRow">
-                    <Setter Property="IsHitTestVisible" Value="False"/>
-                </Style>
-            </DataGrid.RowStyle>
+                  SelectionUnit="CellOrRowHeader"
+                  RowStyle="{StaticResource MyRowStyle}"
+                  ColumnHeaderStyle="{StaticResource MyColumnHeaderStyle}">
 
             <DataGrid.Columns>
                 <!--first col, Nombre novela-->
                 <DataGridTemplateColumn Header="Novela" Width="*">
-
-                    <DataGridTemplateColumn.HeaderStyle>
-                        <Style TargetType="DataGridColumnHeader">
-                            <Setter Property="Background" Value="{StaticResource BackgroundLight}"/>
-                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                            <Setter Property="BorderThickness" Value="1"/>
-                        </Style>
-                    </DataGridTemplateColumn.HeaderStyle>
-
+                    
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Path=NombreItem}"
@@ -55,14 +43,6 @@
                 <DataGridTemplateColumn Header="Capitulos" 
                                         Width="*" 
                                         IsReadOnly="True">
-
-                    <DataGridTemplateColumn.HeaderStyle>
-                        <Style TargetType="DataGridColumnHeader">
-                            <Setter Property="Background" Value="{StaticResource BackgroundLight}"/>
-                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                            <Setter Property="BorderThickness" Value="1"/>
-                        </Style>
-                    </DataGridTemplateColumn.HeaderStyle>
 
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -85,14 +65,6 @@
                                         Width="*"    
                                         IsReadOnly="True">
 
-                    <DataGridTemplateColumn.HeaderStyle>
-                        <Style TargetType="DataGridColumnHeader">
-                            <Setter Property="Background" Value="{StaticResource BackgroundLight}"/>
-                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                            <Setter Property="BorderThickness" Value="1"/>
-                        </Style>
-                    </DataGridTemplateColumn.HeaderStyle>
-
                     <DataGridTemplateColumn.CellTemplate>                        
                         <DataTemplate>
                             <Grid Background="{StaticResource BackgroundLight}">
@@ -110,16 +82,8 @@
                                     <Run Text="%"/>
                                 </TextBlock>
                                 <ProgressBar Grid.Column="1"
-                                        Value="{Binding PorcentajeDeCompletado, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                         Margin="10 0"
-                                         Width="200"
-                                         Padding="10"
-                                         Height="10"
-                                         Background="Transparent"
-                                         Foreground="{StaticResource LettersDark}"
-                                         HorizontalAlignment="Center"
-                                         VerticalAlignment="Center"
-                                         />
+                                             Value="{Binding PorcentajeDeCompletado, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                             Style="{StaticResource BarraElegante}"/>
                             </Grid>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

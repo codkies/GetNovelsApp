@@ -138,7 +138,8 @@ namespace GetNovelsApp.Core
         };
         private static readonly List<string> estadoTraduccion = new List<string>()
         {
-            "//div[@id='showtranslated']/a"
+            "//div[@id='showtranslated']/a",
+            "//div[@id='showtranslated']"
         };
         private static readonly List<string> nacionalidad = new List<string>()
         {

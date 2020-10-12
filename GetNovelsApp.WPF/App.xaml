@@ -65,6 +65,31 @@
         <x:Static x:Key="SipnosisStock" Member="utl:DefaultStrings.SipnosisDefault" />
 
         <!--Templates-->
+
+        <!--<ProgressBar Grid.Column="1"
+                                        Value="{Binding PorcentajeDeCompletado, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                         Margin="10 0"
+                                         Width="200"
+                                         Padding="10"
+                                         Height="10"
+                                         Background="Transparent"
+                                         Foreground="{StaticResource LettersDark}"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"
+                                         />-->
+        
+        <!--progress bar-->
+        <Style x:Key="BarraElegante" TargetType="ProgressBar">
+            <Setter Property="Margin" Value="10 0"/>
+            <Setter Property="Width" Value="200"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Height" Value="10"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource LettersDark}"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
         <!--Botones-->
         <Style x:Key="BotonNavMenu" TargetType="Button">
             <Setter Property="Background" Value="{StaticResource MenuLight}"/>
@@ -84,10 +109,18 @@
         </Style>
 
         <!--Datagrids-->
-        <Style x:Key="DataGridCenterCol" TargetType="DataGridColumnHeader">
+                        <!--column headers-->
+        <Style x:Key="MyColumnHeaderStyle" TargetType="DataGridColumnHeader">           
+            <Setter Property="Background" Value="{StaticResource BackgroundLight}"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="BorderThickness" Value="1"/>
         </Style>
         
+        <!--rows-->
+        <Style x:Key="MyRowStyle" TargetType="DataGridRow">
+            <Setter Property="IsHitTestVisible" Value="False"/>
+        </Style>      
+
         <!--Palabras en la barra-->
         <Style x:Key="WordBarra" TargetType="TextBlock">
             <Setter Property="Foreground" Value="{StaticResource LettersLight}"/>
@@ -104,5 +137,7 @@
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="VerticalAlignment" Value="Center"/>            
         </Style>
+        
+        
     </Application.Resources>
 </Application>
