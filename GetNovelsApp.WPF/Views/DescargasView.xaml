@@ -23,23 +23,47 @@
 
             <DataGrid.Columns>
 
+                <!--first col, Nombre novela-->
                 <DataGridTemplateColumn Header="Novela" Width="*">
+
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="{StaticResource BackgroundLight}"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="BorderThickness" Value="1"/>
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
+
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Path=NombreItem}"
                                        VerticalAlignment="Center"
-                                       TextAlignment="Center"/>
-                        </DataTemplate>
+                                       TextAlignment="Center"
+                                       Background="{StaticResource BackgroundLight}"/>
+                        </DataTemplate>                       
                     </DataGridTemplateColumn.CellTemplate>
+                    
                 </DataGridTemplateColumn>
 
+                
+                <!--second col, capitulos count-->
                 <DataGridTemplateColumn Header="Capitulos" 
                                         Width="*" 
                                         IsReadOnly="True">
+
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="{StaticResource BackgroundLight}"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="BorderThickness" Value="1"/>
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
+
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock VerticalAlignment="Center"
-                                       TextAlignment="Center">
+                                       TextAlignment="Center"
+                                       Background="{StaticResource BackgroundLight}">
                                 <Run Text="{Binding Actual, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
                                 <Run Text="/"/>
                                 <Run Text="{Binding Total, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
@@ -47,20 +71,51 @@
                             </TextBlock>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
+                    
                 </DataGridTemplateColumn>
 
+                
+                <!--third col, porcentajes-->
                 <DataGridTemplateColumn Header="Progreso" 
                                         Width="*"    
                                         IsReadOnly="True">
-                    <DataGridTemplateColumn.CellTemplate>
+
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="{StaticResource BackgroundLight}"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="BorderThickness" Value="1"/>
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
+
+                    <DataGridTemplateColumn.CellTemplate>                        
                         <DataTemplate>
-                            <ProgressBar Value="{Binding PorcentajeDeCompletado, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                         Margin="10"
+                            <Grid Background="{StaticResource BackgroundLight}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="4*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0"
+                                           Margin="10 0"
+                                           Foreground="{StaticResource LettersDark}"
+                                           TextAlignment="Center"
+                                           VerticalAlignment="Center">   
+                                    <Run Text="{Binding PorcentajeDeCompletado, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <Run Text="%"/>
+                                </TextBlock>
+                                <ProgressBar Grid.Column="1"
+                                        Value="{Binding PorcentajeDeCompletado, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                         Margin="10 0"
+                                         Width="200"
                                          Padding="10"
-                                         Height="15"
-                                         HorizontalAlignment="Left"
+                                         Height="10"
+                                         Background="Transparent"
+                                         Foreground="{StaticResource LettersDark}"
+                                         HorizontalAlignment="Center"
                                          VerticalAlignment="Center"
                                          />
+                            </Grid>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
