@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SQLite;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.Principal;
 using System.Threading.Tasks;
+using System.Transactions;
 using Dapper;
 using GetNovelsApp.Core.Conexiones.Internet;
 using GetNovelsApp.Core.Modelos;
 using GetNovelsApp.Core.Reportaje;
+
 using GetNovelsApp.Core.Utilidades;
-using Org.BouncyCastle.Asn1.Cmp;
 
 namespace GetNovelsApp.Core.Conexiones.DB
 {
@@ -111,7 +109,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
 
 
 
-        public List<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>> ObtenTodasNovelasAsync()
+        public List<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>> ObtenTodasNovelas()
         {
             List<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>> output = new List<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>>();
 
@@ -157,21 +155,25 @@ namespace GetNovelsApp.Core.Conexiones.DB
         {
             if (CapitulosAGuardar.Count < 1) return;
             using IDbConnection cnn = DataBaseAccess.GetConnection();
-            EjecutandoGuardado = true;
+            cnn.Open();
 
-            int contador = 9;
+            EjecutandoGuardado = true;
+            int contador = 9; //9 porque se hicieron 9 pasos antes de esto.
             int tope = CapitulosAGuardar.Count;
-            string nombreNovela = "";            
+            string nombreNovela = "";              
             if(progress != null)
             {
                 nombreNovela = cnn.Query<string>($"select NovelaTitulo from {i.TNovelas} where NovelaID = '{CapitulosAGuardar.First().Value}'").First();
             }
 
+            //Comenzando transaccion
+            using var transactionScope = new TransactionScope();
+
             while (CapitulosAGuardar.Count > 0) //Mientras hayan capitulos por guardar...
             {
                 var key = CapitulosAGuardar.First();
                 int NovelaID = key.Value;
-                
+
                 Capitulo c = key.Key;
                 try
                 {
@@ -183,7 +185,6 @@ namespace GetNovelsApp.Core.Conexiones.DB
                 {
                     GetNovelsComunicador.ReportaError($"Metiendo texto. Saldrá un error de SQL. \nError: {ex.Message}", this);
                 }
-
                 if (string.IsNullOrEmpty(c.Texto) == false)
                 {
                     string findCapID = SelectCapID_qry(c);
@@ -200,14 +201,17 @@ namespace GetNovelsApp.Core.Conexiones.DB
                 }
 
                 contador++;
-                if(progress != null)
-                {               
+                if (progress != null)
+                {
                     progress.Report(GetNovelsFactory.FabricaReporteNovela(tope, contador, "Guardando", this, nombreNovela));
                 }
                 CapitulosAGuardar.Remove(c);
             }
+
+            //Terminando transaccion
+            transactionScope.Complete();
             EjecutandoGuardado = false;
-            cnn.Dispose();
+            cnn.Close();
         }
 
 

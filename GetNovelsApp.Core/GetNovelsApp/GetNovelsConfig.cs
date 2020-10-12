@@ -13,8 +13,10 @@ namespace GetNovelsApp.Core
     /// </summary>
     public static class GetNovelsConfig
     {
+        private static Archivador ar;
         public static void InicializaConfig()
         {
+            ar = new Archivador();
             ActualizaWebsites();
             ActualizaConfiguracion();
             GetNovelsEvents.WebsitesCambiaron += ActualizaWebsites;
@@ -23,12 +25,12 @@ namespace GetNovelsApp.Core
 
         private static void ActualizaConfiguracion()
         {
-            ConfiguracionActual = new Archivador().ObtenConfiguracion();
+            ConfiguracionActual = ar.ObtenConfiguracion();
         }
 
         private static void ActualizaWebsites()
         {
-            WebsitesSoportados = new Archivador().ObtenPerfiles();
+            WebsitesSoportados = ar.ObtenPerfiles();
         }
 
 

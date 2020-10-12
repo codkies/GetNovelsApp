@@ -44,7 +44,7 @@ namespace GetNovelsApp.WPF.ViewModels
         {
             Debug.WriteLine("Buscando novelas en DB");
             isExecuting = true;
-            var novelasEnDB = await Task.Run( ()=> ar.ObtenTodasNovelasAsync());
+            var novelasEnDB = await Task.Run( ()=> ar.ObtenTodasNovelas());
 
             List<NovelaWPF> Novelas = new List<NovelaWPF>();
             foreach (INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela in novelasEnDB)

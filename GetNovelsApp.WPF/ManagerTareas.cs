@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Resources;
-using System.Runtime;
-using System.Threading;
-using System.Windows.Documents;
-using GetNovelsApp.Core;
 using GetNovelsApp.Core.Reportaje;
 using GetNovelsApp.WPF.Models;
 using GetNovelsApp.WPF.Utilidades;
@@ -55,11 +48,7 @@ namespace GetNovelsApp.WPF
             if (esUltima & TareaEnPantalla.PorcentajeTarea >= 100)
             {                
                 //Muestra por 5s el mensaje
-                ActualizaMensaje($"Todas las tareas terminadas.");                
-                Thread.Sleep(5 * 1000);
-                //Borra el mensaje en pantalla
-                ActualizaMensaje($"");        
-                //Elimina referencia a tarea en pantalla.
+                ActualizaMensaje($"Todas las tareas terminadas.");                               
                 TareaEnPantalla = null;
                 Tareas.Clear();
                 return;

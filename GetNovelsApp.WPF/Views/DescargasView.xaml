@@ -7,9 +7,9 @@
              xmlns:p="clr-namespace:GetNovelsApp.WPF.Views.Partes"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Background="{StaticResource BackgroundDark}">
+    <Grid Background="{StaticResource BackgroundLight}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="5*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
@@ -67,5 +67,31 @@
 
             </DataGrid.Columns>
         </DataGrid>
+
+
+        <Grid Grid.Column="1"
+              Background="{StaticResource BackgroundLight}">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+
+            <Button Content="Descargar biblioteca"
+                    FontSize="10"
+                    VerticalAlignment="Center"
+                    Grid.Row="7"                    
+                    Width="100"
+                    Command="{Binding Command_DescargarBib, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource BotonEspecial}"/>
+
+        </Grid>
     </Grid>
 </UserControl>

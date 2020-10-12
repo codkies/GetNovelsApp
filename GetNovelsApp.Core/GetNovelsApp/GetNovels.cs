@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 
 using GetNovelsApp.Core.Modelos;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using System;
 
@@ -84,22 +83,26 @@ namespace GetNovelsApp.Core
 
         private readonly Archivador Archivador;
 
-        #endregion 
+        #endregion
 
 
 
         #region Queueing a novel
 
+
+        #region queueing fields
         private Queue<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>> NovelasPorDescargar = new Queue<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>>();
 
 
-        private bool Descargando = false;
+        private bool Descargando = false; 
 
 
         /// <summary>
         /// Une el reporte con el ID de la novela.
         /// </summary>
+        /// 
         private Dictionary<int, IProgress<IReporte>> ReportePorID = new Dictionary<int, IProgress<IReporte>>();
+        #endregion
 
 
         public async Task<bool> AgregaAlQueue(INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela, IProgress<IReporte> progreso)
@@ -148,46 +151,54 @@ namespace GetNovelsApp.Core
 
 
         #endregion
+      
 
-
-
-        #region Scraping
+        #region Bajando los capitulos de novela.
 
 
         /// <summary>
         /// Obtiene capitulos de una novela en el formato establecido y los coloca en la carpeta de la configuracion.
         /// </summary>
-        public async Task<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>> GetNovelAsync(INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novelaNueva, int ComienzaEn = 0)
+        public async Task<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>> GetNovelAsync(
+            INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novelaNueva, 
+            int ComienzaEn = 0)
         {
             Descargando = true;
 
-            int PorcentajeDeDescarga = novelaNueva.PorcentajeDescarga;
-
-            if (PorcentajeDeDescarga == 100)
+            if (novelaNueva.PorcentajeDescarga >= 100) //Si ya la novela está descargada...
             {
-                GetNovelsComunicador.ReportaCambioEstado($"La novela {novelaNueva.Titulo} se encuentra en la base de datos.", this);
                 Descargando = false;
                 await RevisaSiQuedanNovelasPorDescargarAsync();
                 return novelaNueva;
             }
 
-            //Else, continua normalmente.
+            //Else, continua normalmente:
 
             PreparaNovelaNueva(novelaNueva);
-            GetNovelsComunicador.ReportaCambioEstado($"La novela {MyNovela.Titulo} tiene un porcentaje de descarga de {MyNovela.PorcentajeDescarga}%.", this);
-
 
             IProgress<IReporte> progresoDeNovela = ReportePorID[novelaNueva.ID];
 
             List<Task> Scrappers = new List<Task>();
-
+            
+            int tamañoBatch = GetNovelsConfig.TamañoBatch;
+            
             foreach (var capitulo in DescargaEstosCapitulos)
             {
                 Scrappers.Add(Task.Run(() => Scrap(capitulo, progresoDeNovela)));
-            }
+                if(Scrappers.Count >= tamañoBatch) //Solo haz X tareas a la vez
+                {
+                    await Task.Run(async () =>
+                    {
+                        //Espera que las tareas acaben
+                        await Task.WhenAll(Scrappers);
+                        
+                        //resetea                         
+                        Scrappers.Clear();
+                    });
+                }
+            }   
 
-            await Task.WhenAll(Scrappers);
-
+            if(Scrappers.Any()) await Task.WhenAll(Scrappers);
 
             Descargando = false;
             await NovelaFueDescargadAsync(novelaNueva);
@@ -206,14 +217,12 @@ namespace GetNovelsApp.Core
         }
 
 
-
-
         private void Scrap(Capitulo capituloPorDescargar, IProgress<IReporte> progress)
         {
-            //A) baja 1 capitulo
+            //1) baja capitulo
             Capitulo capituloDescargado = MyScraper.CompletaCapitulo(capituloPorDescargar);
 
-            //B) guarda 1 capitulo
+            //2) guarda capitulo
             MyEmpaquetador.EmpaquetaCapitulo(capituloDescargado, MyNovela, progress);
         }
 
@@ -254,6 +263,7 @@ namespace GetNovelsApp.Core
             CaracteresVistos += MyScraper.CaracteresVistos;
             CapitulosEncontrados += MyScraper.CapitulosEncontrados;
         }
+
 
         #endregion
     }
