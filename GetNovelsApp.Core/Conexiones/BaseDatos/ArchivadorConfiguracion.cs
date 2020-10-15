@@ -40,7 +40,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
             return GetNovelsFactory.FabricaConfiguracion(CarpetasDescarga, TamañoBatch, CapitulosPorDocumento);
         }
 
-
+         
         public void ActualizaConfiguracion(IConfig config)
         {
             string qry = $"update {i.TConfiguracion} " +

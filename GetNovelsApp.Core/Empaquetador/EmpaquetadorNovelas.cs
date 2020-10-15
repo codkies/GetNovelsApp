@@ -57,10 +57,6 @@ namespace GetNovelsApp.Core.Empaquetadores
 
         #region Metodos Publicos
 
-        public void EscuchaNovela(NovelaRT novela)
-        {
-
-        }
 
         public void EmpaquetaCapitulo(Capitulo capituloDescargado, INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela, IProgress<IReporte> progreso)
         {
@@ -79,7 +75,7 @@ namespace GetNovelsApp.Core.Empaquetadores
 
         #region Imprimiendo novelas.
 
-        private void ImprimeNovela(INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela, TiposDocumentos tipo)
+        public void ImprimeNovela(INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela, TiposDocumentos tipo)
         {
             string Path = LocalPathManager.DefinePathNovela(novela);
             IConstructor Constructor = GetNovelsFactory.FabricaConstructor(novela, tipo, GetNovelsConfig.CapitulosPorPdf, Path, novela.Titulo, CapituloImpreso, DocumentoCreado);
@@ -87,6 +83,19 @@ namespace GetNovelsApp.Core.Empaquetadores
             List<Capitulo> CapitulosAImprimir = new List<Capitulo>(novela.CapitulosDescargados);
 
             Constructor.ConstruyeDocumento(CapitulosAImprimir);
+        }
+
+        public void ImprimeNovela(INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela, TiposDocumentos tipo, IProgress<IReporte> progress)
+        {
+            var reporte = GetNovelsFactory.FabricaReporteNovela(novela.CapitulosDescargados.ToList().Count, 0, "Guardando pdf", this, novela.Titulo);
+            progress.Report(reporte);
+
+            string Path = LocalPathManager.DefinePathNovela(novela);
+            IConstructor Constructor = GetNovelsFactory.FabricaConstructor(novela, tipo, GetNovelsConfig.CapitulosPorPdf, Path, novela.Titulo, CapituloImpreso, DocumentoCreado);
+
+            List<Capitulo> CapitulosAImprimir = new List<Capitulo>(novela.CapitulosDescargados);
+
+            Constructor.ConstruyeDocumento(CapitulosAImprimir, progress);
         }
 
         #endregion

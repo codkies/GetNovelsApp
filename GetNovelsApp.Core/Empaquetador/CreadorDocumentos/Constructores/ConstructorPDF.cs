@@ -9,10 +9,11 @@ using iText.Layout;
 using iText.Layout.Element;
 using iText.Layout.Properties;
 using System;
+using GetNovelsApp.Core.Reportaje;
 
 namespace GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores
 {
-    public class ConstructorPDF : ConstructorBasico
+    public class ConstructorPDF : ConstructorBasico, IReportero
     {
         #region Constructor & Setup
         public ConstructorPDF(INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela, int capitulosPorPDF, string direccionGuardarPDF, string tituloHeader, NotificaCapituloImpreso capituloImpreso, NotificaDocumentoCreado documentoCreado)
@@ -37,6 +38,8 @@ namespace GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores
 
         #region Propiedades para el funcionamiento interno de la clase
 
+        public string Nombre => "ConstructorPDF";
+
         protected override int CapitulosPorDoc => capitulosPorPDF;
 
         protected override string Path => direccionGuardarPDF;
@@ -57,9 +60,9 @@ namespace GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores
         /// Construye un documento con los capitulos proporcionados.
         /// </summary>
         /// <param name="CapitulosAImprimir"></param>
-        public override void ConstruyeDocumento(List<Capitulo> CapitulosAImprimir)
+        public override void ConstruyeDocumento(List<Capitulo> CapitulosAImprimir, IProgress<IReporte> progress = null)
         {
-            int capitulosEnPdf = 0;
+            //int capitulosEnPdf = 0;
 
             float primerCap = CapitulosAImprimir.First().NumeroCapitulo;
             float ultimoCap = CapitulosAImprimir.Last().NumeroCapitulo;
@@ -97,7 +100,9 @@ namespace GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores
                 document.Add(texto);
 
                 CapituloImpreso?.Invoke(capitulo, Novela);
-                capitulosEnPdf++;
+                //capitulosEnPdf++;
+                var reporte = GetNovelsFactory.FabricaReporteNovela(CapitulosAImprimir.Count, i, "Guardando pdf", this, TituloNovela);
+                progress.Report(reporte);
             }
 
             document.Close();

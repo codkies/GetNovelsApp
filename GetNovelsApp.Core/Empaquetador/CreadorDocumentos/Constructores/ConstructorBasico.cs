@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using GetNovelsApp.Core.Modelos;
+using GetNovelsApp.Core.Reportaje;
 
 namespace GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores
 {
@@ -32,6 +33,6 @@ namespace GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores
         /// Construye un documento.
         /// </summary>
         /// <param name="notificador">Delegado opcional que notifica cuando un documento ha sido creado.</param>
-        public abstract void ConstruyeDocumento(List<Capitulo> CapitulosAImprimir);
+        public abstract void ConstruyeDocumento(List<Capitulo> CapitulosAImprimir, IProgress<IReporte> progress= null);
     }
 }

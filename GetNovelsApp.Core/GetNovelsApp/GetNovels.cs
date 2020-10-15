@@ -33,7 +33,7 @@ namespace GetNovelsApp.Core
         /// <summary>
         /// Empaquetador que esta instancia del GetNovels está usando.
         /// </summary>
-        private EmpaquetadorNovelas MyEmpaquetador;
+        public EmpaquetadorNovelas MyEmpaquetador { get; private set; }
 
 
         /// <summary>

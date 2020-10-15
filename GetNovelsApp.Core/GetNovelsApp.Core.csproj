@@ -82,6 +82,9 @@
     <Reference Include="itext.svg, Version=7.1.12.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>packages\itext7.7.1.12\lib\net40\itext.svg.dll</HintPath>
     </Reference>
+    <Reference Include="Jint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=2e92ba9c8d81157f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Jint.2.11.58\lib\net451\Jint.dll</HintPath>
+    </Reference>
     <Reference Include="PdfSharp, Version=1.50.5147.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
       <HintPath>packages\PDFsharp.1.50.5147\lib\net20\PdfSharp.dll</HintPath>
     </Reference>

@@ -94,3 +94,4 @@ C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.Core\bin\
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.Core\bin\Debug\Dapper.xml
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.Core\bin\Debug\System.Data.SQLite.xml
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.Core\bin\Debug\System.Data.SQLite.dll.config
+C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.Core\bin\Debug\Jint.dll

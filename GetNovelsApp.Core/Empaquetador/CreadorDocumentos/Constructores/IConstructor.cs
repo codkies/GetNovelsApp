@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GetNovelsApp.Core.Modelos;
+using GetNovelsApp.Core.Reportaje;
 
 namespace GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores
 {
@@ -8,6 +10,6 @@ namespace GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores
     /// </summary>
     public interface IConstructor
     {
-        void ConstruyeDocumento(List<Capitulo> CapitulosAImprimir);
+        void ConstruyeDocumento(List<Capitulo> CapitulosAImprimir, IProgress<IReporte> progress = null);
     }
 }

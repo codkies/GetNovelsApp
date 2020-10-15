@@ -56,7 +56,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
 
                 //Capitulos:
                 List<Capitulo> CapitulosNovela = GetNovelsFactory.FabricaCapitulos(info.LinksDeCapitulos);
-                await GuardaCapitulosAsync(CapitulosNovela, novDBInfo.ID, progress); //Itera los caps y encuentra su info.
+                await Task.Run( ()=> GuardaCapitulosAsync(CapitulosNovela, novDBInfo.ID, progress)); //Itera los caps y encuentra su info.
 
 
                 //Regresando una novela para runtime:
@@ -72,19 +72,19 @@ namespace GetNovelsApp.Core.Conexiones.DB
         }
 
 
-        public async Task GuardaCapitulosAsync(Capitulo capitulo, int novelaID)
+        public void GuardaCapitulosAsync(Capitulo capitulo, int novelaID)
         {
             CapitulosAGuardar.Add(capitulo, novelaID);
             if (EjecutandoGuardado) return;
-            await Task.Run(() => CapitulosAGuardar_Ejecuta());
+            else CapitulosAGuardar_Ejecuta();
         }
 
 
-        public async Task GuardaCapitulosAsync(List<Capitulo> capitulos, int novelaID, IProgress<IReporte> progress)
+        public void GuardaCapitulosAsync(List<Capitulo> capitulos, int novelaID, IProgress<IReporte> progress)
         {
             capitulos.ForEach(x => CapitulosAGuardar.Add(x, novelaID));
             if (EjecutandoGuardado) return;
-            await Task.Run(() => CapitulosAGuardar_Ejecuta(progress));
+            else CapitulosAGuardar_Ejecuta(progress);
         }
 
 
@@ -155,7 +155,6 @@ namespace GetNovelsApp.Core.Conexiones.DB
         {
             if (CapitulosAGuardar.Count < 1) return;
             using IDbConnection cnn = DataBaseAccess.GetConnection();
-            cnn.Open();
 
             EjecutandoGuardado = true;
             int contador = 9; //9 porque se hicieron 9 pasos antes de esto.
@@ -166,12 +165,9 @@ namespace GetNovelsApp.Core.Conexiones.DB
                 nombreNovela = cnn.Query<string>($"select NovelaTitulo from {i.TNovelas} where NovelaID = '{CapitulosAGuardar.First().Value}'").First();
             }
 
-            //Comenzando transaccion
-            using var transactionScope = new TransactionScope();
-
             while (CapitulosAGuardar.Count > 0) //Mientras hayan capitulos por guardar...
             {
-                var key = CapitulosAGuardar.First();
+                var key = CapitulosAGuardar.FirstOrDefault();
                 int NovelaID = key.Value;
 
                 Capitulo c = key.Key;
@@ -179,20 +175,22 @@ namespace GetNovelsApp.Core.Conexiones.DB
                 {
                     var insertCap = InsertCap_qry(NovelaID, c);
                     cnn.Execute(insertCap);
-
                 }
                 catch (Exception ex)
                 {
                     GetNovelsComunicador.ReportaError($"Metiendo texto. Saldrá un error de SQL. \nError: {ex.Message}", this);
                 }
+
                 if (string.IsNullOrEmpty(c.Texto) == false)
                 {
                     string findCapID = SelectCapID_qry(c);
                     int capID = cnn.Query<int>(findCapID).First();
-                    string insertTxt = InsertTextoCapitulo_qry(c, capID);
+
+                    string insertTxt = $"insert into {i.TTextosCapitulos} (Texto, CapituloID) values (@Texto, @CapID)";
+                    var parametros = new { Texto = c.Texto, CapID = capID };
                     try
                     {
-                        cnn.Execute(insertTxt);
+                        cnn.Execute(insertTxt, parametros);
                     }
                     catch (Exception ex)
                     {
@@ -207,11 +205,8 @@ namespace GetNovelsApp.Core.Conexiones.DB
                 }
                 CapitulosAGuardar.Remove(c);
             }
-
-            //Terminando transaccion
-            transactionScope.Complete();
+            
             EjecutandoGuardado = false;
-            cnn.Close();
         }
 
 
@@ -475,7 +470,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
         {
             return $"INSERT INTO {i.TTextosCapitulos} " +
                         $"(Texto, CapituloID) values " +
-                        $"(\"{c.Texto}\", \"{capID}\") ";
+                        $" (\'{c.Texto}\', \'{capID}\') ";
         }
 
         private string SelectCapID_qry(Capitulo c)

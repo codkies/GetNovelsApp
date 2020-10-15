@@ -45,7 +45,7 @@ namespace GetNovelsApp.Core
         private static IConfig ConfiguracionActual;
 
 
-        static List<IPath> WebsitesSoportados = new List<IPath>();
+        public static List<IPath> WebsitesSoportados = new List<IPath>();
 
         public static List<string> xPathsDeTextos(string dominio)
         {

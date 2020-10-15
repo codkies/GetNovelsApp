@@ -8,6 +8,7 @@ using System.Windows;
 using GetNovelsApp.Core;
 using GetNovelsApp.Core.Conexiones.DB;
 using GetNovelsApp.Core.Conexiones.Internet;
+using GetNovelsApp.Core.ConfiguracionApp.xPaths;
 using GetNovelsApp.Core.Modelos;
 using GetNovelsApp.Core.Reportaje;
 using GetNovelsApp.WPF.Models;
@@ -22,17 +23,23 @@ namespace GetNovelsApp.WPF.ViewModels
     public class AddNovelViewModel : ObservableObject, IReportero
     {
         public string Nombre => "AddNovelView";
+        InformacionNovelaOnline InfoNovela;
+        bool NovelaYaEstaEnDB;
+        Archivador ar;
+        List<string> dominiosSoportados = new List<string>();
 
         public AddNovelViewModel()
         {
-            Archivador = new Archivador();
+            ar = new Archivador();
+
+            GetNovelsEvents.WebsitesCambiaron += GetNovelsEvents_WebsitesCambiaron;
             Ejecuta_BuscaLink = new RelayCommand<string>(BuscaLink, Puede_BuscaLink);
             Ejecuta_GuardaNovela = new RelayCommand<Window>(GuardarNovela, Puede_GuardarNovela);
+
+            GetNovelsEvents_WebsitesCambiaron();
         }
 
-        InformacionNovelaOnline InfoNovela;
-        bool NovelaYaEstaEnDB;
-        Archivador Archivador;
+        
 
         #region Propieades
 
@@ -87,6 +94,9 @@ namespace GetNovelsApp.WPF.ViewModels
 
         public RelayCommand<string> Ejecuta_BuscaLink { get; private set; }
 
+        /// <summary>
+        /// usado para comparar el link nuevo y el viejo 
+        /// </summary>
         private string LinkViejo = "";
         private int progreso;
         private bool Buscando = false;
@@ -104,7 +114,7 @@ namespace GetNovelsApp.WPF.ViewModels
             //Descarga imagen
             Task.Run(() => ActualizaImagen(InfoNovela.Imagen.ToString()));
             //Revisa si esta novela está en la DB.
-            Task.Run(() => NovelaYaEstaEnDB = Archivador.NovelaExisteEnDB(Link));
+            Task.Run(() => NovelaYaEstaEnDB = ar.NovelaExisteEnDB(Link));
 
             Titulo = InfoNovela.Titulo;            
             Sipnosis = InfoNovela.Sipnosis;
@@ -126,8 +136,35 @@ namespace GetNovelsApp.WPF.ViewModels
 
         public bool Puede_BuscaLink(string v)
         {
-            string posibleLink = v == null ? string.Empty : v;
-            return Uri.TryCreate(posibleLink, uriKind: UriKind.Absolute, out _) & !posibleLink.Equals(LinkViejo) & !Buscando;
+            if(string.IsNullOrEmpty(v))
+            {
+                ContenidoBotonBusqueda = "Busca";
+                return false;
+            }
+
+            if(v == LinkViejo)
+            {
+                ContenidoBotonBusqueda = "---";
+                return false;
+            }
+            
+            bool esUnLink = Uri.TryCreate(v, uriKind: UriKind.Absolute, out Uri Link);
+            if (esUnLink == false)
+            {
+                ContenidoBotonBusqueda = "No soportado";
+                return false;
+            }
+
+            bool dominioSoportado = dominiosSoportados.Contains(Link.IdnHost);
+            if (dominioSoportado == false)
+            {
+                ContenidoBotonBusqueda = "No soportado";
+                return false;
+            }
+
+            ContenidoBotonBusqueda = "Busca";
+
+            return Buscando == false;
         }
 
 
@@ -162,7 +199,7 @@ namespace GetNovelsApp.WPF.ViewModels
             }
             InfoNovela.LinksDeCapitulos = x;            
 
-            await Archivador.MeteNovelaDBAsync(InfoNovela, progresoGuardado);
+            await ar.MeteNovelaDBAsync(InfoNovela, progresoGuardado);
             Ejecutando = false;
             Titulo = "";
             Review = "";
@@ -190,6 +227,20 @@ namespace GetNovelsApp.WPF.ViewModels
             return (!NovelaYaEstaEnDB) & (InfoNovela != null) & !Ejecutando;
         }
 
+
+        #endregion
+
+
+        #region Event handlers
+
+
+        private void GetNovelsEvents_WebsitesCambiaron()
+        {
+            foreach (IPath website in GetNovelsConfig.WebsitesSoportados)
+            {
+                dominiosSoportados.Add(website.Dominio);
+            }
+        }
 
         #endregion
 

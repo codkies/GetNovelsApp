@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using GetNovelsApp.Core.Reportaje;
@@ -46,19 +47,18 @@ namespace GetNovelsApp.Core.Conexiones.Internet
         public HtmlNodeCollection IntentaNodos(Uri direccion, List<string> xPaths)
         {
             HtmlDocument website = ObtenWebsite(direccion);
+            HtmlNodeCollection nodos;
 
-            HtmlNodeCollection nodos = null;
-
-            while (nodos == null)
+            do
             {
                 nodos = ObtenNodes(website, xPaths); //Check for null.
                 if (nodos == null)
                 {
                     GetNovelsComunicador.ReportaError("No se consiguieron los nodos segun los xPaths. Reintentando...", this);
-                    website = null;
                     website = ObtenWebsite(direccion);
                 }
             }
+            while (nodos == null);           
 
             return nodos;
         }
@@ -161,7 +161,8 @@ namespace GetNovelsApp.Core.Conexiones.Internet
             {
                 try
                 {
-                    website = Conexion.Load(direccion);
+                    string dir = direccion.ToString();
+                    website = Conexion.Load(dir);
                 }
                 catch (ObjectDisposedException)
                 {
@@ -180,12 +181,14 @@ namespace GetNovelsApp.Core.Conexiones.Internet
                 catch (TimeoutException)
                 {
                     GetNovelsComunicador.Reporta("Timeout. Reintentando...", this);
+                    Conexion = new HtmlWeb();
                     website = null;
                     System.Threading.Thread.Sleep(tiempoDeEspera); //Wait for 5seconds                    
                 }
                 catch (WebException)
                 {
                     GetNovelsComunicador.ReportaError("Pareces no tener internet. Reintentando...", this);
+                    Conexion = new HtmlWeb();
                     website = null;
                     continue;
                 }
@@ -200,15 +203,13 @@ namespace GetNovelsApp.Core.Conexiones.Internet
             HtmlNodeCollection Coleccion = null;
             int tamaño = 0;
 
-            Stopwatch stopwatchTotal = new Stopwatch();
-            stopwatchTotal.Start();
-
             foreach (string xPath in xPaths)
             {
-                //Mensajero.MuestraNotificacion("Conector --> Buscando nodes...");
                 HtmlNodeCollection posibleColeccion = doc.DocumentNode.SelectNodes(xPath);
+                var check = doc.DocumentNode.SelectSingleNode(xPath);
+
                 if (posibleColeccion == null) continue;
-                if (posibleColeccion.Count > tamaño)
+                else if (posibleColeccion.Count > tamaño)
                 {
                     Coleccion = posibleColeccion;
                     tamaño = Coleccion.Count;

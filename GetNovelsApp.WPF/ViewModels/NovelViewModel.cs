@@ -1,23 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using GetNovelsApp.Core;
-using GetNovelsApp.Core.Modelos;
+﻿using GetNovelsApp.Core;
+using GetNovelsApp.Core.Empaquetadores;
+using GetNovelsApp.Core.Reportaje;
 using GetNovelsApp.WPF.Models;
 using GetNovelsApp.WPF.Utilidades;
 
 namespace GetNovelsApp.WPF.ViewModels
 {
-    public class NovelViewModel : ObservableObject
+    public class NovelViewModel : ObservableObject, IReportero
     {
+
+        public string Nombre => "NovelViewModel";
         public NovelViewModel(NovelaWPF novela)
         {            
             NovelaEnVista = novela;
             if(novela.ImagenLink != null) ActualizaImagen();
 
             Command_DescargaNovela = new RelayCommand(DescargaNovelaAsync, Puedo_DescargaNovela);
+            Command_Leer = new RelayCommand(Leer, Puede_Leer);
         }
 
 
@@ -57,6 +56,40 @@ namespace GetNovelsApp.WPF.ViewModels
         #endregion
 
 
+        #region Leer
+
+        public RelayCommand Command_Leer { get; set; }
+
+
+        private void Leer()
+        {
+            ReporteWPF reporte = (ReporteWPF)GetNovelsFactory.FabricaReporteNovela(NovelaEnVista.CapitulosDescargados.Count, 0, 
+                                                                                   "Descargando", this, NovelaEnVista.Titulo);
+            ManagerTareas.MuestraReporte(reporte);
+
+            Progreso progreso = new Progreso();
+            progreso.ProgressChanged += Progreso_ProgressChanged;
+            AppViewModel.GetNovels.MyEmpaquetador.ImprimeNovela(NovelaEnVista, TiposDocumentos.PDF);
+        }
+
+       
+
+        private bool Puede_Leer()
+        {
+            return NovelaEnVista.CantidadCapitulosDescargados > 1;
+        }
+
+        #endregion
+
+        #region event handler
+
+        private void Progreso_ProgressChanged(object sender, IReporte e)
+        {
+            ManagerTareas.ActualizaReporte(e);
+        }
+
+
+        #endregion
 
     }
 }

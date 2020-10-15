@@ -92,11 +92,20 @@ namespace GetNovelsApp.Core
         {
             List<string> CapitulosDesordenado = new List<string>();
             bool moreThanOne = nodes.Count > 1;
-            foreach (var item in nodes)
+
+            if (moreThanOne)
             {
-                string entrada = item.InnerText;
-                bool paso = RevisaEntrada(entrada);
-                if (paso & moreThanOne) CapitulosDesordenado.Add(entrada);
+                foreach (var item in nodes)
+                {
+                    string entrada = item.InnerText;
+                    bool paso = RevisaEntrada(entrada);
+                    if (paso) CapitulosDesordenado.Add(entrada);
+                }
+            }
+            else
+            {
+                string entrada = nodes.FirstOrDefault().InnerText;
+                CapitulosDesordenado.Add(entrada);
             }
 
             return CapitulosDesordenado;
@@ -109,7 +118,9 @@ namespace GetNovelsApp.Core
             
             if(capituloDesordenado.Count == 1)
             {
-                return capituloDesordenado[0].Trim();
+                string txtCap = capituloDesordenado[0].Trim();
+                txtCap = txtCap.Replace(".", ".\n\n");
+                return txtCap;
             }
             else
             {

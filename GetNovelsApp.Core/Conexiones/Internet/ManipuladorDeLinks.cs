@@ -251,7 +251,7 @@ namespace GetNovelsApp.Core.Conexiones.Internet
             bool traduccionCompleta = nodoTraduccion.InnerText.ToLower().Equals("yes");
 
             //Historia
-            bool historiaCompleta = nodoHistoria.InnerText.ToLower().Contains("completed");
+            bool historiaCompleta = nodoHistoria.InnerText.ToLower().Contains("completed") | nodoHistoria.InnerText.ToLower().Contains("complete");
 
             //Review
             string todoElReview = nodoReview.InnerText.ToLower();
