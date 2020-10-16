@@ -103,6 +103,8 @@
                      BorderThickness="0"
                      TextWrapping="Wrap"
                      FontStyle="Italic"
+                     VerticalContentAlignment="Center"
+                     TextAlignment="Left"
                      Text="{Binding Sipnosis}"/>
 
                 <TextBlock Text="Review"

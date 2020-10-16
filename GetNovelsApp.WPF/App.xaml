@@ -106,7 +106,7 @@
         
         <!--rows-->
         <Style x:Key="MyRowStyle" TargetType="DataGridRow">
-            <Setter Property="IsHitTestVisible" Value="False"/>
+            <Setter Property="IsHitTestVisible" Value="True"/>
         </Style>      
 
         <!--Palabras en la barra-->
