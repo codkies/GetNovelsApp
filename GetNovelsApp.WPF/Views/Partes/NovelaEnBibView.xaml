@@ -4,8 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GetNovelsApp.WPF.Views"
+             xmlns:p="clr-namespace:GetNovelsApp.WPF.Views.Partes"
              mc:Ignorable="d" 
              d:DesignHeight="136" d:DesignWidth="750">
+    
     <Grid Grid.Row="0" Grid.Column="0"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Left"                       
@@ -55,29 +57,9 @@
 
             
            <!--Genres-->
-            <ListBox ItemsSource="{Binding Generos}"
-                     Height="25"
-                     Background="Transparent"
-                     BorderThickness="0">
-                
-                <!--Template-->
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding }"
-                                   Style="{StaticResource Generos}"/>
-                    </DataTemplate>
-                <!--Configuracion del list box-->
-                </ListBox.ItemTemplate>
-                
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal"
-                                    VerticalAlignment="Center"/>
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-
-
-            </ListBox>           
+            <Grid>
+                <p:Mostrador DataContext="{Binding Generos}"/>
+            </Grid>
 
             <!--Sipnosis-->
             <TextBox TextWrapping="Wrap"

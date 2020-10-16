@@ -198,6 +198,8 @@ namespace GetNovelsApp.WPF.Models
 
         #region Externos
 
+        public string DescripcionReview => $"{Review}/5 ({CantidadReviews} reviews)";
+
         /// <summary>
         /// Define si esta novela tiene capitulos por imprimir
         /// </summary>

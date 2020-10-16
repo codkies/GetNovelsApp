@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetNovelsApp.WPF\App.xaml
-91798405241
+10-1384607089
 
-36-1876032803
+37692694614
 18-935597490
-MainWindow.xaml;Views\AddWebsiteView.xaml;Views\BibliotecaView.xaml;Views\ConfiguracionView.xaml;Views\AddNovelView.xaml;Views\DescargasView.xaml;Views\EditPerfilView.xaml;Views\Partes\NovelaEnBibView.xaml;Views\NovelView.xaml;
+MainWindow.xaml;Views\AddWebsiteView.xaml;Views\BibliotecaView.xaml;Views\ConfiguracionView.xaml;Views\AddNovelView.xaml;Views\DescargasView.xaml;Views\EditPerfilView.xaml;Views\Partes\Mostrador.xaml;Views\Partes\NovelaEnBibView.xaml;Views\NovelView.xaml;
 
 False
 

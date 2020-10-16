@@ -186,11 +186,6 @@
                     </DataGridTemplateColumn.CellTemplate>
 
                 </DataGridTemplateColumn>
-
-                <!--<DataGridTextColumn Binding="{Binding}"
-                                    Header="Links"
-                                    Width="*">                                      
-                </DataGridTextColumn>-->
                 
             </DataGrid.Columns>
         </DataGrid>

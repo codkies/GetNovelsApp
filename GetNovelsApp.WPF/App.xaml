@@ -65,18 +65,6 @@
         <x:Static x:Key="SipnosisStock" Member="utl:DefaultStrings.SipnosisDefault" />
 
         <!--Templates-->
-
-        <!--<ProgressBar Grid.Column="1"
-                                        Value="{Binding PorcentajeDeCompletado, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                         Margin="10 0"
-                                         Width="200"
-                                         Padding="10"
-                                         Height="10"
-                                         Background="Transparent"
-                                         Foreground="{StaticResource LettersDark}"
-                                         HorizontalAlignment="Center"
-                                         VerticalAlignment="Center"
-                                         />-->
         
         <!--progress bar-->
         <Style x:Key="BarraElegante" TargetType="ProgressBar">
@@ -127,7 +115,7 @@
         </Style>
 
         <!--Generos-->
-        <Style x:Key="Generos" TargetType="TextBlock">
+        <Style x:Key="Cuadros" TargetType="TextBlock">
             <Setter Property="Background" Value="{StaticResource BackgroundMedium}"/>
             <Setter Property="Foreground" Value="{StaticResource LettersLight}"/>
             <Setter Property="FontSize" Value="10"/>

@@ -105,6 +105,9 @@
     <Compile Include="Views\EditPerfilView.xaml.cs">
       <DependentUpon>EditPerfilView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Partes\Mostrador.xaml.cs">
+      <DependentUpon>Mostrador.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Partes\NovelaEnBibView.xaml.cs">
       <DependentUpon>NovelaEnBibView.xaml</DependentUpon>
     </Compile>
@@ -144,6 +147,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\EditPerfilView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Partes\Mostrador.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

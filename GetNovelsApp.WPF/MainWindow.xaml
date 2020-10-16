@@ -14,6 +14,7 @@
 
     <DockPanel Background="{StaticResource BackgroundLight}">
 
+        <!--Menu-->
         <Grid DockPanel.Dock="Top" Height="40" Background="{StaticResource MenuLight}">
 
             <!--Bar columns-->
@@ -65,14 +66,13 @@
                     Background="{StaticResource MenuDark}">
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="239*"/>
-                <ColumnDefinition Width="125*"/>
-                <ColumnDefinition Width="364*"/>
-                <ColumnDefinition Width="364*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
             <!--Mensajes de la app-->
-            <TextBlock Grid.Column="3"
+            <TextBlock Grid.Column="2"
                        Text="{Binding MensajeDeEstado, UpdateSourceTrigger=PropertyChanged}"
                        TextAlignment="Right"
                        VerticalAlignment="Center"
@@ -82,7 +82,7 @@
             </TextBlock>
 
             <!--Nombre App-->
-            <TextBlock Grid.Column="2"
+            <TextBlock Grid.Column="1"
                        TextAlignment="Center"
                        VerticalAlignment="Center"
                        Style="{StaticResource WordBarra}"
