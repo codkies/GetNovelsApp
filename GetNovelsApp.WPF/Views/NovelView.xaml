@@ -173,6 +173,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 
                 <!--Boton para actualizar info-->
@@ -200,7 +201,16 @@
                         Margin="0 0 19 0"
                         Height="20"
                         Width="50"/>
-                
+
+                <!--Boton de leer-->
+                <Button Grid.Column="3"
+                        Content="Borrar"
+                        Command="{Binding Command_Borrar, UpdateSourceTrigger=PropertyChanged}"
+                        HorizontalAlignment="Right"
+                        Margin="0 0 19 0"
+                        Height="20"
+                        Width="50"/>
+
             </Grid>
             
            

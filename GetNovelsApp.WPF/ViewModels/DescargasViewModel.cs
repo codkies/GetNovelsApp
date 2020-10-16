@@ -44,7 +44,7 @@ namespace GetNovelsApp.WPF.ViewModels
             GetNovels = getNovels;
             ar = new Archivador();
             GetNovelsWPFEvents.DescargaNovela += GetNovelsWPFEvents_DescargaNovela;
-            GetNovelsEvents.NovelaAgregadaADB += GetNovelsEvents_NovelaAgregadaADB;
+            GetNovelsEvents.BibliotecaCambio += GetNovelsEvents_NovelaAgregadaADB;
             Command_DescargarBib = new RelayCommand(DescargarBib, Puede_DescargarBib);
             GetNovelsEvents_NovelaAgregadaADB(); //run it once at the beginning.
         }

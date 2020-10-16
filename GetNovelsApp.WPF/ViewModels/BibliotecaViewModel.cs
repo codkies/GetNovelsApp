@@ -20,7 +20,7 @@ namespace GetNovelsApp.WPF.ViewModels
         public BibliotecaViewModel()
         {
             ar = new Archivador();
-            GetNovelsEvents.NovelaAgregadaADB += GetNovelsEvents_NovelaAgregadaADB;
+            GetNovelsEvents.BibliotecaCambio += GetNovelsEvents_NovelaAgregadaADB;
             Command_VerNovela = new RelayCommand<NovelaWPF>(VerNovela, Puedo_VerNovela);
             Command_AgregarNovela = new RelayCommand(AgregarNovela, Puedo_AgregarNovela);
 
@@ -77,7 +77,7 @@ namespace GetNovelsApp.WPF.ViewModels
         public void VerNovela(NovelaWPF novela)
         {
             //Crea un ViewModel para la novela, y pasaselo al AppViewModel (main script).
-            GetNovelsWPFEvents.Invoke_Cambia(new NovelViewModel(novela));
+            GetNovelsWPFEvents.Invoke_Cambia(new NovelViewModel(novela, this));
         }
 
         public bool Puedo_VerNovela(NovelaWPF novela)

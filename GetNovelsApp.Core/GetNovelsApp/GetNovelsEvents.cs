@@ -18,7 +18,7 @@ namespace GetNovelsApp.Core
             ImprimeNovela = null;
             ConfiguracionCambio = null;
             WebsitesCambiaron = null;
-            NovelaAgregadaADB = null;
+            BibliotecaCambio = null;
         }
 
 
@@ -64,11 +64,11 @@ namespace GetNovelsApp.Core
 
         #region Novela agregada
 
-        public static event Action NovelaAgregadaADB;
+        public static event Action BibliotecaCambio;
 
-        public static void Invoke_NovelaAgregadaADB()
+        public static void Invoke_BibliotecaCambio()
         {
-            NovelaAgregadaADB?.Invoke();
+            BibliotecaCambio?.Invoke();
         }
 
         #endregion

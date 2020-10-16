@@ -2,7 +2,9 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using GetNovelsApp.Core;
+using GetNovelsApp.Core.Conexiones.DB;
 using GetNovelsApp.Core.Empaquetador;
 using GetNovelsApp.Core.Empaquetadores;
 using GetNovelsApp.Core.Reportaje;
@@ -15,13 +17,18 @@ namespace GetNovelsApp.WPF.ViewModels
     {
 
         public string Nombre => "NovelViewModel";
-        public NovelViewModel(NovelaWPF novela)
-        {            
+
+        private readonly BibliotecaViewModel bibliotecaViewModel;
+
+        public NovelViewModel(NovelaWPF novela, BibliotecaViewModel bibliotecaViewModel)
+        {
+            this.bibliotecaViewModel = bibliotecaViewModel;
             NovelaEnVista = novela;
             if(novela.ImagenLink != null) ActualizaImagen();
 
             Command_DescargaNovela = new RelayCommand(DescargaNovelaAsync, Puedo_DescargaNovela);
             Command_Leer = new RelayCommand(Leer, Puede_Leer);
+            Command_Borrar = new RelayCommand(Borrar, Puede_Borrar);
         }
 
 
@@ -107,6 +114,47 @@ namespace GetNovelsApp.WPF.ViewModels
         }
 
         #endregion
+
+
+        #region Delete
+
+        public RelayCommand Command_Borrar { get; set; }
+
+        private async void Borrar()
+        {
+            //Reportando
+            Progreso progresoBorrando = new Progreso();
+            progresoBorrando.ProgressChanged += ProgresoBorrando_ProgressChanged1;
+            ReporteWPF reporte = (ReporteWPF)GetNovelsFactory.FabricaReporteNovela(NovelaEnVista.Capitulos.Count + 8, 0, "Borrando", this, NovelaEnVista.Titulo);
+            ManagerTareas.MuestraReporte(reporte);
+
+            Archivador ar = new Archivador();
+            bool exito = false;
+
+            await Task.Run(() => exito = ar.DeleteNovel(NovelaEnVista, progresoBorrando));
+
+            if (exito)
+            {
+                GetNovelsWPFEvents.Invoke_Cambia(bibliotecaViewModel);
+            }
+            else
+            {
+
+            }
+        }
+
+        private void ProgresoBorrando_ProgressChanged1(object sender, IReporte e)
+        {
+            ManagerTareas.ActualizaReporte(e);
+        }
+
+        private bool Puede_Borrar()
+        {
+            return true;
+        }
+
+        #endregion
+
 
         #region event handler
 

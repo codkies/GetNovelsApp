@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
@@ -11,6 +12,7 @@ using GetNovelsApp.Core.Modelos;
 using GetNovelsApp.Core.Reportaje;
 
 using GetNovelsApp.Core.Utilidades;
+using Microsoft.SqlServer.Server;
 
 namespace GetNovelsApp.Core.Conexiones.DB
 {
@@ -62,7 +64,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
                 //Regresando una novela para runtime:
                 INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> nov = GetNovelsFactory.FabricaNovela(CapitulosNovela, novDBInfo);
                 cnn.Dispose();
-                GetNovelsEvents.Invoke_NovelaAgregadaADB();
+                GetNovelsEvents.Invoke_BibliotecaCambio();
                 return nov;
             }
             else
@@ -377,6 +379,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
         #endregion
 
 
+
         #region Queries
         private string InsertReviews_qry(InformacionNovelaOnline infoNov, int novID)
         {
@@ -587,15 +590,168 @@ namespace GetNovelsApp.Core.Conexiones.DB
                    $"join {i.TTagsNovelas} as tn " +
                         "on t.TagID = tn.TagID and " +
                         $"tn.NovelaID = '{infoDBNovela.ID}' ";
-        } 
+        }
+        #endregion
+
+
+        #region Deleting
+
+        public bool DeleteNovel(INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela,
+                                IProgress<IReporte> progreso = null)
+        {
+            bool reporta = progreso != null;
+            int total = 0;
+            IReporte reporte;
+            
+            if (reporta)
+            {
+                total = 10;
+                reporte = GetNovelsFactory.FabricaReporteNovela(total, 0, "Borrando", this, novela.Titulo);
+                progreso.Report(reporte);
+            }
+
+            using (IDbConnection cnn = DataBaseAccess.GetConnection())
+            {
+                cnn.Open();
+                using (var trans = new TransactionScope())
+                {
+                    try
+                    {
+                        //NOVELA
+                        string dNovela = $"delete from {i.TNovelas} where NovelaID = {novela.ID}";
+                        cnn.Execute(dNovela);
+                        reporte = GetNovelsFactory.FabricaReporteNovela(total, 1, "Borrando", this, novela.Titulo);
+                        progreso?.Report(reporte);
+
+                        //TAGS
+                        string delTags = $"delete from {i.TTagsNovelas} where NovelaID = {novela.ID}";
+                        cnn.Execute(delTags);
+                        reporte = GetNovelsFactory.FabricaReporteNovela(total, 2, "Borrando", this, novela.Titulo);
+                        progreso?.Report(reporte);
+
+                        //GENEROS
+                        string delGen = $"delete from {i.TGenerosNovela} where NovelaID = {novela.ID}";
+                        cnn.Execute(delGen);
+                        reporte = GetNovelsFactory.FabricaReporteNovela(total, 3, "Borrando", this, novela.Titulo);
+                        progreso?.Report(reporte);
+
+                        //LINK
+                        string delLink = $"delete from {i.TLinks} where NovelaID = {novela.ID}";
+                        cnn.Execute(delLink);
+                        reporte = GetNovelsFactory.FabricaReporteNovela(total, 4, "Borrando", this, novela.Titulo);
+                        progreso?.Report(reporte);
+
+                        //IMAGEN
+                        string delImagen = $"delete from {i.TImagenes} where NovelaID = {novela.ID}";
+                        cnn.Execute(delImagen);
+                        reporte = GetNovelsFactory.FabricaReporteNovela(total, 5, "Borrando", this, novela.Titulo);
+                        progreso?.Report(reporte);
+
+                        //REVIEWS
+                        string delReview = $"delete from {i.TReviews} where NovelaID = {novela.ID}";
+                        cnn.Execute(delReview);
+                        reporte = GetNovelsFactory.FabricaReporteNovela(total, 6, "Borrando", this, novela.Titulo);
+                        progreso?.Report(reporte);
+
+                        //ESTADO
+                        string delEstado = $"delete from {i.TEstadoNovela} where NovelaID = {novela.ID}";
+                        cnn.Execute(delEstado);
+                        reporte = GetNovelsFactory.FabricaReporteNovela(total, 7, "Borrando", this, novela.Titulo);
+                        progreso?.Report(reporte);
+
+                        //SIPNOSIS
+                        string delSipnosis = $"delete from {i.TSipnosis} where NovelaID = {novela.ID}";
+                        cnn.Execute(delSipnosis);
+                        reporte = GetNovelsFactory.FabricaReporteNovela(total, 8, "Borrando", this, novela.Titulo);
+                        progreso?.Report(reporte);
+
+                        //TEXTOS CAPITULOS
+                        //Borra los textos de los capitulos con NovelaID = novela.ID 
+                        var novelaID = new { NovelaID = novela.ID };
+
+                        string delTextos = $"delete from {i.TTextosCapitulos} as t " +
+                                           $"WHERE t.CapituloID IN " +
+                                                $"(SELECT c.CapituloID " +
+                                                $"FROM {i.TCapitulos} AS c " +
+                                                    $"WHERE t.CapituloID = c.CapituloID AND " +
+                                                            $"c.NovelaID = @NovelaID )";
+                        cnn.Execute(delTextos, novelaID);
+                        reporte = GetNovelsFactory.FabricaReporteNovela(total, 9, "Borrando", this, novela.Titulo);
+                        progreso?.Report(reporte);
+
+                        //CAPITULOS
+                        string delCaps = $"DELETE FROM {i.TCapitulos} AS C " +
+                                            $"WHERE c.NovelaID = @NovelaID ";
+                        cnn.Execute(delCaps, novelaID); 
+                        reporte = GetNovelsFactory.FabricaReporteNovela(total, 10, "Borrando", this, novela.Titulo);
+                        progreso?.Report(reporte);
+
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"No se pudo eliminar la novela {novela.Titulo} en la DB." +
+                                                $" Error: {ex.Message}");
+                        return false;
+                    }                
+                }
+            }
+
+            reporte = GetNovelsFactory.FabricaReporteNovela(total, total, "Borrando", this, novela.Titulo);
+            progreso.Report(reporte);
+            GetNovelsEvents.Invoke_BibliotecaCambio();
+            return true;
+        }
+
         #endregion
     }
 
 
 
 
-    
+//    foreach (Capitulo c in novela.Capitulos)
+//                        {
+//                            int capID;
+//    var par = new { Link = c.Link.ToString() };
+//                            try
+//                            {
+//                                capID = cnn.Query<int>($"select CapituloID from {i.TCapitulos} where Link = @Link ", par).FirstOrDefault();
+//}
+//                            catch (Exception ex)
+//{
+//    Debug.WriteLine($"No se pudo encontrar el capitulo {c.TituloCapitulo} en la DB. No se pudo eliminar." +
+//                    $" Error: {ex.Message}");
+//    return false;
+//}
 
+//string delCap = $"delete from {i.TCapitulos} where CapituloID = {capID}";
+//string delTex = $"delete from {i.TTextosCapitulos} where CapituloID = {capID}";
+
+//try
+//{
+//    cnn.Execute(delTex);
+//    cnn.Execute(delCap);
+//}
+//catch (Exception ex)
+//{
+//    Debug.WriteLine($"No se pudo eliminar el capitulo {c.TituloCapitulo} en la DB." +
+//                    $" Error: {ex.Message}");
+//    return false;
+//}
+//finally
+//{
+//    if (reporta)
+//    {
+//        reporte = GetNovelsFactory.FabricaReporteNovela(total, (int)c.NumeroCapitulo + 8, "Borrando", this, novela.Titulo);
+//        progreso.Report(reporte);
+//    }
+//}
+//                        }
+
+    
+    /// <summary>
+    /// Referencias de las tablas
+    /// </summary>
     internal static class i
     {
         //enumsish
