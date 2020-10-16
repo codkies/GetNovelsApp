@@ -1,4 +1,9 @@
-﻿using GetNovelsApp.Core;
+﻿using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using GetNovelsApp.Core;
+using GetNovelsApp.Core.Empaquetador;
 using GetNovelsApp.Core.Empaquetadores;
 using GetNovelsApp.Core.Reportaje;
 using GetNovelsApp.WPF.Models;
@@ -40,17 +45,17 @@ namespace GetNovelsApp.WPF.ViewModels
 
         public RelayCommand Command_DescargaNovela { get; set; }
 
-        bool descargando = false;
 
         public void DescargaNovelaAsync()
         {
             GetNovelsWPFEvents.Invoke_DescargaNovela(NovelaEnVista);
-            descargando = true;
+            NovelaEnVista.Descargando = true;
         }
 
         public bool Puedo_DescargaNovela()
         {
-            return !NovelaEnVista.EstoyCompleta & descargando == false;
+            return NovelaEnVista.EstoyCompleta == false & 
+                   NovelaEnVista.Descargando == false;
         }
 
         #endregion
@@ -60,23 +65,45 @@ namespace GetNovelsApp.WPF.ViewModels
 
         public RelayCommand Command_Leer { get; set; }
 
-
-        private void Leer()
+        bool Leyendo = false;
+        private async void Leer()
         {
-            ReporteWPF reporte = (ReporteWPF)GetNovelsFactory.FabricaReporteNovela(NovelaEnVista.CapitulosDescargados.Count, 0, 
-                                                                                   "Descargando", this, NovelaEnVista.Titulo);
-            ManagerTareas.MuestraReporte(reporte);
+            int primerCap = NovelaEnVista.CapitulosDescargados.Count > 0 ? 
+                            (int)NovelaEnVista.CapitulosDescargados.First().NumeroCapitulo : 
+                            (int)NovelaEnVista.CapitulosImpresos.First().NumeroCapitulo;
 
-            Progreso progreso = new Progreso();
-            progreso.ProgressChanged += Progreso_ProgressChanged;
-            AppViewModel.GetNovels.MyEmpaquetador.ImprimeNovela(NovelaEnVista, TiposDocumentos.PDF);
+            int ultimoCap = NovelaEnVista.CapitulosDescargados.Count > 0 ?
+                            (int)NovelaEnVista.CapitulosDescargados.Last().NumeroCapitulo : 
+                            (int)NovelaEnVista.CapitulosImpresos.Last().NumeroCapitulo;
+
+
+            var locacion = LocalPathManager.DefinePathNovela(NovelaEnVista, primerCap, ultimoCap);
+
+            if (File.Exists(locacion))
+            {
+                AbreCarpetaDescargas();
+            }
+            else
+            {
+                Leyendo = true;
+                ReporteWPF reporte = (ReporteWPF)GetNovelsFactory.FabricaReporteNovela(NovelaEnVista.CapitulosDescargados.Count, 0,
+                                                                                       "Guardando PDF", this, NovelaEnVista.Titulo);
+                ManagerTareas.MuestraReporte(reporte);
+
+                Progreso progreso = new Progreso();
+                progreso.ProgressChanged += Progreso_ProgressChanged;
+                await AppViewModel.GetNovels.MyEmpaquetador.ImprimeNovela(NovelaEnVista, TiposDocumentos.PDF, progreso);
+                Leyendo = false;
+            }
         }
 
        
 
         private bool Puede_Leer()
         {
-            return NovelaEnVista.CantidadCapitulosDescargados > 1;
+            bool capitulosOBtenidos = NovelaEnVista.CantidadCapitulosDescargados > 1 | NovelaEnVista.CapitulosImpresos.Count > 1;
+            return capitulosOBtenidos & 
+                   Leyendo == false;
         }
 
         #endregion
@@ -85,7 +112,25 @@ namespace GetNovelsApp.WPF.ViewModels
 
         private void Progreso_ProgressChanged(object sender, IReporte e)
         {
+            if(e.PorcentajeDeCompletado >= 100)
+            {
+                AbreCarpetaDescargas();
+            }
             ManagerTareas.ActualizaReporte(e);
+        }
+
+        private void AbreCarpetaDescargas()
+        {
+            try
+            {
+                var locacion = GetNovelsConfig.HardDrivePath;
+                Process.Start($@"{locacion}");
+            }
+            catch (Win32Exception win32Exception)
+            {
+                //The system cannot find the file specified...
+                Debug.WriteLine(win32Exception.Message);
+            }
         }
 
 

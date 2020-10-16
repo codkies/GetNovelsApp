@@ -10,6 +10,7 @@ using iText.Layout.Element;
 using iText.Layout.Properties;
 using System;
 using GetNovelsApp.Core.Reportaje;
+using GetNovelsApp.Core.Empaquetador;
 
 namespace GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores
 {
@@ -67,7 +68,7 @@ namespace GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores
             float primerCap = CapitulosAImprimir.First().NumeroCapitulo;
             float ultimoCap = CapitulosAImprimir.Last().NumeroCapitulo;
 
-            string TituloPDF = $"{Path}{TituloNovela} - {primerCap}-{ultimoCap}.pdf";
+            string TituloPDF = LocalPathManager.DefinePathNovela(Novela, (int)primerCap, (int)ultimoCap);
             PdfWriter writer = new PdfWriter(TituloPDF);
             PdfDocument pdf = new PdfDocument(writer);
             Document document = new Document(pdf);
@@ -75,6 +76,8 @@ namespace GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores
 
             for (int i = 0; i < CapitulosAImprimir.Count; i++)
             {
+                #region old ver
+
                 //if (capitulosEnPdf >= CapitulosPorDoc)
                 //{
                 //    document.Close();
@@ -86,7 +89,8 @@ namespace GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores
                 //    DocumentoCreado?.Invoke(TituloPDF);
 
                 //    capitulosEnPdf = 0;
-                //}
+                //} 
+                #endregion
 
                 Capitulo capitulo = CapitulosAImprimir[i];
 
@@ -101,7 +105,7 @@ namespace GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores
 
                 CapituloImpreso?.Invoke(capitulo, Novela);
                 //capitulosEnPdf++;
-                var reporte = GetNovelsFactory.FabricaReporteNovela(CapitulosAImprimir.Count, i, "Guardando pdf", this, TituloNovela);
+                var reporte = GetNovelsFactory.FabricaReporteNovela(CapitulosAImprimir.Count, i+1, "Guardando PDF", this, TituloNovela);
                 progress.Report(reporte);
             }
 

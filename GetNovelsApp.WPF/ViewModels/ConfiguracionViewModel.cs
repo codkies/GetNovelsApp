@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using GetNovelsApp.Core;
 using GetNovelsApp.Core.Conexiones.DB;
@@ -36,6 +38,8 @@ namespace GetNovelsApp.WPF.ViewModels
             Command_SalvaCambios = new RelayCommand(SalvaCambios, Puede_SalvaCambios);
             Command_AggPerfil = new RelayCommand(AggPerfil, Puede_AggPerfil);
             Command_EditPerfil = new RelayCommand<string>(EditPerfil);
+            Command_AbrirPath = new RelayCommand(AbrirPath, Puede_AbrirPath);
+            //Events
             GetNovelsEvents.WebsitesCambiaron += ObtenWebsitesSoportados;
 
         }
@@ -159,5 +163,29 @@ namespace GetNovelsApp.WPF.ViewModels
 
         #endregion
 
+
+        #region Comando Abrir carpeta
+
+        public RelayCommand Command_AbrirPath { get; set; }
+
+        private void AbrirPath()
+        {
+            try
+            {
+                Process.Start($@"{Carpeta}");
+            }
+            catch (Win32Exception win32Exception)
+            {
+                //The system cannot find the file specified...
+                Debug.WriteLine(win32Exception.Message);
+            }
+        }
+
+        private bool Puede_AbrirPath()
+        {
+            return string.IsNullOrEmpty(Carpeta) == false;
+        }
+
+        #endregion
     }
 }

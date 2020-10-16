@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -182,7 +183,7 @@ namespace GetNovelsApp.WPF.ViewModels
                 {
                     reporte.Total = e.Total;
                     reporte.Actual = e.Actual;
-                    reporte.Estado = estado;
+                    reporte.Estado = estado;                   
                     break;
                 }
             }

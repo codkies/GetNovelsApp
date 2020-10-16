@@ -20,6 +20,7 @@ namespace GetNovelsApp.WPF.Models
 
         public NovelaWPF(List<Capitulo> capitulos, InformacionNovelaDB dbInfo)
         {
+            Descargando = false;
             OrganizaCapitulos(capitulos);
 
             ID = dbInfo.ID;
@@ -100,6 +101,7 @@ namespace GetNovelsApp.WPF.Models
         private int cantidadReviews;
         private int porcentajeDescarga;
         private ObservableCollection<string> generos;
+        private bool descargando;
         #endregion
 
         #region Fields para WPF
@@ -197,6 +199,12 @@ namespace GetNovelsApp.WPF.Models
 
 
         #region Externos
+
+        /// <summary>
+        /// Define si esta novela se está descargando en runtime. Default es false.
+        /// </summary>
+        public bool Descargando { get => descargando; set => OnPropertyChanged(ref descargando, value); }
+
 
         public string DescripcionReview => $"{Review}/5 ({CantidadReviews} reviews)";
 

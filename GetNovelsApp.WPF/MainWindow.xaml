@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GetNovelsApp.WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="700" Width="1100">
+        Title="GetNovels" Height="700" Width="1100">
 
     <!--Dandole contexto a la vista principal-->
     <Window.DataContext>
@@ -99,9 +99,9 @@
                        Style="{StaticResource WordBarra}"
                        FontSize="10" Grid.ColumnSpan="2">                
                 <!--Carpeta 1-->
-                <Run Text="Biblioteca >"/>
+                <Run Text=""/>
                 <!--Carpeta 2-->
-                <Run Text="Lord of the Mysteries"/>
+                <Run Text=""/>
             </TextBlock>
 
         </Grid>

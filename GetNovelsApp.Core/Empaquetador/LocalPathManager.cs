@@ -9,7 +9,7 @@ namespace GetNovelsApp.Core.Empaquetador
     /// </summary>
     public static class LocalPathManager
     {
-        public static string DefinePathNovela(INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela, bool Subdirectorio = false)
+        public static string DefinePathNovela(INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela, bool Subdirectorio = true)
         {
             if (Subdirectorio)
             {
@@ -20,5 +20,19 @@ namespace GetNovelsApp.Core.Empaquetador
                 return $"{GetNovelsConfig.HardDrivePath}\\{novela.Titulo}\\";
             }
         }
+
+        public static string DefinePathNovela(INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela, int primerCap, int ultimoCap,
+            bool Subdirectorio = true)
+        {
+            if (Subdirectorio)
+            {
+                return $"{GetNovelsConfig.HardDrivePath}\\{novela.Titulo} - {primerCap}-{ultimoCap}.pdf";
+            }
+            else
+            {
+                return $"{GetNovelsConfig.HardDrivePath}\\{novela.Titulo}\\";
+            }
+        }
+
     }
 }

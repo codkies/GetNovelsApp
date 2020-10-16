@@ -7,6 +7,7 @@ using GetNovelsApp.Core.Empaquetadores.CreadorDocumentos.Constructores;
 using GetNovelsApp.Core.Empaquetador;
 using GetNovelsApp.Core.Conexiones.DB;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace GetNovelsApp.Core.Empaquetadores
 {
@@ -85,9 +86,9 @@ namespace GetNovelsApp.Core.Empaquetadores
             Constructor.ConstruyeDocumento(CapitulosAImprimir);
         }
 
-        public void ImprimeNovela(INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela, TiposDocumentos tipo, IProgress<IReporte> progress)
+        public async Task ImprimeNovela(INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela, TiposDocumentos tipo, IProgress<IReporte> progress)
         {
-            var reporte = GetNovelsFactory.FabricaReporteNovela(novela.CapitulosDescargados.ToList().Count, 0, "Guardando pdf", this, novela.Titulo);
+            var reporte = GetNovelsFactory.FabricaReporteNovela(novela.CapitulosDescargados.ToList().Count, 0, "Guardando PDF", this, novela.Titulo);
             progress.Report(reporte);
 
             string Path = LocalPathManager.DefinePathNovela(novela);
@@ -95,7 +96,7 @@ namespace GetNovelsApp.Core.Empaquetadores
 
             List<Capitulo> CapitulosAImprimir = new List<Capitulo>(novela.CapitulosDescargados);
 
-            Constructor.ConstruyeDocumento(CapitulosAImprimir, progress);
+            await Task.Run( ()=> Constructor.ConstruyeDocumento(CapitulosAImprimir, progress));
         }
 
         #endregion

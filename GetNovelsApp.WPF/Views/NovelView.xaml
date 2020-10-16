@@ -195,7 +195,7 @@
                 <!--Boton de leer-->
                 <Button Grid.Column="2"
                         Content="Leer"
-                        Command="{Binding Command_Leer}"
+                        Command="{Binding Command_Leer, UpdateSourceTrigger=PropertyChanged}"
                         HorizontalAlignment="Right"
                         Margin="0 0 19 0"
                         Height="20"
