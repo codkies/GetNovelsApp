@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using GetNovelsApp.Core.Conexiones.DB;
 using GetNovelsApp.Core.ConfiguracionApp;
 using GetNovelsApp.Core.ConfiguracionApp.xPaths;
@@ -18,7 +19,7 @@ namespace GetNovelsApp.Core.GetNovelsApp
 
         public IConfig FabricaConfiguracion(string Path, int TamañoBatch, int CapsPorDoc);
 
-        List<Capitulo> FabricaCapitulos(List<Uri> ListaDeLinks);
+        Task<List<Capitulo>> FabricaCapitulos(List<Uri> ListaDeLinks);
 
         public IPath FabricaWebsite(string dominio, List<string> xpathsLinks, List<string> xpathsTextos, List<string> xpathsTitulo, OrdenLinks OrdenLinks);
 

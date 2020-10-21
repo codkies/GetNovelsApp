@@ -72,3 +72,5 @@ C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetAppsNovel.ConsoleVe
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetAppsNovel.ConsoleVersion\obj\Debug\GetNovelApp.ConsoleVersion.exe.manifest
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetAppsNovel.ConsoleVersion\obj\Debug\GetNovelApp.ConsoleVersion.application
 C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetAppsNovel.ConsoleVersion\obj\Debug\GetNovelApp.ConsoleVersion.csproj.CopyComplete
+C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetAppsNovel.ConsoleVersion\bin\Debug\WebDriver.dll
+C:\Users\Juan\Desktop\proyectos\Github Repos\GetNovelsApp\GetAppsNovel.ConsoleVersion\bin\Debug\WebDriver.xml

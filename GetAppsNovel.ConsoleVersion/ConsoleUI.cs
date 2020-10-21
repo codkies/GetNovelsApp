@@ -11,6 +11,7 @@ using GetNovelsApp.Core.Conexiones.Internet;
 using GetNovelsApp.Core.GetNovelsApp;
 using GetNovelsApp.Core.ConfiguracionApp;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace GetAppsNovel.ConsoleVersion
 {
@@ -46,6 +47,50 @@ namespace GetAppsNovel.ConsoleVersion
 
 
         IReportero reporteroActual = null;
+
+
+
+        public async Task<CapituloWebModel> PideInfoCapituloAsync(string linkCapitulo)
+        {
+            //Esto romperá la app si varios mensajes (async) ocurren al mismo tiempo?...
+            GetNovelsComunicador.ReportaError("No se pudo determinar el valor del capitulo.", this);
+            GetNovelsComunicador.Reporta($"La dirección es: \n{linkCapitulo}.", this);
+
+            string inputUserTitulo = string.Empty;
+            string inputUserNumCap = string.Empty;
+            string inputUserValorCap = string.Empty;
+
+            bool decisionTomada = false;
+            while (!decisionTomada)
+            {
+                inputUserTitulo = GetNovelsComunicador.PideInput($"\nEscribe el titulo del capitulo: (En general es 'Chapter - (numeroCapitulo)')", this);
+                inputUserNumCap = GetNovelsComunicador.PideInput($"Escribe el numero del capitulo: (puede tener decimales pero no acepta letras):", this);
+                inputUserValorCap = GetNovelsComunicador.PideInput($"Escribe por cuantos capitulos vale este: (si es un solo cap, el valor es 1. No acepta decimales ni letras):", this);
+
+                GetNovelsComunicador.Reporta("Has escrito:\n" +
+                                                $"Direccion: {linkCapitulo}\n" +
+                                                $"Titulo cap: {inputUserTitulo}\n" +
+                                                $"Numero del capitulo: {inputUserNumCap}\n" +
+                                                $"Valor del capitulo: {inputUserValorCap}",
+                                                this);
+                string decision = GetNovelsComunicador.PideInput("Presiona (Y) para confirmar. Cualquier otra tecla para repetir.", this);
+
+                if (decision.Equals("y") | decision.Equals("yes"))
+                {
+                    decisionTomada = true;
+                }
+            }
+
+
+            float NumeroCapitulo = Math.Abs(float.Parse(inputUserNumCap));
+            int Valor = Math.Abs(int.Parse(inputUserValorCap));
+            string TituloCapitulo = inputUserTitulo;
+            CapituloWebModel info = new CapituloWebModel(new Uri(linkCapitulo), TituloCapitulo, Valor, NumeroCapitulo);
+            await Task.Delay(100);
+            return info;
+
+        }
+
 
         private void EscribeReportero(IReportero reportero)
         {
@@ -170,7 +215,7 @@ namespace GetAppsNovel.ConsoleVersion
         }
 
 
-        internal Dictionary<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>, int> PidePathTXTusuario(string folderPath)
+        internal async Task<Dictionary<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>, int>> PidePathTXTusuario(string folderPath)
         {
             Dictionary<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>, int> InfoDescarga = new Dictionary<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>, int>();
 
@@ -204,7 +249,7 @@ namespace GetAppsNovel.ConsoleVersion
             foreach (Uri uri in Links)
             {
                 Reporta($"\nObteniendo información de ({uri})...", this);
-                INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela = archivador.Legacy_MeteNovelaDB(uri, out _);
+                INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela = await archivador.Legacy_MeteNovelaDB(uri);
                 ///Confirmando con el usuario:
                 ConfirmaInfoNovelaConUsuario(ref InfoDescarga, novela, folderPath);
                
@@ -220,7 +265,7 @@ namespace GetAppsNovel.ConsoleVersion
         /// </summary>
         /// <param name="xPaths"></param>
         /// <param name="Novelas"></param>
-        internal Dictionary<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>, int> PideInfoUsuario(string FolderPathDefined)
+        internal async Task<Dictionary<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>, int>> PideInfoUsuario(string FolderPathDefined)
         {
             //Preps:
             Dictionary<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>, int> InfoDescarga = new Dictionary<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>, int>();
@@ -246,7 +291,7 @@ namespace GetAppsNovel.ConsoleVersion
                 Reporta("\nObteniendo información de novela...\n", this);
 
                 //1) Pidela a la DB:                
-                INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela = archivador.Legacy_MeteNovelaDB(UriNovela, out _);
+                INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> novela = await archivador.Legacy_MeteNovelaDB(UriNovela);
 
                 ///Confirmando con el usuario:
                 ConfirmaInfoNovelaConUsuario(ref InfoDescarga, novela, FolderPathDefined);
@@ -396,6 +441,7 @@ namespace GetAppsNovel.ConsoleVersion
 
             return comienzo;
         }
+
 
 
         #endregion

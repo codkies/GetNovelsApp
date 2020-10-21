@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using System.Linq;
+using System.Threading.Tasks;
 using Dapper;
 using GetNovelsApp.Core.Conexiones.Internet;
 using GetNovelsApp.Core.Modelos;
@@ -21,9 +22,9 @@ namespace GetNovelsApp.Core.Conexiones.DB
         /// </summary>
         /// <param name="infoNov"></param>
         /// <returns></returns>
-        public INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>> Legacy_MeteNovelaDB(Uri LinkNovela, out bool YaExiste)
+        public async Task<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>> Legacy_MeteNovelaDB(Uri LinkNovela)
         {
-            YaExiste = NovelaExisteEnDB(LinkNovela);
+            bool YaExiste = NovelaExisteEnDB(LinkNovela);
             if (!YaExiste)
             {
                 using IDbConnection cnn = DataBaseAccess.GetConnection();
@@ -32,7 +33,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
                 InformacionNovelaDB novDBInfo = Legacy_InsertaNovelaEnDB(LinkNovela, cnn, out InformacionNovelaOnline infoNov);
 
                 //Capitulos:
-                List<Capitulo> CapitulosNovela = GetNovelsFactory.FabricaCapitulos(infoNov.LinksDeCapitulos);
+                List<Capitulo> CapitulosNovela = await GetNovelsFactory.FabricaCapitulos(infoNov.LinksDeCapitulos);
                 Legacy_GuardaCapitulos(CapitulosNovela, novDBInfo.ID); //Itera los caps y encuentra su info.
 
                 //Regresando una novela para runtime:

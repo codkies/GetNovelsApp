@@ -85,6 +85,7 @@
     <Compile Include="ViewModels\ConfiguracionViewModel.cs" />
     <Compile Include="ViewModels\DescargasViewModel.cs" />
     <Compile Include="ViewModels\EditPefilViewModel.cs" />
+    <Compile Include="ViewModels\InformacionCapituloViewModel.cs" />
     <Compile Include="ViewModels\NovelViewModel.cs" />
     <Compile Include="ViewModels\AddWebsiteViewModel.cs" />
     <Compile Include="Views\AddWebsiteView.xaml.cs">
@@ -104,6 +105,9 @@
     </Compile>
     <Compile Include="Views\EditPerfilView.xaml.cs">
       <DependentUpon>EditPerfilView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\InformacionCapituloView.xaml.cs">
+      <DependentUpon>InformacionCapituloView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Partes\Mostrador.xaml.cs">
       <DependentUpon>Mostrador.xaml</DependentUpon>
@@ -147,6 +151,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\EditPerfilView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\InformacionCapituloView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

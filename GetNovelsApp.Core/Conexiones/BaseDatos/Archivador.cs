@@ -37,7 +37,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
 
 
         #region Core
-
+         
 
         Dictionary<Capitulo, int> CapitulosAGuardar = new Dictionary<Capitulo, int>();
 
@@ -57,7 +57,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
                 InformacionNovelaDB novDBInfo = InsertaNovelaEnDB(info, cnn, progress);
 
                 //Capitulos:
-                List<Capitulo> CapitulosNovela = GetNovelsFactory.FabricaCapitulos(info.LinksDeCapitulos);
+                List<Capitulo> CapitulosNovela = await GetNovelsFactory.FabricaCapitulos(info.LinksDeCapitulos);
                 await Task.Run( ()=> GuardaCapitulosAsync(CapitulosNovela, novDBInfo.ID, progress)); //Itera los caps y encuentra su info.
 
 

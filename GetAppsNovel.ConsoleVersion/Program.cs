@@ -31,7 +31,7 @@ namespace GetAppsNovel.ConsoleVersion
             //Ver control.            
             SetupApp();
 
-            Dictionary<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>, int> InfoNovelas = ConsoleUI.PidePathTXTusuario(configuracion.FolderPath);
+            Dictionary<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>, int> InfoNovelas = await ConsoleUI.PidePathTXTusuario(configuracion.FolderPath);
 
             //Diagnostics:
             var stopwatch = new Stopwatch();
@@ -59,7 +59,7 @@ namespace GetAppsNovel.ConsoleVersion
             //Ver control.            
             SetupApp();
 
-            Dictionary<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>, int> InfoNovelas = ConsoleUI.PideInfoUsuario(configuracion.FolderPath);
+            Dictionary<INovela<IEnumerable<Capitulo>, IEnumerable<string>, IEnumerable<Uri>>, int> InfoNovelas = await ConsoleUI.PideInfoUsuario(configuracion.FolderPath);
 
             //Diagnostics:
             var stopwatch = new Stopwatch();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using GetNovelsApp.Core.Conexiones.DB;
 using GetNovelsApp.Core.Conexiones.Internet;
 using GetNovelsApp.Core.ConfiguracionApp;
@@ -24,15 +25,18 @@ namespace GetNovelsApp.WPF.Models
 
         #region Capitulos
 
-        public List<Capitulo> FabricaCapitulos(List<Uri> ListaDeLinks)
+        public async Task<List<Capitulo>> FabricaCapitulos(List<Uri> ListaDeLinks)
         {
             List<Capitulo> Capitulos = new List<Capitulo>();
-            foreach (Uri link in ListaDeLinks)
+            
+            for (int i = 0; i < ListaDeLinks.Count; i++)
             {
-                CapituloWebModel _ = ManipuladorDeLinks.EncuentraInformacionCapitulo(link);
+                Uri link = ListaDeLinks[i];
+                CapituloWebModel _ = new CapituloWebModel(link, $"Chapter {i + 1}", i + 1);
                 Capitulo capitulo = new Capitulo(_);
                 Capitulos.Add(capitulo);
             }
+            await Task.Delay(100);
             return Capitulos;
         }
 

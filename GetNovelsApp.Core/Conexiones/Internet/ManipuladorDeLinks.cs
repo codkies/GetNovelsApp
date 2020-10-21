@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -8,9 +7,6 @@ using System.Web;
 using GetNovelsApp.Core.Conexiones.DB;
 using GetNovelsApp.Core.Reportaje;
 using HtmlAgilityPack;
-using iText.Kernel.Pdf.Tagutils;
-using iText.Svg.Renderers.Impl;
-using Microsoft.SqlServer.Server;
 
 namespace GetNovelsApp.Core.Conexiones.Internet
 {
@@ -36,7 +32,7 @@ namespace GetNovelsApp.Core.Conexiones.Internet
         /// </summary>
         /// <param name="LinkCapitulo"></param>
         /// <returns></returns>
-        public static CapituloWebModel EncuentraInformacionCapitulo(Uri _LinkCapitulo)
+        public static async Task<CapituloWebModel> EncuentraInformacionCapitulo(Uri _LinkCapitulo)
         {
             string numCapEscrito = string.Empty; //Para llevar record de numeros en formato de string. Luego se convierte a float.
             string TituloCapitulo = string.Empty; //Titulo del cap.
@@ -88,55 +84,22 @@ namespace GetNovelsApp.Core.Conexiones.Internet
                 i = subio ? salto : i; //Si el valor subió, has que la siguiente iteracion continue ahí. Sino, deja que continue normalmente.
             }
 
-            float NumeroCapitulo;
-            int Valor;
 
+
+            CapituloWebModel infoDelCapituloSegunElLink;
             //Posibles errores:
             if (gruposDeNumeros < 1)
             {
-                //Esto romperá la app si varios mensajes (async) ocurren al mismo tiempo?...
-                GetNovelsComunicador.ReportaError("No se pudo determinar el valor del capitulo.", MiReportero);
-                GetNovelsComunicador.Reporta($"La dirección es: \n{LinkCapitulo}.", MiReportero);
-
-                string inputUserTitulo = string.Empty;
-                string inputUserNumCap = string.Empty;
-                string inputUserValorCap = string.Empty;
-
-                bool decisionTomada = false;
-                while (!decisionTomada)
-                {
-                    inputUserTitulo = GetNovelsComunicador.PideInput($"\nEscribe el titulo del capitulo: (En general es 'Chapter - (numeroCapitulo)')", MiReportero);
-                    inputUserNumCap = GetNovelsComunicador.PideInput($"Escribe el numero del capitulo: (puede tener decimales pero no acepta letras):", MiReportero);
-                    inputUserValorCap = GetNovelsComunicador.PideInput($"Escribe por cuantos capitulos vale este: (si es un solo cap, el valor es 1. No acepta decimales ni letras):", MiReportero);
-
-                    GetNovelsComunicador.Reporta("Has escrito:\n" +
-                                                    $"Direccion: {LinkCapitulo}\n" +
-                                                    $"Titulo cap: {inputUserTitulo}\n" +
-                                                    $"Numero del capitulo: {inputUserNumCap}\n" +
-                                                    $"Valor del capitulo: {inputUserValorCap}",
-                                                    MiReportero);
-                    string decision = GetNovelsComunicador.PideInput("Presiona (Y) para confirmar. Cualquier otra tecla para repetir.", MiReportero);
-
-                    if (decision.Equals("y") | decision.Equals("yes"))
-                    {
-                        decisionTomada = true;
-                    }
-                }
-
-
-                NumeroCapitulo = Math.Abs(float.Parse(inputUserNumCap));
-                Valor = Math.Abs(int.Parse(inputUserValorCap));
-                TituloCapitulo = inputUserTitulo;
+                //Pide al usuario por la info
+                infoDelCapituloSegunElLink = await GetNovelsComunicador.PideInfoCapitulo(_LinkCapitulo.ToString());                
             }
             else
             {
-                NumeroCapitulo = Math.Abs(float.Parse(numCapEscrito)); 
-                Valor = gruposDeNumeros;
+                float NumeroCapitulo = Math.Abs(float.Parse(numCapEscrito)); 
+                int Valor = gruposDeNumeros;
                 TituloCapitulo = $"Chapter {TituloCapitulo}";
+                infoDelCapituloSegunElLink = new CapituloWebModel(_LinkCapitulo, TituloCapitulo, Valor, NumeroCapitulo);
             }
-
-            CapituloWebModel infoDelCapituloSegunElLink = new CapituloWebModel(_LinkCapitulo, TituloCapitulo, Valor, NumeroCapitulo);
-
             return infoDelCapituloSegunElLink;
         }
 

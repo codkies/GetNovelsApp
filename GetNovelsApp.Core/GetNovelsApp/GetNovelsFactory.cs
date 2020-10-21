@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using GetNovelsApp.Core.Conexiones.DB;
 using GetNovelsApp.Core.Conexiones.Internet;
 using GetNovelsApp.Core.ConfiguracionApp;
@@ -36,9 +37,9 @@ namespace GetNovelsApp.Core
         /// </summary>
         /// <param name="ListaDeLinks"></param>
         /// <returns></returns>
-        public static List<Capitulo> FabricaCapitulos(List<Uri> ListaDeLinks)
+        public static async Task<List<Capitulo>> FabricaCapitulos(List<Uri> ListaDeLinks)
         {
-            return Fabrica.FabricaCapitulos(ListaDeLinks);
+            return await Fabrica.FabricaCapitulos(ListaDeLinks);
         }
 
 

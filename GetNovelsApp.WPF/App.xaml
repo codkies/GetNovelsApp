@@ -29,7 +29,6 @@
             <v:EditPerfilView/>
         </DataTemplate>
 
-        
         <!--Imagenes default-->
         <BitmapImage x:Key="EmptyNovel" UriSource="pack://siteoforigin:,,,/Resources/EmptyNovel.png"/>
 

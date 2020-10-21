@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using GetNovelsApp.Core.Conexiones.Internet;
 
 namespace GetNovelsApp.Core.Reportaje
 {
     public interface IComunicador
     {
+
+        public Task<CapituloWebModel> PideInfoCapituloAsync(string linkCapitulo);
+
+
         /// <summary>
         /// Toma un input del usuario.
         /// </summary>

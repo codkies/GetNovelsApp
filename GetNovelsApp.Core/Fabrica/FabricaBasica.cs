@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using GetNovelsApp.Core.Conexiones.DB;
 using GetNovelsApp.Core.Conexiones.Internet;
 using GetNovelsApp.Core.ConfiguracionApp;
@@ -20,17 +21,18 @@ namespace GetNovelsApp.Core.GetNovelsApp
 
         #region Capitulos
 
-        public List<Capitulo> FabricaCapitulos(List<Uri> ListaDeLinks)
+        public async Task<List<Capitulo>> FabricaCapitulos(List<Uri> ListaDeLinks)
         {
             List<Capitulo> Capitulos = new List<Capitulo>();
             foreach (Uri link in ListaDeLinks)
             {
-                CapituloWebModel _ = ManipuladorDeLinks.EncuentraInformacionCapitulo(link);
+                CapituloWebModel _ = await ManipuladorDeLinks.EncuentraInformacionCapitulo(link);
                 Capitulo capitulo = new Capitulo(_);
                 Capitulos.Add(capitulo);
             }
             return Capitulos;
         }
+
 
         #endregion
 

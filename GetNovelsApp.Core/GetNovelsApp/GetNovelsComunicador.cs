@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using GetNovelsApp.Core.Conexiones.DB;
+using GetNovelsApp.Core.Conexiones.Internet;
 using GetNovelsApp.Core.Reportaje;
 
 namespace GetNovelsApp.Core
@@ -20,6 +22,12 @@ namespace GetNovelsApp.Core
 
 
         #region Implementaciones del IComunicador
+
+
+        public static Task<CapituloWebModel> PideInfoCapitulo(string linkCapitulo)
+        {
+            return Mensajero.PideInfoCapituloAsync(linkCapitulo);
+        }
 
 
         /// <summary>
