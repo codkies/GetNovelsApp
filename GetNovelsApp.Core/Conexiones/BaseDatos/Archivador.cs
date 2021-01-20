@@ -128,6 +128,7 @@ namespace GetNovelsApp.Core.Conexiones.DB
             catch(Exception ex)
             {
                 Debug.WriteLine($"Error obteniendo novelas de la DB. \n Error: {ex.Message}");
+                return null;
             }
 
             foreach (InformacionNovelaDB infoNov in novels)
